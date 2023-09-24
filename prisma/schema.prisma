@@ -1,0 +1,400 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Hero {
+  id       String @id @default(uuid())
+  title    String
+  subtitle String
+  image    String @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Logo {
+  id    String @id @default(uuid())
+  image String @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Faq {
+  id       String @id @default(uuid())
+  question String @db.Text
+  answer   String @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum RegistrationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model TrialClassRegistration {
+  id                   String             @id @default(uuid())
+  childName            String
+  dateOfBirth          DateTime
+  birthPlace           String
+  childGender          Gender
+  educationInstitution String
+  gradeClass           String
+  trialClassDate       DateTime
+  parentName           String
+  email                String             @unique
+  phoneNumber          String             @unique
+  address              String             @db.Text
+  hobby                String
+  ambition             String
+  status               RegistrationStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id   String @id @default(uuid())
+  name String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  programs Program[]
+}
+
+model Program {
+  id          String  @id @default(uuid())
+  name        String
+  subtitle1   String
+  subtitle2   String
+  description String  @db.LongText
+  image       String  @db.Text
+  isActive    Boolean @default(true)
+
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String
+
+  subprograms Subprogram[]
+
+  createdBy   Admin  @relation(fields: [createdById], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdById String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryId])
+  @@index([createdById])
+}
+
+model Subprogram {
+  id          String @id @default(uuid())
+  name        String
+  description String @db.Text
+
+  program   Program @relation(fields: [programId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  programId String
+
+  registrations ProgramClassRegistration[]
+  classes       Class[]
+  resources     Resource[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([programId])
+}
+
+model ProgramClassRegistration {
+  id                   String             @id @default(uuid())
+  childName            String
+  dateOfBirth          DateTime
+  birthPlace           String
+  childGender          Gender
+  gradeClass           String
+  educationInstitution String
+  parentName           String
+  email                String             @unique
+  phoneNumber          String             @unique
+  address              String             @db.Text
+  hobby                String
+  ambition             String
+  status               RegistrationStatus @default(PENDING)
+
+  subprogram   Subprogram @relation(fields: [subprogramId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  subprogramId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([subprogramId])
+}
+
+model Skill {
+  id   String @id @default(uuid())
+  name String
+
+  instructorRegistrations InstructorRegistration[]
+  instructors             Instructor[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum LastEducation {
+  SMA
+  S1
+  S2
+  S3
+}
+
+model InstructorRegistration {
+  id                   String             @id @default(uuid())
+  name                 String
+  dateOfBirth          DateTime
+  lastEducation        LastEducation
+  educationInstitution String
+  email                String             @unique
+  phoneNumber          String             @unique
+  address              String             @db.Text
+  status               RegistrationStatus @default(PENDING)
+
+  skills Skill[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Status {
+  ACTIVE
+  BANNED
+}
+
+enum Role {
+  ADMIN
+  PARENT
+  INSTRUCTOR
+  STUDENT
+}
+
+model Account {
+  id          String  @id @default(uuid())
+  name        String
+  username    String? @unique
+  email       String  @unique
+  password    String? @db.Text
+  role        Role
+  phoneNumber String  @unique
+  image       String? @db.Text
+  address     String? @db.Text
+  status      Status  @default(ACTIVE)
+  onboarded   Boolean @default(false)
+
+  admins      Admin[]
+  instructors Instructor[]
+  parents     Parent[]
+  students    Student[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Admin {
+  id String @id @default(uuid())
+
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId String  @unique
+
+  programs Program[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([accountId])
+}
+
+model Instructor {
+  id                   String   @id @default(uuid())
+  dateOfBirth          DateTime
+  lastEducation        String
+  educationInstitution String
+
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId String  @unique
+
+  classes Class[]
+  skills  Skill[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([accountId])
+}
+
+model Parent {
+  id String @id @default(uuid())
+
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId String  @unique
+
+  children Student[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([accountId])
+}
+
+model Period {
+  id        String   @id @default(uuid())
+  startDate DateTime
+  endDate   DateTime
+
+  classes Class[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Class {
+  id   String @id @default(uuid())
+  name String
+
+  subprogram   Subprogram @relation(fields: [subprogramId], references: [id], onDelete: Cascade)
+  subprogramId String
+
+  period   Period @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  periodId String
+
+  instructor   Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  instructorId String
+
+  students  Student[]
+  schedules Schedule[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, periodId])
+  @@index([instructorId])
+  @@index([subprogramId])
+  @@index([periodId])
+}
+
+model Resource {
+  id String @id @default(uuid())
+
+  main        String @db.LongText
+  description String @db.LongText
+  reference   String @db.LongText
+
+  session String
+
+  subprogram   Subprogram @relation(fields: [subprogramId], references: [id], onDelete: Cascade)
+  subprogramId String
+
+  files File[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([subprogramId])
+}
+
+enum FileType {
+  PPT
+  WORD
+  PDF
+  PNG
+  JPG
+  JPEG
+}
+
+model File {
+  id       String   @id @default(uuid())
+  filename String
+  fileUrl  String?  @db.Text
+  fileType FileType
+
+  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  resourceId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([resourceId])
+}
+
+model OtherResource {
+  id          String @id @default(uuid())
+  name        String
+  type        String
+  resourceUrl String
+
+  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  scheduleId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([scheduleId])
+}
+
+model Schedule {
+  id         String   @id @default(uuid())
+  session    String
+  date       DateTime
+  time       String
+  meetingUrl String   @db.LongText
+
+  class          Class           @relation(fields: [classId], references: [id], onDelete: Cascade)
+  classId        String
+  otherResources OtherResource[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([classId])
+}
+
+model Student {
+  id        String @id @default(uuid())
+  studentId String @unique
+
+  name                 String
+  dateOfBirth          DateTime
+  birthPlace           String
+  gender               Gender
+  gradeSchool          String
+  educationInstitution String
+  hobby                String
+  ambition             String
+
+  parent   Parent @relation(fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  parentId String
+
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId String
+
+  classes Class[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([parentId])
+  @@index([accountId])
+}
