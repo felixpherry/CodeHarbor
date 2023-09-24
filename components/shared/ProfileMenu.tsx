@@ -41,7 +41,7 @@ export const ProfileMenu = ({ session }: { session: SessionInterface }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar className='cursor-pointer w-12 h-12'>
+        <Avatar className='cursor-pointer'>
           <AvatarImage src={session.user?.image || undefined} />
           <AvatarFallback>{session.user.name[0]}</AvatarFallback>
         </Avatar>
