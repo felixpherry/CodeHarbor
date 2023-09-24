@@ -99,7 +99,7 @@ const Faq = ({ type, session, faq }: FaqProps) => {
     !form.some((item) => item.question === '' || item.answer === '') &&
     JSON.stringify(form) !== JSON.stringify(faq);
 
-  if (type === 'edit' && session?.user.role !== 'admin') return null;
+  if (type === 'edit' && session?.user.role !== 'ADMIN') return null;
   return (
     <div className='bg-light-white w-full px-4 py-20 md:px-10'>
       <h1 className='mb-12 text-4xl text-center font-bold tracking-tight leading-none'>
