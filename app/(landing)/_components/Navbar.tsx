@@ -44,7 +44,7 @@ const Navbar = ({ session }: NavbarProps) => {
             alt='Lecturna'
             priority={true}
           />
-          <span className='self-center text-primary-blue text-2xl font-semibold font-fabada whitespace-nowrap hover:text-primary-blue-600'>
+          <span className='hidden md:block self-center text-primary-blue text-2xl font-semibold font-fabada whitespace-nowrap hover:text-primary-blue-600'>
             Lecturna
           </span>
         </Link>
