@@ -19,7 +19,6 @@ import {
   Users,
 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,16 +34,19 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SessionInterface } from '@/types';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import Image from 'next/image';
 
 export const ProfileMenu = ({ session }: { session: SessionInterface }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar className='cursor-pointer'>
-          <AvatarImage src={session.user?.image || undefined} />
-          <AvatarFallback>{session.user.name[0]}</AvatarFallback>
-        </Avatar>
+        <Image
+          src={session.user?.image || '/avatar-fallback.svg'}
+          height={40}
+          width={40}
+          alt='profile image'
+          className='w-12 h-12 object-cover rounded-full cursor-pointer'
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-56 mr-8'>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>

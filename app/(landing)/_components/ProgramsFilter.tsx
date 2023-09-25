@@ -40,7 +40,9 @@ const ProgramsFilter = ({ categories }: Props) => {
   const clearCategory = () => {
     const params = new URLSearchParams(searchParams);
     params.delete('category');
-    router.push(pathname + '?' + params.toString());
+    router.push(pathname + '?' + params.toString(), {
+      scroll: false,
+    });
   };
   return (
     <div className='relative pt-6 lg:pt-10 px-5 lg:px-[60px] border-gray-50 rounded-3xl border-[1px] mb-14'>
@@ -57,7 +59,11 @@ const ProgramsFilter = ({ categories }: Props) => {
           <Chip
             key={id}
             label={name}
-            handleClick={() => router.push(`?category=${id}`)}
+            handleClick={() =>
+              router.push(`?category=${id}`, {
+                scroll: false,
+              })
+            }
             active={
               searchParams.get('category')?.toLocaleLowerCase() ===
               id?.toLocaleLowerCase()

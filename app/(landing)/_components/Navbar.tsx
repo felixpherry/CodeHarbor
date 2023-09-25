@@ -1,18 +1,39 @@
-import Link from 'next/link';
+'use client';
 
+import Link from 'next/link';
 import Image from 'next/image';
 import { NavLinks } from '@/constants';
-import { getCurrentUser } from '@/lib/session';
 import ProfileMenu from '../../../components/shared/ProfileMenu';
 import { SessionInterface } from '@/types';
 import { Button } from '../../../components/ui/button';
 import { LogIn, UserCircle2 } from 'lucide-react';
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
 
-const Navbar = async () => {
-  const session = (await getCurrentUser()) as SessionInterface;
+interface NavbarProps {
+  session: SessionInterface;
+}
+
+const Navbar = ({ session }: NavbarProps) => {
+  const [active, setActive] = useState(false);
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 80) {
+        setActive(true);
+      } else {
+        setActive(false);
+      }
+    });
+  }
 
   return (
-    <nav className='flexBetween navbar'>
+    <nav
+      className={cn(
+        'flexBetween navbar',
+        active && 'fixed top-0 left-0 z-[80] shadow-xl transition duration-500'
+      )}
+    >
       <div className='flex-1 flexStart gap-10'>
         <Link href='/' className='flex items-center'>
           <Image
@@ -36,7 +57,7 @@ const Navbar = async () => {
         </ul>
       </div>
 
-      <div className='flexCenter gap-4'>
+      <div className='flexCenter gap-4 ml-auto'>
         {session?.user ? (
           <ProfileMenu session={session} />
         ) : (

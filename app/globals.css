@@ -239,7 +239,7 @@ html {
 
 /* Navbar */
 .navbar {
-  @apply py-2 px-8 border-b border-nav-border gap-4;
+  @apply py-2 px-8 border-b border-nav-border gap-4 h-[80px] bg-white w-full;
 }
 
 /* Profile Menu */
@@ -296,4 +296,13 @@ html {
 
 .hero_subtitle {
   @apply max-w-2xl mb-6 font-light font-inter text-gray-100 lg:mb-8 md:text-lg lg:text-xl text-center md:text-left;
+}
+
+.hero_animation {
+  background-image: linear-gradient(
+    -147.92deg,
+    rgb(186 230 253) 10.41%,
+    hsla(0, 0%, 100%, 0) 89.25%
+  );
+  animation: 8s infinite alternate;
 }
