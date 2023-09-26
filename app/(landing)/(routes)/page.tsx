@@ -22,6 +22,7 @@ export default async function Home({
   return (
     <div className='bg-light-white'>
       <Hero
+        session={session}
         title={hero?.title || ''}
         subtitle={hero?.subtitle || ''}
         image={hero?.image || ''}

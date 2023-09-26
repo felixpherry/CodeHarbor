@@ -1,14 +1,16 @@
 import { SessionInterface } from '@/types';
 import Image from 'next/image';
 import { Button } from '../ui/button';
+import Link from 'next/link';
 
 interface HeroProps {
   title: string;
   subtitle: string;
   image: string;
+  session: SessionInterface;
 }
 
-const Hero = ({ title, subtitle, image }: HeroProps) => {
+const Hero = ({ title, subtitle, image, session }: HeroProps) => {
   return (
     <div className='flex flex-col text-center lg:flex-row-reverse lg:text-left bg-white'>
       <div className='absolute top-[100px] lg:top-[unset] 2xl:h-[700px] 2xl:w-[700px] lg:h-[600px] lg:w-[600px] h-[40vh] right-5 w-[40vh] hero_animation rounded-[50%] lg:right-8 2xl:right-14'></div>
@@ -29,18 +31,34 @@ const Hero = ({ title, subtitle, image }: HeroProps) => {
           {subtitle}
         </p>
         <div className='w-full flex flex-col px-8 lg:px-0 lg:flex-row gap-5 mt-2'>
-          <Button
-            variant='primary-blue'
-            className='h-14 rounded-full px-12 text-base'
-          >
-            Daftar Trial Class
-          </Button>
-          <Button
-            variant='primary-blue-outline'
-            className='h-14 rounded-full px-12 text-base'
-          >
-            Lihat Program
-          </Button>
+          {!session?.user ? (
+            <>
+              <Button
+                variant='primary-blue'
+                className='h-14 rounded-full px-12 text-base font-semibold'
+              >
+                Daftar Trial Class
+              </Button>
+              <Button
+                variant='primary-blue-outline'
+                className='h-14 rounded-full px-12 text-base font-semibold'
+              >
+                Lihat Program
+              </Button>
+            </>
+          ) : (
+            <Button
+              variant='primary-blue'
+              className='h-14 rounded-full px-12 text-base font-semibold'
+              asChild
+            >
+              <Link
+                href={`/${session.user.role.toLocaleLowerCase()}/dashboard`}
+              >
+                Lihat Dashboard
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
     </div>
