@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import {
   Avatar,
   AvatarFallback,
@@ -12,10 +13,13 @@ const About = () => {
       </h1>
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
         <div className='flex flex-col items-center text-center'>
-          <Avatar className='w-[200px] h-[200px]'>
-            <AvatarImage src='/about-us-1.jpg' className='object-cover' />
-            <AvatarFallback>About Us</AvatarFallback>
-          </Avatar>
+          <Image
+            src='/about-us-1.jpg'
+            height={200}
+            width={200}
+            className='object-cover w-[200px] h-[200px] rounded-full'
+            alt='about us'
+          />
           <h1 className='pt-6 pb-10 text-3xl font-bold'>Menyenangkan</h1>
           <div className='text-slate-500 text-md leading-8'>
             {' '}
@@ -24,10 +28,13 @@ const About = () => {
           </div>
         </div>
         <div className='flex flex-col items-center text-center'>
-          <Avatar className='w-[200px] h-[200px]'>
-            <AvatarImage src='/about-us-2.jpg' className='object-cover' />
-            <AvatarFallback>About Us</AvatarFallback>
-          </Avatar>
+          <Image
+            src='/about-us-2.jpg'
+            height={200}
+            width={200}
+            className='object-cover w-[200px] h-[200px] rounded-full'
+            alt='about us'
+          />
           <h1 className='pt-6 pb-10 text-3xl font-bold'>Terstruktur</h1>
           <div className='text-slate-500 text-md leading-8'>
             Lecturna memiliki program pembelajaran yang terstruktur dan didesain
@@ -36,10 +43,13 @@ const About = () => {
         </div>
 
         <div className='flex flex-col items-center text-center'>
-          <Avatar className='w-[200px] h-[200px]'>
-            <AvatarImage src='/about-us-3.jpg' className='object-cover' />
-            <AvatarFallback>About Us</AvatarFallback>
-          </Avatar>
+          <Image
+            src='/about-us-3.jpg'
+            height={200}
+            width={200}
+            className='object-cover w-[200px] h-[200px] rounded-full'
+            alt='about us'
+          />
           <h1 className='pt-6 pb-10 text-3xl font-bold'>Interaktif</h1>
           <div className='text-slate-500 text-md leading-8'>
             {' '}

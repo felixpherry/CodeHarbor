@@ -146,7 +146,7 @@ const HeroForm = ({ id, title, subtitle, image, session }: HeroProps) => {
           className='object-contain lg:max-w-[90%] w-[90%] 2xl:max-w-[85%] h-[auto] z-[10]'
         />
         <label htmlFor='image'>
-          <Camera className='absolute bottom-1/4 lg:bottom-1/3 left-[20%] lg:left-0 z-50 cursor-pointer' />
+          <Camera className='absolute bottom-1/4 lg:bottom-1/3 left-[18%] lg:left-0 z-50 cursor-pointer' />
         </label>
 
         <input
@@ -169,7 +169,7 @@ const HeroForm = ({ id, title, subtitle, image, session }: HeroProps) => {
           required
         ></textarea>
         <textarea
-          className='text-[#000000ac] font-josefin font-[600] text-[18px] 2xl:!w-[55%] lg:!w-[78%] focus:outline-none resize-none px-3 lg:p-0'
+          className='text-[#000000ac] font-josefin font-[600] text-[18px] 2xl:!w-[55%] lg:!w-[78%] focus:outline-none resize-none'
           name='subtitle'
           value={form.subtitle}
           onChange={handleChange}
@@ -181,7 +181,7 @@ const HeroForm = ({ id, title, subtitle, image, session }: HeroProps) => {
           size='sm'
           onClick={handleSubmit}
           disabled={!isValid || isLoading}
-          className='w-fit ml-auto mr-5 mb-5 lg:m-0'
+          className='w-fit ml-auto mr-5 mb-10 lg:m-0'
         >
           {isLoading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
           {isLoading ? 'Saving...' : 'Save'}

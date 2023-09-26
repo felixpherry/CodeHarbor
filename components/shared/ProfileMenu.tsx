@@ -40,15 +40,13 @@ export const ProfileMenu = ({ session }: { session: SessionInterface }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className='w-12 h-12 rounded-full cursor-pointer'>
-          <Image
-            src={session.user?.image || '/avatar-fallback.svg'}
-            height={40}
-            width={40}
-            alt='profile image'
-            className='w-full h-full object-cover rounded-full'
-          />
-        </div>
+        <Image
+          src={session.user?.image || '/avatar-fallback.svg'}
+          height={40}
+          width={40}
+          alt='profile image'
+          className=' object-cover rounded-full w-[40px] h-[40px]'
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-56 mr-8'>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
