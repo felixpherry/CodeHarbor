@@ -12,9 +12,12 @@ import { cn } from '@/lib/utils';
 
 interface NavbarProps {
   session: SessionInterface;
+  logo: {
+    image: string;
+  };
 }
 
-const Navbar = ({ session }: NavbarProps) => {
+const Navbar = ({ session, logo }: NavbarProps) => {
   const [active, setActive] = useState(false);
 
   if (typeof window !== 'undefined') {
@@ -38,7 +41,7 @@ const Navbar = ({ session }: NavbarProps) => {
         <Link href='/' className='flex items-center'>
           <Image
             className='mr-3'
-            src='/logo.png'
+            src={logo?.image || '/logo.png'}
             width={75}
             height={75}
             alt='Lecturna'

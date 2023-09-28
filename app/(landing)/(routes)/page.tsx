@@ -30,7 +30,7 @@ export default async function Home({
       <About />
       <Programs category={category} />
       <Testimonials />
-      <Faq type='view' session={session} faq={faq} />
+      <Faq faq={faq} />
       <WhatsAppWidget />
     </div>
   );

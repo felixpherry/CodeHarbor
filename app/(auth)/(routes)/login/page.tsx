@@ -1,6 +1,7 @@
 // import UserAuthForm from '@/components/forms/UserAuthForm';
 import UserAuthForm from '@/components/forms/UserAuthForm';
 import { Button } from '@/components/ui/button';
+import { fetchLogo } from '@/lib/actions/logo.actions';
 import { getCurrentUser } from '@/lib/session';
 import { ChevronLeft } from 'lucide-react';
 
@@ -10,6 +11,7 @@ import { redirect } from 'next/navigation';
 
 const LoginPage = async () => {
   const user = await getCurrentUser();
+  const logo = await fetchLogo();
 
   if (user) redirect('/');
   return (
@@ -22,7 +24,7 @@ const LoginPage = async () => {
       <div className='mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]'>
         <div className='flex flex-col space-y-2 text-center'>
           <Image
-            src='/logo.png'
+            src={logo?.image || '/logo.png'}
             height={75}
             width={75}
             alt='logo'

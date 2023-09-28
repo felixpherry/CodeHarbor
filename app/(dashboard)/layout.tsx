@@ -1,11 +1,21 @@
+import { getCurrentUser } from '@/lib/session';
 import Navbar from './_components/Navbar';
 import Sidebar from './_components/Sidebar';
+import { SessionInterface } from '@/types';
+import { redirect } from 'next/navigation';
+import { fetchAccountDetail } from '@/lib/actions/account.actions';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
-const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
+  const session = (await getCurrentUser()) as SessionInterface;
+
+  const accountDetail = await fetchAccountDetail(session.user.id);
+
+  if (!accountDetail?.onboarded) return redirect('/onboarding');
+
   return (
     <div className='h-full'>
       <div className='h-[80px] md:pl-56 fixed inset-y-0 w-full z-50'>

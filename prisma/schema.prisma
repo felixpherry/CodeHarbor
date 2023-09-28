@@ -69,7 +69,7 @@ model TrialClassRegistration {
 
 model Category {
   id   String @id @default(uuid())
-  name String
+  name String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -204,10 +204,10 @@ model Account {
   status      Status  @default(ACTIVE)
   onboarded   Boolean @default(false)
 
-  admins      Admin[]
-  instructors Instructor[]
-  parents     Parent[]
-  students    Student[]
+  admin      Admin?
+  instructor Instructor?
+  parent     Parent?
+  student    Student?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -375,7 +375,6 @@ model Student {
   id        String @id @default(uuid())
   studentId String @unique
 
-  name                 String
   dateOfBirth          DateTime
   birthPlace           String
   gender               Gender
@@ -388,7 +387,7 @@ model Student {
   parentId String
 
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  accountId String
+  accountId String  @unique
 
   classes Class[]
 

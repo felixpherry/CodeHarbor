@@ -5,7 +5,8 @@ export interface SessionInterface extends Session {
     id: string;
     name: string;
     email: string;
-    avatarUrl: string;
+    image: string;
     role: 'ADMIN' | 'PARENT' | 'INSTRUCTOR' | 'STUDENT';
+    status: 'BANNED' | 'ACTIVE';
   };
 }

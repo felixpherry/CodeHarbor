@@ -306,3 +306,15 @@ html {
   );
   animation: 8s infinite alternate;
 }
+
+.account-form_image-label {
+  @apply flex h-24 w-24 items-center justify-center rounded-full bg-light-white-500 !important;
+}
+
+.account-form_image-input {
+  @apply cursor-pointer border-none bg-transparent outline-none file:text-primary-500 !important;
+}
+
+.account-form_input {
+  @apply border border-light-white-100 bg-light-white-300 text-slate-700 !important;
+}

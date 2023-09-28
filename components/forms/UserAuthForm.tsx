@@ -59,7 +59,8 @@ const UserAuthForm = ({ className, ...props }: UserAuthFormProps) => {
       if (res?.error !== null) {
         throw new Error(res?.error);
       }
-      router.push(`/admin/dashboard`);
+
+      router.push('/');
       toast({
         description: 'Anda berhasil masuk ke dalam aplikasi',
         variant: 'success',
