@@ -23,9 +23,18 @@ import { SessionInterface } from '@/types';
 import { Loader2 } from 'lucide-react';
 import { createProgram } from '@/lib/actions/program.actions';
 import { createClass } from '@/lib/actions/class.actions';
+import Combobox from '@/components/ui/combobox';
 
 interface CreateClassProps {
   session: SessionInterface;
+  subprogramOptions: {
+    label: string;
+    value: string;
+  }[];
+  periodOptions: {
+    label: string;
+    value: string;
+  }[];
 }
 
 const formSchema = z.object({
@@ -34,7 +43,11 @@ const formSchema = z.object({
   subprogramId: z.string().min(1),
 });
 
-const CreateClassForm = ({ session }: CreateClassProps) => {
+const CreateClassForm = ({
+  session,
+  subprogramOptions,
+  periodOptions,
+}: CreateClassProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -60,7 +73,7 @@ const CreateClassForm = ({ session }: CreateClassProps) => {
         description: 'Successfully created class.',
         variant: 'success',
       });
-      router.push(`/admin//${res.id}`);
+      router.push(`/admin/classes/${res.id}`);
     } catch (error: any) {
       toast({
         description: 'Failed to create class',
@@ -94,6 +107,40 @@ const CreateClassForm = ({ session }: CreateClassProps) => {
                     />
                   </FormControl>
                   <FormDescription>Class name must be unique</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='subprogramId'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Subprogram</FormLabel>
+                  <FormControl>
+                    <Combobox
+                      options={subprogramOptions}
+                      onChange={field.onChange}
+                      value={field.value}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='periodId'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Period</FormLabel>
+                  <FormControl>
+                    <Combobox
+                      options={periodOptions}
+                      onChange={field.onChange}
+                      value={field.value}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
