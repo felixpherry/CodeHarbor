@@ -87,6 +87,20 @@ export const updateProgram = async ({
   }
 };
 
+export const deleteProgram = async (id: string) => {
+  try {
+    const program = await db.program.delete({
+      where: {
+        id,
+      },
+    });
+
+    return program;
+  } catch (error: any) {
+    throw new Error(`Failed to delete program: ${error.message}`);
+  }
+};
+
 export const fetchSubprogramById = async ({
   subprogramId,
   programId,
@@ -148,15 +162,67 @@ export const updateSubprogram = async ({
   pathname: string;
 }) => {
   try {
-    await db.subprogram.update({
+    const subprogram = await db.subprogram.update({
       data: payload,
       where: {
         id,
       },
     });
+
+    if (payload?.isPublished === false && payload.programId) {
+      const publishedSubprogramsInPrograms = await db.subprogram.findMany({
+        where: {
+          programId: subprogram.programId,
+          isPublished: true,
+        },
+      });
+
+      if (!publishedSubprogramsInPrograms.length) {
+        await db.program.update({
+          where: {
+            id: subprogram.programId,
+          },
+          data: {
+            isPublished: false,
+          },
+        });
+      }
+    }
     revalidatePath(pathname);
   } catch (error: any) {
     throw new Error(`Failed to update subprogram: ${error.message}`);
+  }
+};
+
+export const deleteSubprogram = async (id: string) => {
+  try {
+    const subprogram = await db.subprogram.delete({
+      where: {
+        id,
+      },
+    });
+
+    const publishedSubprogramsInPrograms = await db.subprogram.findMany({
+      where: {
+        programId: subprogram.programId,
+        isPublished: true,
+      },
+    });
+
+    if (!publishedSubprogramsInPrograms.length) {
+      await db.program.update({
+        where: {
+          id: subprogram.programId,
+        },
+        data: {
+          isPublished: false,
+        },
+      });
+    }
+
+    return subprogram;
+  } catch (error: any) {
+    throw new Error(`Failed to delete subprogram: ${error.message}`);
   }
 };
 
@@ -267,9 +333,97 @@ export const updateSession = async ({
         id,
       },
     });
+
+    if (payload?.isPublished === false && payload.subprogramId) {
+      const publishedSessionsInSubprograms = await db.session.findMany({
+        where: {
+          subprogramId: payload.subprogramId,
+          isPublished: true,
+        },
+      });
+
+      if (!publishedSessionsInSubprograms.length) {
+        const subprogram = await db.subprogram.update({
+          where: {
+            id: payload.subprogramId,
+          },
+          data: {
+            isPublished: false,
+          },
+        });
+
+        const publishedSubprogramsInPrograms = await db.subprogram.findMany({
+          where: {
+            programId: subprogram.programId,
+            isPublished: true,
+          },
+        });
+
+        if (!publishedSubprogramsInPrograms.length) {
+          await db.program.update({
+            where: {
+              id: subprogram.programId,
+            },
+            data: {
+              isPublished: false,
+            },
+          });
+        }
+      }
+    }
     revalidatePath(pathname);
   } catch (error: any) {
     throw new Error(`Failed to update session: ${error.message}`);
+  }
+};
+
+export const deleteSession = async (id: string) => {
+  try {
+    const session = await db.session.delete({
+      where: {
+        id,
+      },
+    });
+
+    const publishedSessionsInSubprograms = await db.session.findMany({
+      where: {
+        subprogramId: session.subprogramId,
+        isPublished: true,
+      },
+    });
+
+    if (!publishedSessionsInSubprograms.length) {
+      const subprogram = await db.subprogram.update({
+        where: {
+          id: session.subprogramId,
+        },
+        data: {
+          isPublished: false,
+        },
+      });
+
+      const publishedSubprogramsInPrograms = await db.subprogram.findMany({
+        where: {
+          programId: subprogram.programId,
+          isPublished: true,
+        },
+      });
+
+      if (!publishedSubprogramsInPrograms.length) {
+        await db.program.update({
+          where: {
+            id: subprogram.programId,
+          },
+          data: {
+            isPublished: false,
+          },
+        });
+      }
+    }
+
+    return session;
+  } catch (error: any) {
+    throw new Error(`Failed to delete session: ${error.message}`);
   }
 };
 

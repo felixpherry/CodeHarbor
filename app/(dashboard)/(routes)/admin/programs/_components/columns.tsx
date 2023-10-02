@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Program } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, MoreHorizontal, Pencil } from 'lucide-react';
+import { ArrowUpDown, MoreHorizontal, Pencil, Trash } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +13,7 @@ import {
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { deleteProgram } from '@/lib/actions/program.actions';
 
 export const columns: ColumnDef<Program>[] = [
   {
@@ -100,6 +101,10 @@ export const columns: ColumnDef<Program>[] = [
                 Edit
               </DropdownMenuItem>
             </Link>
+            {/* <DropdownMenuItem onClick={() => deleteProgram(id)}>
+              <Trash className='h-4 w-4 mr-2' />
+              Delete
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       );

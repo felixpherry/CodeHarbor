@@ -281,8 +281,8 @@ model Class {
   period   Period @relation(fields: [periodId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   periodId String
 
-  instructor   Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  instructorId String
+  instructor   Instructor? @relation(fields: [instructorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  instructorId String?
 
   students  Student[]
   schedules Schedule[]

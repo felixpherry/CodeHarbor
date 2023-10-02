@@ -10,6 +10,8 @@ import SubprogramCategory from './_components/SubprogramCategoryForm';
 import { fetchCategories } from '@/lib/actions/category.actions';
 import SessionsForm from './_components/SessionsForm';
 import { fetchSubprogramById } from '@/lib/actions/program.actions';
+import Banner from '@/components/shared/Banner';
+import SubprogramActions from './_components/SubprogramActions';
 
 const Page = async ({
   params: { programId, subprogramId },
@@ -46,50 +48,59 @@ const Page = async ({
 
   const completionText = `(${completedFields}/${totalFields})`;
 
+  const isComplete = requiredFields.every(Boolean);
+
   return (
-    <div className='p-6'>
-      <div className='flex items-center justify-between'>
-        <div className='w-full'>
-          <Link
-            href={`/admin/programs/${programId}`}
-            className='flex items-center text-sm hover:opacity-75 transition mb-6'
-          >
-            <ArrowLeft className='h-4 w-4 mr-2' />
-            Back
-          </Link>
-          <div className='flex items-center justify-between w-full'>
-            <div className='flex flex-col gap-y-2'>
-              <h1 className='text-2xl font-medium'>Create Subprogram</h1>
-              <span className='text-sm text-slate-700'>
-                Complete all fields {completionText}
-              </span>
+    <>
+      {!subprogram.isPublished && <Banner label='This subprogram is a draft' />}
+      <div className='p-6'>
+        <div className='flex items-center justify-between'>
+          <div className='w-full'>
+            <Link
+              href={`/admin/programs/${programId}`}
+              className='flex items-center text-sm hover:opacity-75 transition mb-6'
+            >
+              <ArrowLeft className='h-4 w-4 mr-2' />
+              Back
+            </Link>
+            <div className='flex items-center justify-between w-full'>
+              <div className='flex flex-col gap-y-2'>
+                <h1 className='text-2xl font-medium'>Create Subprogram</h1>
+                <span className='text-sm text-slate-700'>
+                  Complete all fields {completionText}
+                </span>
+              </div>
+              <SubprogramActions
+                disabled={!isComplete}
+                subprogram={subprogram}
+              />
+            </div>
+          </div>
+        </div>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-16'>
+          <div className='space-y-4'>
+            <div>
+              <div className='flex items-center gap-x-2'>
+                <IconBadge icon={LayoutDashboard} />
+                <h2 className='text-xl'>Customize subprogram</h2>
+              </div>
+              <SubprogramNameForm initialData={subprogram} />
+              <SubprogramDescriptionForm initialData={subprogram} />
+              <SubprogramCategory initialData={subprogram} options={options} />
+            </div>
+          </div>
+          <div className='space-y-6'>
+            <div>
+              <div className='flex items-center gap-x-2'>
+                <IconBadge icon={ListTodo} />
+                <h2 className='text-xl'>Sessions</h2>
+              </div>
+              <SessionsForm initialData={subprogram} />
             </div>
           </div>
         </div>
       </div>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-16'>
-        <div className='space-y-4'>
-          <div>
-            <div className='flex items-center gap-x-2'>
-              <IconBadge icon={LayoutDashboard} />
-              <h2 className='text-xl'>Customize subprogram</h2>
-            </div>
-            <SubprogramNameForm initialData={subprogram} />
-            <SubprogramDescriptionForm initialData={subprogram} />
-            <SubprogramCategory initialData={subprogram} options={options} />
-          </div>
-        </div>
-        <div className='space-y-6'>
-          <div>
-            <div className='flex items-center gap-x-2'>
-              <IconBadge icon={ListTodo} />
-              <h2 className='text-xl'>Sessions</h2>
-            </div>
-            <SessionsForm initialData={subprogram} />
-          </div>
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 

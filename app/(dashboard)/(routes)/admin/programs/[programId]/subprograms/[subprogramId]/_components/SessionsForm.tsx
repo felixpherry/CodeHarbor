@@ -66,6 +66,7 @@ const SessionsForm = ({ initialData }: SessionsFormProps) => {
         variant: 'success',
       });
       toggleCreating();
+      form.reset();
     } catch (error: any) {
       toast({
         description: error.message,

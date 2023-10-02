@@ -10,7 +10,7 @@ import {
   Receipt,
   Shapes,
   Users,
-  Video,
+  Users2,
 } from 'lucide-react';
 import SidebarItem from './SidebarItem';
 
@@ -42,9 +42,9 @@ const adminRoutes = [
     href: '/admin/programs',
   },
   {
-    icon: Video,
-    label: 'Live Courses',
-    href: '/admin/live-courses',
+    icon: Users2,
+    label: 'Classes',
+    href: '/admin/classes',
   },
   {
     icon: AppWindow,
