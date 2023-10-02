@@ -38,8 +38,8 @@ const adminRoutes = [
   },
   {
     icon: Code2,
-    label: 'Create Courses',
-    href: '/admin/create-courses',
+    label: 'Programs',
+    href: '/admin/programs',
   },
   {
     icon: Video,

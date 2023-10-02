@@ -2,8 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+@import '~@uploadthing/react/styles.css';
+
+.ql-container {
+  font-size: 16px !important;
+}
+
 html {
   scroll-behavior: smooth;
+}
+
+html,
+body,
+:root {
+  box-sizing: border-box;
+  height: 100%;
 }
 
 * {

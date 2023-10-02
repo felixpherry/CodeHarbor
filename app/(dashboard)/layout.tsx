@@ -12,7 +12,9 @@ interface DashboardLayoutProps {
 const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
   const session = (await getCurrentUser()) as SessionInterface;
 
-  const accountDetail = await fetchAccountDetail(session.user.id);
+  if (!session) return redirect('/login');
+
+  const accountDetail = await fetchAccountDetail(session?.user.id);
 
   if (!accountDetail?.onboarded) return redirect('/onboarding');
 

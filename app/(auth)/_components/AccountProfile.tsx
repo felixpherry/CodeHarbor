@@ -114,7 +114,7 @@ const AccountProfile = ({ account, session }: AccountProfileProps) => {
       });
 
       toast({
-        description: 'Successfully updated profile.',
+        description: 'Successfully updated your profile.',
         variant: 'success',
       });
 

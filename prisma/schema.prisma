@@ -74,49 +74,50 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  programs Program[]
+  subprograms Subprogram[]
 }
 
 model Program {
   id          String  @id @default(uuid())
-  name        String
-  subtitle1   String
-  subtitle2   String
-  description String  @db.LongText
-  image       String  @db.Text
-  isActive    Boolean @default(true)
-
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  categoryId String
+  name        String  @unique
+  subtitle1   String?
+  subtitle2   String?
+  description String? @db.LongText
+  image       String? @db.Text
+  isPublished Boolean @default(false)
 
   subprograms Subprogram[]
 
-  createdBy   Admin  @relation(fields: [createdById], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  createdById String
+  user   Admin  @relation(fields: [userId], references: [id], onUpdate: Cascade)
+  userId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([categoryId])
-  @@index([createdById])
+  @@index([userId])
 }
 
 model Subprogram {
-  id          String @id @default(uuid())
-  name        String
-  description String @db.Text
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String? @db.LongText
+  isPublished Boolean @default(false)
 
   program   Program @relation(fields: [programId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   programId String
 
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId String?
+
   registrations ProgramClassRegistration[]
   classes       Class[]
-  resources     Resource[]
+  sessions      Session[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([programId])
+  @@index([categoryId])
 }
 
 model ProgramClassRegistration {
@@ -198,7 +199,7 @@ model Account {
   email       String  @unique
   password    String? @db.Text
   role        Role
-  phoneNumber String  @unique
+  phoneNumber String? @unique
   image       String? @db.Text
   address     String? @db.Text
   status      Status  @default(ACTIVE)
@@ -216,7 +217,7 @@ model Account {
 model Admin {
   id String @id @default(uuid())
 
-  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   accountId String  @unique
 
   programs Program[]
@@ -233,7 +234,7 @@ model Instructor {
   lastEducation        String
   educationInstitution String
 
-  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   accountId String  @unique
 
   classes Class[]
@@ -248,7 +249,7 @@ model Instructor {
 model Parent {
   id String @id @default(uuid())
 
-  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   accountId String  @unique
 
   children Student[]
@@ -274,13 +275,13 @@ model Class {
   id   String @id @default(uuid())
   name String
 
-  subprogram   Subprogram @relation(fields: [subprogramId], references: [id], onDelete: Cascade)
+  subprogram   Subprogram @relation(fields: [subprogramId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   subprogramId String
 
-  period   Period @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  period   Period @relation(fields: [periodId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   periodId String
 
-  instructor   Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  instructor   Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   instructorId String
 
   students  Student[]
@@ -295,19 +296,20 @@ model Class {
   @@index([periodId])
 }
 
-model Resource {
+model Session {
   id String @id @default(uuid())
 
-  main        String @db.LongText
-  description String @db.LongText
-  reference   String @db.LongText
+  main        String  @db.LongText
+  description String? @db.LongText
+  reference   String? @db.LongText
 
-  session String
+  sessionNumber Int
+  isPublished   Boolean @default(false)
 
-  subprogram   Subprogram @relation(fields: [subprogramId], references: [id], onDelete: Cascade)
+  subprogram   Subprogram @relation(fields: [subprogramId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   subprogramId String
 
-  files File[]
+  attachments Attachment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -315,35 +317,26 @@ model Resource {
   @@index([subprogramId])
 }
 
-enum FileType {
-  PPT
-  WORD
-  PDF
-  PNG
-  JPG
-  JPEG
-}
-
-model File {
-  id       String   @id @default(uuid())
+model Attachment {
+  id       String @id @default(uuid())
   filename String
-  fileUrl  String?  @db.Text
-  fileType FileType
+  fileUrl  String @db.Text
+  fileType String
 
-  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  resourceId String
+  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sessionId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([resourceId])
+  @@index([sessionId])
 }
 
-model OtherResource {
-  id          String @id @default(uuid())
-  name        String
-  type        String
-  resourceUrl String
+model OtherAttachment {
+  id      String @id @default(uuid())
+  name    String
+  type    String
+  fileUrl String
 
   schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   scheduleId String
@@ -355,15 +348,15 @@ model OtherResource {
 }
 
 model Schedule {
-  id         String   @id @default(uuid())
-  session    String
-  date       DateTime
-  time       String
-  meetingUrl String   @db.LongText
+  id            String    @id @default(uuid())
+  sessionNumber Int
+  date          DateTime?
+  time          String?
+  meetingUrl    String?   @db.LongText
 
-  class          Class           @relation(fields: [classId], references: [id], onDelete: Cascade)
-  classId        String
-  otherResources OtherResource[]
+  class            Class             @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  classId          String
+  otherAttachments OtherAttachment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

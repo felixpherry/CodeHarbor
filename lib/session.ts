@@ -77,7 +77,7 @@ export const authOptions: NextAuthOptions = {
         {
           ...token,
           iss: 'lecturna',
-          exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
+          exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
         },
         secret
       );
@@ -112,7 +112,7 @@ export const authOptions: NextAuthOptions = {
           id,
           role,
           status,
-          image: image || session.user?.image,
+          image: image || session?.user?.image,
         },
       };
     },

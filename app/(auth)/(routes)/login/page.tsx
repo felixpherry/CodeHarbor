@@ -3,6 +3,7 @@ import UserAuthForm from '@/components/forms/UserAuthForm';
 import { Button } from '@/components/ui/button';
 import { fetchLogo } from '@/lib/actions/logo.actions';
 import { getCurrentUser } from '@/lib/session';
+import { SessionInterface } from '@/types';
 import { ChevronLeft } from 'lucide-react';
 
 import Image from 'next/image';
@@ -10,10 +11,10 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 const LoginPage = async () => {
-  const user = await getCurrentUser();
+  const session = (await getCurrentUser()) as SessionInterface;
   const logo = await fetchLogo();
 
-  if (user) redirect('/');
+  if (session) redirect(`/${session.user.role.toLocaleLowerCase()}/dashboard`);
   return (
     <div className='container flex h-screen w-screen flex-col items-center justify-center'>
       <Link href='/' className='absolute left-4 top-4 md:left-8 md:top-8'>

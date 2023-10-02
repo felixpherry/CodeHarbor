@@ -40,10 +40,8 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
       className={cn(fabada.variable, poppins.variable, josefin.variable)}
     >
       <body>
-        <UIProvider>
-          {children}
-          <Toaster />
-        </UIProvider>
+        {children}
+        <Toaster />
       </body>
     </html>
   );
