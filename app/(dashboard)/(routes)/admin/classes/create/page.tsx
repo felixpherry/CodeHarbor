@@ -6,7 +6,7 @@ import moment from 'moment';
 
 const Page = async () => {
   const session = (await getCurrentUser()) as SessionInterface;
-  const subprograms = await db.subprogram.findMany({
+  const courses = await db.course.findMany({
     where: {
       program: {
         isPublished: true,
@@ -14,7 +14,7 @@ const Page = async () => {
       isPublished: true,
     },
   });
-  const subprogramOptions = subprograms.map(({ id, name }) => ({
+  const courseOptions = courses.map(({ id, name }) => ({
     label: name,
     value: id,
   }));
@@ -38,7 +38,7 @@ const Page = async () => {
     <>
       <CreateClassForm
         session={session}
-        subprogramOptions={subprogramOptions}
+        courseOptions={courseOptions}
         periodOptions={periodOptions}
       />
     </>

@@ -16,15 +16,15 @@ import { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Program, Subprogram } from '@prisma/client';
+import { Program, Course } from '@prisma/client';
 import { Input } from '@/components/ui/input';
-import { addSubprogram } from '@/lib/actions/program.actions';
+import { addCourse } from '@/lib/actions/program.actions';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 
-interface SubprogramsFormProps {
+interface CoursesFormProps {
   initialData: {
-    subprograms: Subprogram[];
+    courses: Course[];
   } & Program;
 }
 
@@ -34,7 +34,7 @@ const formSchema = z.object({
   }),
 });
 
-const SubprogramsForm = ({ initialData }: SubprogramsFormProps) => {
+const CoursesForm = ({ initialData }: CoursesFormProps) => {
   const [isCreating, setIsCreating] = useState(false);
 
   const toggleCreating = () => setIsCreating((prev) => !prev);
@@ -54,14 +54,14 @@ const SubprogramsForm = ({ initialData }: SubprogramsFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await addSubprogram({
+      await addCourse({
         name: values.name,
         programId: initialData.id,
         pathname,
       });
 
       toast({
-        description: 'Successfully created subprogram',
+        description: 'Successfully created course',
         variant: 'success',
       });
       toggleCreating();
@@ -77,14 +77,14 @@ const SubprogramsForm = ({ initialData }: SubprogramsFormProps) => {
   return (
     <div className='relative mt-6 border bg-slate-100 rounded-md p-4'>
       <div className='font-medium flex items-center justify-between'>
-        Subprograms
+        Courses
         <Button onClick={toggleCreating} variant='ghost'>
           {isCreating ? (
             <>Cancel</>
           ) : (
             <>
               <PlusCircle className='h-4 w-4 mr-2' />
-              Add a new subprogram
+              Add a new course
             </>
           )}
         </Button>
@@ -124,10 +124,10 @@ const SubprogramsForm = ({ initialData }: SubprogramsFormProps) => {
           <div
             className={cn(
               'text-sm mt-2',
-              !initialData.subprograms.length && 'text-slate-500 italic'
+              !initialData.courses.length && 'text-slate-500 italic'
             )}
           >
-            {!initialData.subprograms.length && 'No subprograms'}
+            {!initialData.courses.length && 'No courses'}
             {/* <ChaptersList
               onEdit={onEdit}
               onReorder={onReorder}
@@ -135,36 +135,36 @@ const SubprogramsForm = ({ initialData }: SubprogramsFormProps) => {
             /> */}
 
             <div>
-              {initialData.subprograms.map((subprogram) => (
-                <div key={subprogram.id}>
+              {initialData.courses.map((course) => (
+                <div key={course.id}>
                   <div
                     className={cn(
                       'flex items-center gap-x-2 bg-slate-200 border-slate-200 border text-slate-700 rounded-md mb-4 text-sm',
-                      subprogram.isPublished &&
+                      course.isPublished &&
                         'bg-sky-100 border-sky-200 text-sky-700'
                     )}
                   >
                     <div
                       className={cn(
                         'px-2 py-3 border-r border-r-slate-200 rounded-l-md transition',
-                        subprogram.isPublished &&
+                        course.isPublished &&
                           'border-r-sky-200 hover:bg-sky-200'
                       )}
                     >
                       <List className='h-5 w-5' />
                     </div>
-                    {subprogram.name}
+                    {course.name}
                     <div className='ml-auto pr-2 flex items-center gap-x-2'>
                       <Badge
                         className={cn(
                           'bg-slate-500',
-                          subprogram.isPublished && 'bg-sky-700'
+                          course.isPublished && 'bg-sky-700'
                         )}
                       >
-                        {subprogram.isPublished ? 'Published' : 'Draft'}
+                        {course.isPublished ? 'Published' : 'Draft'}
                       </Badge>
                       <Link
-                        href={`/admin/programs/${initialData.id}/subprograms/${subprogram.id}`}
+                        href={`/admin/programs/${initialData.id}/courses/${course.id}`}
                       >
                         <Pencil className='w-4 h-4 cursor-pointer hover:opacity-75 transition' />
                       </Link>
@@ -182,4 +182,4 @@ const SubprogramsForm = ({ initialData }: SubprogramsFormProps) => {
   );
 };
 
-export default SubprogramsForm;
+export default CoursesForm;

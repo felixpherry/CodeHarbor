@@ -15,33 +15,43 @@ import { Loader2, Pencil } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { usePathname } from 'next/navigation';
-import { Session } from '@prisma/client';
-import { updateSession } from '@/lib/actions/program.actions';
-import Editor from '@/components/shared/Editor';
 import { cn } from '@/lib/utils';
-import Preview from '@/components/shared/Preview';
+import { Course } from '@prisma/client';
+import Combobox from '@/components/ui/combobox';
+import { updateCourse } from '@/lib/actions/program.actions';
 
-interface SessionDescriptionFormProps {
-  initialData: Session;
+interface CourseLevelFormProps {
+  initialData: Course;
 }
 
 const formSchema = z.object({
-  description: z.string().min(1, {
-    message: 'Description is required',
-  }),
+  level: z.enum(['BEGINNER', 'INTERMEDIATE', 'ADVANCED']),
 });
 
-const SessionDescriptionForm = ({
-  initialData,
-}: SessionDescriptionFormProps) => {
+const CourseLevelForm = ({ initialData }: CourseLevelFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
+
+  const options = [
+    {
+      label: 'Beginner',
+      value: 'BEGINNER',
+    },
+    {
+      label: 'Intermediate',
+      value: 'INTERMEDIATE',
+    },
+    {
+      label: 'Advanced',
+      value: 'ADVANCED',
+    },
+  ];
 
   const toggleEdit = () => setIsEditing((prev) => !prev);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      description: initialData.description || '',
+      level: initialData.level || undefined,
     },
   });
 
@@ -53,16 +63,16 @@ const SessionDescriptionForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateSession({
+      await updateCourse({
         id: initialData.id,
         payload: {
-          description: values.description,
-          subprogramId: initialData.subprogramId,
+          level: values.level,
+          programId: initialData.programId,
         },
         pathname,
       });
       toast({
-        description: 'Successfully updated session',
+        description: 'Successfully updated course',
         variant: 'success',
       });
       setIsEditing(false);
@@ -74,17 +84,21 @@ const SessionDescriptionForm = ({
     }
   };
 
+  const selectedOption = options.find(
+    (option) => option.value === initialData.level
+  );
+
   return (
     <div className='mt-6 border bg-slate-100 rounded-md p-4'>
       <div className='font-medium flex items-center justify-between'>
-        Description
+        Course level
         <Button onClick={toggleEdit} variant='ghost'>
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
               <Pencil className='h-4 w-4 mr-2' />
-              Edit Description
+              Edit level
             </>
           )}
         </Button>
@@ -97,11 +111,11 @@ const SessionDescriptionForm = ({
           >
             <FormField
               control={form.control}
-              name='description'
+              name='level'
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Editor {...field} />
+                    <Combobox options={options} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -118,21 +132,17 @@ const SessionDescriptionForm = ({
           </form>
         </Form>
       ) : (
-        <div
+        <p
           className={cn(
             'text-sm mt-2',
-            !initialData.description && 'text-slate-500 italic'
+            !initialData.level && 'text-slate-500 italic'
           )}
         >
-          {!initialData.description ? (
-            'No description'
-          ) : (
-            <Preview value={initialData.description} />
-          )}
-        </div>
+          {selectedOption?.label || 'No level'}
+        </p>
       )}
     </div>
   );
 };
 
-export default SessionDescriptionForm;
+export default CourseLevelForm;

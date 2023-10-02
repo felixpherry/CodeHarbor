@@ -10,13 +10,20 @@ export const generateCategories = async () => {
     await db.category.createMany({
       data: [
         {
-          name: '7-13 Tahun',
+          name: 'Voyager',
+          ageDescription: '7-10 Tahun',
         },
         {
-          name: '13-16 Tahun',
+          name: 'Analizer',
+          ageDescription: '10-14 Tahun',
         },
         {
-          name: '15-17 Tahun',
+          name: 'Journeyer',
+          ageDescription: '12-17 Tahun',
+        },
+        {
+          name: 'Creators',
+          ageDescription: '15-17 Tahun',
         },
       ],
     });
@@ -31,8 +38,7 @@ export const generatePrograms = async () => {
       data: [
         {
           name: 'Web Programming',
-          subtitle1: 'For Age 15-17',
-          subtitle2: 'Web (Beginner, Intermediate, Advanced)',
+          subtitle: 'Web (Beginner, Intermediate, Advanced)',
           description:
             'Terjunlah ke dunia menarik pengembangan web dengan program Pemrograman Web yang komprehensif kami. Baik Anda pemula, menengah, maupun mahir, program ini menawarkan kurikulum progresif yang memperlengkapi Anda dengan keterampilan untuk merancang dan mengembangkan situs web yang menakjubkan. Mulai dari HTML dan CSS hingga JavaScript dan kerangka kerja backend, temukan rahasia dari lanskap digital dan ungkapkan kreativitas Anda dalam dunia web yang terus berkembang. Daftar Sekarang.',
           image:
@@ -41,8 +47,7 @@ export const generatePrograms = async () => {
         },
         {
           name: 'Mobile Programming',
-          subtitle1: 'For Age 13-16',
-          subtitle2: 'MiT Inventor App',
+          subtitle: 'MiT Inventor App',
           description:
             'Mulailah perjalanan seru ke dunia pengembangan aplikasi seluler dengan program Pemrograman Mobile kami. Dengan menggunakan aplikasi MiT Inventor yang terkenal, Anda akan menemukan seni menciptakan aplikasi seluler yang inovatif dan menarik. Mulai dari merancang antarmuka pengguna hingga membuat fitur interaktif, program ini memberdayakan Anda untuk mewujudkan ide-ide Anda di dalam genggaman tangan. Temukan potensi teknologi seluler dan menjadi pendorong perubahan di era digital.',
           image:
@@ -51,8 +56,7 @@ export const generatePrograms = async () => {
         },
         {
           name: 'Text Programming',
-          subtitle1: 'For Age 13-16',
-          subtitle2: 'Text Programming (Roblox)',
+          subtitle: 'Text Programming (Roblox)',
           description:
             'Masuki dunia pemrograman berbasis teks dengan program menarik kami, yang berpusat pada platform populer Roblox. Lepaskan imajinasi Anda dan bangun dunia maya yang mendalam, permainan interaktif, dan pengalaman menarik. Mulai dari mengkodekan mekanika dan menciptakan lingkungan yang dinamis hingga membuat skrip permainan yang rumit, program ini memberikan pondasi yang kokoh bagi para pengembang game dan para pencerita digital yang berbakat.',
           image:
@@ -61,8 +65,7 @@ export const generatePrograms = async () => {
         },
         {
           name: 'Visual Programming',
-          subtitle1: 'For Age 7-13',
-          subtitle2: 'Visual Programming (Scratch)',
+          subtitle: 'Visual Programming (Scratch)',
           description:
             'Kenalkan anak-anak pada keajaiban pemrograman dengan program Pemrograman Visual kami, yang menampilkan platform terkenal bernama Scratch. Melalui antarmuka yang ramah pengguna dan intuitif, anak-anak akan belajar dasar-dasar pemrograman sambil membuat cerita interaktif, animasi, dan permainan. Mulai dari menarik dan menjatuhkan blok-blok kode hingga berpikir logis, program ini membangun keterampilan berpikir komputasional dan menyalakan semangat mereka dalam teknologi seumur hidup.',
           image:

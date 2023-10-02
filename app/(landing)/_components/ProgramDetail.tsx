@@ -25,7 +25,7 @@ export const ProgramDetail = async ({ id }: { id: string }) => {
       <DialogContent className='w-[425px] md:w-[550px] lg:w-[675px] overflow-y-scroll max-h-screen'>
         <DialogHeader>
           <DialogTitle>{program?.name}</DialogTitle>
-          <DialogDescription>{program?.subtitle1}</DialogDescription>
+          <DialogDescription>{program?.subtitle}</DialogDescription>
         </DialogHeader>
         <Image
           src={program?.image || ''}

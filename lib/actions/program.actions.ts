@@ -1,6 +1,6 @@
 'use server';
 
-import { Program, Session, Subprogram } from '@prisma/client';
+import { Program, Session, Course } from '@prisma/client';
 import { db } from '../db';
 import { revalidatePath } from 'next/cache';
 
@@ -31,7 +31,7 @@ export const fetchProgramById = async (id: string) => {
         id,
       },
       include: {
-        subprograms: true,
+        courses: true,
       },
     });
   } catch (error: any) {
@@ -101,16 +101,16 @@ export const deleteProgram = async (id: string) => {
   }
 };
 
-export const fetchSubprogramById = async ({
-  subprogramId,
+export const fetchCourseById = async ({
+  courseId,
   programId,
 }: {
-  subprogramId: string;
+  courseId: string;
   programId: string;
 }) => {
   try {
-    return await db.subprogram.findUnique({
-      where: { id: subprogramId, programId },
+    return await db.course.findUnique({
+      where: { id: courseId, programId },
       include: {
         sessions: {
           orderBy: {
@@ -120,11 +120,11 @@ export const fetchSubprogramById = async ({
       },
     });
   } catch (error: any) {
-    throw new Error(`Failed to fetch subprogram: ${error.message}`);
+    throw new Error(`Failed to fetch course: ${error.message}`);
   }
 };
 
-export const addSubprogram = async ({
+export const addCourse = async ({
   name,
   programId,
   pathname,
@@ -134,7 +134,7 @@ export const addSubprogram = async ({
   pathname: string;
 }) => {
   try {
-    const subprogram = await db.subprogram.create({
+    const course = await db.course.create({
       data: {
         name,
         program: {
@@ -146,23 +146,23 @@ export const addSubprogram = async ({
     });
 
     revalidatePath(pathname);
-    return subprogram;
+    return course;
   } catch (error: any) {
-    throw new Error(`Failed to add subprogram: ${error.message}`);
+    throw new Error(`Failed to add course: ${error.message}`);
   }
 };
 
-export const updateSubprogram = async ({
+export const updateCourse = async ({
   id,
   payload,
   pathname,
 }: {
   id: string;
-  payload: Partial<Subprogram>;
+  payload: Partial<Course>;
   pathname: string;
 }) => {
   try {
-    const subprogram = await db.subprogram.update({
+    const course = await db.course.update({
       data: payload,
       where: {
         id,
@@ -170,17 +170,17 @@ export const updateSubprogram = async ({
     });
 
     if (payload?.isPublished === false && payload.programId) {
-      const publishedSubprogramsInPrograms = await db.subprogram.findMany({
+      const publishedCoursesInPrograms = await db.course.findMany({
         where: {
-          programId: subprogram.programId,
+          programId: course.programId,
           isPublished: true,
         },
       });
 
-      if (!publishedSubprogramsInPrograms.length) {
+      if (!publishedCoursesInPrograms.length) {
         await db.program.update({
           where: {
-            id: subprogram.programId,
+            id: course.programId,
           },
           data: {
             isPublished: false,
@@ -190,29 +190,29 @@ export const updateSubprogram = async ({
     }
     revalidatePath(pathname);
   } catch (error: any) {
-    throw new Error(`Failed to update subprogram: ${error.message}`);
+    throw new Error(`Failed to update course: ${error.message}`);
   }
 };
 
-export const deleteSubprogram = async (id: string) => {
+export const deleteCourse = async (id: string) => {
   try {
-    const subprogram = await db.subprogram.delete({
+    const course = await db.course.delete({
       where: {
         id,
       },
     });
 
-    const publishedSubprogramsInPrograms = await db.subprogram.findMany({
+    const publishedCourseInPrograms = await db.course.findMany({
       where: {
-        programId: subprogram.programId,
+        programId: course.programId,
         isPublished: true,
       },
     });
 
-    if (!publishedSubprogramsInPrograms.length) {
+    if (!publishedCourseInPrograms.length) {
       await db.program.update({
         where: {
-          id: subprogram.programId,
+          id: course.programId,
         },
         data: {
           isPublished: false,
@@ -220,25 +220,25 @@ export const deleteSubprogram = async (id: string) => {
       });
     }
 
-    return subprogram;
+    return course;
   } catch (error: any) {
-    throw new Error(`Failed to delete subprogram: ${error.message}`);
+    throw new Error(`Failed to delete course: ${error.message}`);
   }
 };
 
 export const addSession = async ({
   main,
-  subprogramId,
+  courseId,
   pathname,
 }: {
   main: string;
-  subprogramId: string;
+  courseId: string;
   pathname: string;
 }) => {
   try {
     const lastSession = await db.session.findFirst({
       where: {
-        subprogramId,
+        courseId,
       },
       orderBy: {
         sessionNumber: 'desc',
@@ -249,9 +249,9 @@ export const addSession = async ({
       data: {
         main,
         sessionNumber: (lastSession?.sessionNumber || 0) + 1,
-        subprogram: {
+        course: {
           connect: {
-            id: subprogramId,
+            id: courseId,
           },
         },
       },
@@ -292,17 +292,17 @@ export const reorderSessions = async ({
 };
 
 export const fetchSessionById = async ({
-  subprogramId,
+  courseId,
   sessionId,
 }: {
-  subprogramId: string;
+  courseId: string;
   sessionId: string;
 }) => {
   try {
     return await db.session.findUnique({
       where: {
         id: sessionId,
-        subprogramId: subprogramId,
+        courseId: courseId,
       },
       include: {
         attachments: {
@@ -334,35 +334,35 @@ export const updateSession = async ({
       },
     });
 
-    if (payload?.isPublished === false && payload.subprogramId) {
-      const publishedSessionsInSubprograms = await db.session.findMany({
+    if (payload?.isPublished === false && payload.courseId) {
+      const publishedSessionsInCourses = await db.session.findMany({
         where: {
-          subprogramId: payload.subprogramId,
+          courseId: payload.courseId,
           isPublished: true,
         },
       });
 
-      if (!publishedSessionsInSubprograms.length) {
-        const subprogram = await db.subprogram.update({
+      if (!publishedSessionsInCourses.length) {
+        const course = await db.course.update({
           where: {
-            id: payload.subprogramId,
+            id: payload.courseId,
           },
           data: {
             isPublished: false,
           },
         });
 
-        const publishedSubprogramsInPrograms = await db.subprogram.findMany({
+        const publishedCoursesInPrograms = await db.course.findMany({
           where: {
-            programId: subprogram.programId,
+            programId: course.programId,
             isPublished: true,
           },
         });
 
-        if (!publishedSubprogramsInPrograms.length) {
+        if (!publishedCoursesInPrograms.length) {
           await db.program.update({
             where: {
-              id: subprogram.programId,
+              id: course.programId,
             },
             data: {
               isPublished: false,
@@ -385,34 +385,34 @@ export const deleteSession = async (id: string) => {
       },
     });
 
-    const publishedSessionsInSubprograms = await db.session.findMany({
+    const publishedSessionsInCourses = await db.session.findMany({
       where: {
-        subprogramId: session.subprogramId,
+        courseId: session.courseId,
         isPublished: true,
       },
     });
 
-    if (!publishedSessionsInSubprograms.length) {
-      const subprogram = await db.subprogram.update({
+    if (!publishedSessionsInCourses.length) {
+      const course = await db.course.update({
         where: {
-          id: session.subprogramId,
+          id: session.courseId,
         },
         data: {
           isPublished: false,
         },
       });
 
-      const publishedSubprogramsInPrograms = await db.subprogram.findMany({
+      const publishedCoursesInPrograms = await db.course.findMany({
         where: {
-          programId: subprogram.programId,
+          programId: course.programId,
           isPublished: true,
         },
       });
 
-      if (!publishedSubprogramsInPrograms.length) {
+      if (!publishedCoursesInPrograms.length) {
         await db.program.update({
           where: {
-            id: subprogram.programId,
+            id: course.programId,
           },
           data: {
             isPublished: false,

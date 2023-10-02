@@ -10,37 +10,33 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2, Pencil } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { usePathname } from 'next/navigation';
-import { Session } from '@prisma/client';
-import { updateSession } from '@/lib/actions/program.actions';
-import Editor from '@/components/shared/Editor';
-import { cn } from '@/lib/utils';
-import Preview from '@/components/shared/Preview';
+import { Course } from '@prisma/client';
+import { updateCourse } from '@/lib/actions/program.actions';
 
-interface ReferencesFormProps {
-  initialData: Session;
+interface CourseNameFormProps {
+  initialData: Course;
 }
 
 const formSchema = z.object({
-  reference: z.string().min(1, {
-    message: 'Reference is required',
+  name: z.string().min(1, {
+    message: 'Name is required',
   }),
 });
 
-const ReferencesForm = ({ initialData }: ReferencesFormProps) => {
+const CourseNameForm = ({ initialData }: CourseNameFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((prev) => !prev);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      reference: initialData.reference || '',
-    },
+    defaultValues: initialData,
   });
 
   const { isSubmitting, isValid } = form.formState;
@@ -51,16 +47,13 @@ const ReferencesForm = ({ initialData }: ReferencesFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateSession({
+      await updateCourse({
         id: initialData.id,
-        payload: {
-          reference: values.reference,
-          subprogramId: initialData.subprogramId,
-        },
+        payload: { name: values.name, programId: initialData.programId },
         pathname,
       });
       toast({
-        description: 'Successfully updated session',
+        description: 'Successfully updated course',
         variant: 'success',
       });
       setIsEditing(false);
@@ -75,14 +68,14 @@ const ReferencesForm = ({ initialData }: ReferencesFormProps) => {
   return (
     <div className='mt-6 border bg-slate-100 rounded-md p-4'>
       <div className='font-medium flex items-center justify-between'>
-        Reference
+        Name
         <Button onClick={toggleEdit} variant='ghost'>
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
               <Pencil className='h-4 w-4 mr-2' />
-              Edit Reference
+              Edit Name
             </>
           )}
         </Button>
@@ -95,11 +88,15 @@ const ReferencesForm = ({ initialData }: ReferencesFormProps) => {
           >
             <FormField
               control={form.control}
-              name='reference'
+              name='name'
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Editor {...field} />
+                    <Input
+                      disabled={isSubmitting}
+                      placeholder='Machine Learning'
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -116,21 +113,10 @@ const ReferencesForm = ({ initialData }: ReferencesFormProps) => {
           </form>
         </Form>
       ) : (
-        <div
-          className={cn(
-            'text-sm mt-2',
-            !initialData.reference && 'text-slate-500 italic'
-          )}
-        >
-          {!initialData.reference ? (
-            'No reference'
-          ) : (
-            <Preview value={initialData.reference} />
-          )}
-        </div>
+        <p className='text-sm mt-2'>{initialData.name}</p>
       )}
     </div>
   );
 };
 
-export default ReferencesForm;
+export default CourseNameForm;

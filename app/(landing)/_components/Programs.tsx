@@ -14,14 +14,14 @@ import {
 import { Button } from '../../../components/ui/button';
 import { ProgramDetail } from './ProgramDetail';
 import { db } from '@/lib/db';
-import { Program, Session, Subprogram } from '@prisma/client';
+import { Program, Session, Course } from '@prisma/client';
 
 interface ProgramCardProps {
   program: {
-    subprograms: Array<
+    courses: Array<
       {
         sessions: Session[];
-      } & Subprogram
+      } & Course
     >;
   } & Program;
 }
@@ -40,8 +40,7 @@ const ProgramCard = ({ program }: ProgramCardProps) => {
       </CardHeader>
       <CardContent className='p-6 flex flex-col gap-2'>
         <CardTitle>{program.name}</CardTitle>
-        <CardDescription>{program.subtitle1}</CardDescription>
-        <CardDescription>{program.subtitle2}</CardDescription>
+        <CardDescription>{program.subtitle}</CardDescription>
       </CardContent>
       <CardFooter className='gap-3 px-3'>
         <Button variant='primary-blue' size='sm' className='w-1/2' asChild>
@@ -59,7 +58,7 @@ const Programs = async ({ category }: { category?: string }) => {
       isPublished: true,
     },
     include: {
-      subprograms: {
+      courses: {
         include: {
           sessions: true,
         },

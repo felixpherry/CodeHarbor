@@ -3,24 +3,18 @@
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import {
-  deleteSubprogram,
-  updateSubprogram,
-} from '@/lib/actions/program.actions';
-import { Subprogram } from '@prisma/client';
+import { deleteCourse, updateCourse } from '@/lib/actions/program.actions';
+import { Course } from '@prisma/client';
 import { Trash } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-interface SubprogramActionsProps {
-  subprogram: Subprogram;
+interface CourseActionsProps {
+  course: Course;
   disabled: boolean;
 }
 
-const SubprogramActions = ({
-  disabled,
-  subprogram,
-}: SubprogramActionsProps) => {
+const CourseActions = ({ disabled, course }: CourseActionsProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
@@ -29,13 +23,13 @@ const SubprogramActions = ({
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      await deleteSubprogram(subprogram.id);
+      await deleteCourse(course.id);
       toast({
-        description: 'Successfully deleted subprogram',
+        description: 'Successfully deleted course',
         variant: 'success',
       });
       router.refresh();
-      router.push(`/admin/programs/${subprogram.programId}`);
+      router.push(`/admin/programs/${course.programId}`);
     } catch (error: any) {
       toast({
         description: error.message,
@@ -50,29 +44,29 @@ const SubprogramActions = ({
     try {
       setIsLoading(true);
 
-      if (subprogram.isPublished) {
-        await updateSubprogram({
-          id: subprogram.id,
+      if (course.isPublished) {
+        await updateCourse({
+          id: course.id,
           pathname,
           payload: {
-            programId: subprogram.programId,
+            programId: course.programId,
             isPublished: false,
           },
         });
         toast({
-          description: 'Successfully unpublish subprogram',
+          description: 'Successfully unpublish course',
           variant: 'success',
         });
       } else {
-        await updateSubprogram({
-          id: subprogram.id,
+        await updateCourse({
+          id: course.id,
           pathname,
           payload: {
             isPublished: true,
           },
         });
         toast({
-          description: 'Successfully publish subprogram',
+          description: 'Successfully publish course',
           variant: 'success',
         });
       }
@@ -94,7 +88,7 @@ const SubprogramActions = ({
         variant='outline'
         size='sm'
       >
-        {subprogram.isPublished ? 'Unpublish' : 'Publish'}
+        {course.isPublished ? 'Unpublish' : 'Publish'}
       </Button>
       <ConfirmModal onConfirm={onDelete}>
         <Button size='sm' disabled={isLoading}>
@@ -105,4 +99,4 @@ const SubprogramActions = ({
   );
 };
 
-export default SubprogramActions;
+export default CourseActions;

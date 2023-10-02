@@ -68,25 +68,25 @@ model TrialClassRegistration {
 }
 
 model Category {
-  id   String @id @default(uuid())
-  name String @unique
+  id             String @id @default(uuid())
+  name           String @unique
+  ageDescription String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  subprograms Subprogram[]
+  courses Course[]
 }
 
 model Program {
   id          String  @id @default(uuid())
   name        String  @unique
-  subtitle1   String?
-  subtitle2   String?
+  subtitle    String?
   description String? @db.LongText
   image       String? @db.Text
   isPublished Boolean @default(false)
 
-  subprograms Subprogram[]
+  courses Course[]
 
   user   Admin  @relation(fields: [userId], references: [id], onUpdate: Cascade)
   userId String
@@ -97,11 +97,19 @@ model Program {
   @@index([userId])
 }
 
-model Subprogram {
-  id          String  @id @default(uuid())
-  name        String  @unique
-  description String? @db.LongText
-  isPublished Boolean @default(false)
+enum Level {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+model Course {
+  id               String  @id @default(uuid())
+  name             String  @unique
+  description      String? @db.LongText
+  programmingTools String? @db.Text
+  level            Level?
+  isPublished      Boolean @default(false)
 
   program   Program @relation(fields: [programId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   programId String
@@ -112,6 +120,7 @@ model Subprogram {
   registrations ProgramClassRegistration[]
   classes       Class[]
   sessions      Session[]
+  instructors   Instructor[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -136,13 +145,13 @@ model ProgramClassRegistration {
   ambition             String
   status               RegistrationStatus @default(PENDING)
 
-  subprogram   Subprogram @relation(fields: [subprogramId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  subprogramId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  courseId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([subprogramId])
+  @@index([courseId])
 }
 
 model Skill {
@@ -239,6 +248,7 @@ model Instructor {
 
   classes Class[]
   skills  Skill[]
+  courses Course[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -262,6 +272,7 @@ model Parent {
 
 model Period {
   id        String   @id @default(uuid())
+  name      String   @unique
   startDate DateTime
   endDate   DateTime
 
@@ -275,8 +286,8 @@ model Class {
   id   String @id @default(uuid())
   name String
 
-  subprogram   Subprogram @relation(fields: [subprogramId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  subprogramId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  courseId String
 
   period   Period @relation(fields: [periodId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   periodId String
@@ -292,7 +303,7 @@ model Class {
 
   @@unique([name, periodId])
   @@index([instructorId])
-  @@index([subprogramId])
+  @@index([courseId])
   @@index([periodId])
 }
 
@@ -306,15 +317,15 @@ model Session {
   sessionNumber Int
   isPublished   Boolean @default(false)
 
-  subprogram   Subprogram @relation(fields: [subprogramId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  subprogramId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  courseId String
 
   attachments Attachment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([subprogramId])
+  @@index([courseId])
 }
 
 model Attachment {

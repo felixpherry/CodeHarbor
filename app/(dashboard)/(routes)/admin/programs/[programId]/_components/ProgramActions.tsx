@@ -5,9 +5,9 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import {
   deleteProgram,
-  deleteSubprogram,
+  deleteCourse,
   updateProgram,
-  updateSubprogram,
+  updateCourse,
 } from '@/lib/actions/program.actions';
 import { Program } from '@prisma/client';
 import { Trash } from 'lucide-react';

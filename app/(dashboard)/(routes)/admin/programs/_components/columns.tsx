@@ -31,28 +31,14 @@ export const columns: ColumnDef<Program>[] = [
     },
   },
   {
-    accessorKey: 'subtitle1',
+    accessorKey: 'subtitle',
     header: ({ column }) => {
       return (
         <Button
           variant='ghost'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          Subtitle 1
-          <ArrowUpDown className='ml-2 h-4 w-4' />
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: 'subtitle2',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Subtitle 2
+          Subtitle
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );

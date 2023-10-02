@@ -8,7 +8,7 @@ import ProgramNameForm from './_components/ProgramNameForm';
 import SubtitleForm from './_components/SubtitleForm';
 import DescriptionForm from './_components/DescriptionForm';
 import ImageForm from './_components/ImageForm';
-import SubprogramsForm from './_components/SubprogramsForm';
+import CoursesForm from './_components/CoursesForm';
 import Banner from '@/components/shared/Banner';
 import ProgramActions from './_components/ProgramActions';
 
@@ -25,10 +25,9 @@ const Page = async ({
   const requiredFields = [
     program.name,
     program.image,
-    program.subtitle1,
-    program.subtitle2,
+    program.subtitle,
     program.description,
-    program.subprograms.some((subprogram) => subprogram.isPublished),
+    program.courses.some((course) => course.isPublished),
   ];
 
   const totalFields = requiredFields.length;
@@ -67,9 +66,9 @@ const Page = async ({
             <div>
               <div className='flex items-center gap-x-2'>
                 <IconBadge icon={ListChecks} />
-                <h2 className='text-xl'>Subprograms</h2>
+                <h2 className='text-xl'>Courses</h2>
               </div>
-              <SubprogramsForm initialData={program} />
+              <CoursesForm initialData={program} />
             </div>
           </div>
         </div>

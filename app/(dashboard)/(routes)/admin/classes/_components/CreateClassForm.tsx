@@ -27,7 +27,7 @@ import Combobox from '@/components/ui/combobox';
 
 interface CreateClassProps {
   session: SessionInterface;
-  subprogramOptions: {
+  courseOptions: {
     label: string;
     value: string;
   }[];
@@ -40,12 +40,12 @@ interface CreateClassProps {
 const formSchema = z.object({
   name: z.string().min(1),
   periodId: z.string().min(1),
-  subprogramId: z.string().min(1),
+  courseId: z.string().min(1),
 });
 
 const CreateClassForm = ({
   session,
-  subprogramOptions,
+  courseOptions,
   periodOptions,
 }: CreateClassProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -53,7 +53,7 @@ const CreateClassForm = ({
     defaultValues: {
       name: '',
       periodId: '',
-      subprogramId: '',
+      courseId: '',
     },
   });
 
@@ -66,7 +66,7 @@ const CreateClassForm = ({
     try {
       const res = await createClass({
         name: values.name,
-        subprogramId: values.subprogramId,
+        courseId: values.courseId,
         periodId: values.periodId,
       });
       toast({
@@ -113,13 +113,13 @@ const CreateClassForm = ({
             />
             <FormField
               control={form.control}
-              name='subprogramId'
+              name='courseId'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Subprogram</FormLabel>
+                  <FormLabel>Course</FormLabel>
                   <FormControl>
                     <Combobox
-                      options={subprogramOptions}
+                      options={courseOptions}
                       onChange={field.onChange}
                       value={field.value}
                     />

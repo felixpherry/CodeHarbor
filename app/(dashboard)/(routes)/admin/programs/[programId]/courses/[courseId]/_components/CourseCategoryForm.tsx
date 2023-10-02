@@ -15,25 +15,26 @@ import { Loader2, Pencil } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { usePathname } from 'next/navigation';
-import { Subprogram } from '@prisma/client';
-import { updateSubprogram } from '@/lib/actions/program.actions';
-import Editor from '@/components/shared/Editor';
 import { cn } from '@/lib/utils';
-import Preview from '@/components/shared/Preview';
+import { Course } from '@prisma/client';
+import Combobox from '@/components/ui/combobox';
+import { updateCourse } from '@/lib/actions/program.actions';
 
-interface SubprogramDescriptionFormProps {
-  initialData: Subprogram;
+interface CourseCategoryFormProps {
+  options: {
+    label: string;
+    value: string;
+  }[];
+  initialData: Course;
 }
 
 const formSchema = z.object({
-  description: z.string().min(1, {
-    message: 'Description is required',
+  categoryId: z.string().min(1, {
+    message: 'Category is required',
   }),
 });
 
-const SubprogramDescriptionForm = ({
-  initialData,
-}: SubprogramDescriptionFormProps) => {
+const CourseCategory = ({ options, initialData }: CourseCategoryFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((prev) => !prev);
@@ -41,7 +42,7 @@ const SubprogramDescriptionForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      description: initialData.description || '',
+      categoryId: initialData.categoryId || '',
     },
   });
 
@@ -53,16 +54,16 @@ const SubprogramDescriptionForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateSubprogram({
+      await updateCourse({
         id: initialData.id,
         payload: {
-          description: values.description,
+          categoryId: values.categoryId,
           programId: initialData.programId,
         },
         pathname,
       });
       toast({
-        description: 'Successfully updated subprogram',
+        description: 'Successfully updated course',
         variant: 'success',
       });
       setIsEditing(false);
@@ -74,17 +75,21 @@ const SubprogramDescriptionForm = ({
     }
   };
 
+  const selectedOption = options.find(
+    (option) => option.value === initialData.categoryId
+  );
+
   return (
     <div className='mt-6 border bg-slate-100 rounded-md p-4'>
       <div className='font-medium flex items-center justify-between'>
-        Description
+        Course category
         <Button onClick={toggleEdit} variant='ghost'>
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
               <Pencil className='h-4 w-4 mr-2' />
-              Edit Description
+              Edit category
             </>
           )}
         </Button>
@@ -97,11 +102,11 @@ const SubprogramDescriptionForm = ({
           >
             <FormField
               control={form.control}
-              name='description'
+              name='categoryId'
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Editor {...field} />
+                    <Combobox options={options} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -118,21 +123,17 @@ const SubprogramDescriptionForm = ({
           </form>
         </Form>
       ) : (
-        <div
+        <p
           className={cn(
             'text-sm mt-2',
-            !initialData.description && 'text-slate-500 italic'
+            !initialData.categoryId && 'text-slate-500 italic'
           )}
         >
-          {!initialData.description ? (
-            'No description'
-          ) : (
-            <Preview value={initialData.description} />
-          )}
-        </div>
+          {selectedOption?.label || 'No category'}
+        </p>
       )}
     </div>
   );
 };
 
-export default SubprogramDescriptionForm;
+export default CourseCategory;

@@ -5,18 +5,18 @@ import { db } from '../db';
 export const createClass = async ({
   name,
   periodId,
-  subprogramId,
+  courseId,
 }: {
   name: string;
   periodId: string;
-  subprogramId: string;
+  courseId: string;
 }) => {
   try {
     return await db.class.create({
       data: {
         name,
         periodId,
-        subprogramId,
+        courseId,
       },
     });
   } catch (error: any) {

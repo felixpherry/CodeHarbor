@@ -18,14 +18,14 @@ import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 import { Input } from '@/components/ui/input';
-import { Session, Subprogram } from '@prisma/client';
+import { Session, Course } from '@prisma/client';
 import { addSession, reorderSessions } from '@/lib/actions/program.actions';
 import SessionsList from './SessionsList';
 
 interface SessionsFormProps {
   initialData: {
     sessions: Session[];
-  } & Subprogram;
+  } & Course;
 }
 
 const formSchema = z.object({
@@ -58,7 +58,7 @@ const SessionsForm = ({ initialData }: SessionsFormProps) => {
     try {
       await addSession({
         main: values.main,
-        subprogramId: initialData.id,
+        courseId: initialData.id,
         pathname,
       });
       toast({
@@ -100,7 +100,7 @@ const SessionsForm = ({ initialData }: SessionsFormProps) => {
 
   const onEdit = (id: string) => {
     router.push(
-      `/admin/programs/${initialData.programId}/subprograms/${initialData.id}/sessions/${id}`
+      `/admin/programs/${initialData.programId}/courses/${initialData.id}/sessions/${id}`
     );
   };
 

@@ -6,6 +6,7 @@ import { fetchLogo } from '@/lib/actions/logo.actions';
 import {
   generateCategories,
   generatePrograms,
+  generateTrialClassData,
   generateUser,
 } from '@/lib/actions/generate.actions';
 

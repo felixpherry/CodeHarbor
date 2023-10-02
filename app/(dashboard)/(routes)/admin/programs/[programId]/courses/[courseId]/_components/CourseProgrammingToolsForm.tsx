@@ -10,26 +10,30 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2, Pencil } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { usePathname } from 'next/navigation';
-import { Program } from '@prisma/client';
-import { updateProgram } from '@/lib/actions/program.actions';
+import { Course } from '@prisma/client';
+import { updateCourse } from '@/lib/actions/program.actions';
+import Editor from '@/components/shared/Editor';
+import { cn } from '@/lib/utils';
+import Preview from '@/components/shared/Preview';
 
-interface SubtitleFormProps {
-  initialData: Program;
+interface CourseProgrammingToolsFormProps {
+  initialData: Course;
 }
 
 const formSchema = z.object({
-  subtitle: z.string().min(1, {
-    message: 'Subtitle is required',
+  programmingTools: z.string().min(1, {
+    message: 'Programming Tools is required',
   }),
 });
 
-const SubtitleForm = ({ initialData }: SubtitleFormProps) => {
+const CourseProgrammingToolsForm = ({
+  initialData,
+}: CourseProgrammingToolsFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((prev) => !prev);
@@ -37,7 +41,7 @@ const SubtitleForm = ({ initialData }: SubtitleFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      subtitle: initialData.subtitle || '',
+      programmingTools: initialData.programmingTools || '',
     },
   });
 
@@ -49,13 +53,16 @@ const SubtitleForm = ({ initialData }: SubtitleFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateProgram({
+      await updateCourse({
         id: initialData.id,
-        payload: { subtitle: values.subtitle },
+        payload: {
+          programmingTools: values.programmingTools,
+          programId: initialData.programId,
+        },
         pathname,
       });
       toast({
-        description: 'Successfully updated program',
+        description: 'Successfully updated course',
         variant: 'success',
       });
       setIsEditing(false);
@@ -70,14 +77,14 @@ const SubtitleForm = ({ initialData }: SubtitleFormProps) => {
   return (
     <div className='mt-6 border bg-slate-100 rounded-md p-4'>
       <div className='font-medium flex items-center justify-between'>
-        Subtitle
+        Programming Tools
         <Button onClick={toggleEdit} variant='ghost'>
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
               <Pencil className='h-4 w-4 mr-2' />
-              Edit Subtitle
+              Edit Programming Tools
             </>
           )}
         </Button>
@@ -90,15 +97,11 @@ const SubtitleForm = ({ initialData }: SubtitleFormProps) => {
           >
             <FormField
               control={form.control}
-              name='subtitle'
+              name='programmingTools'
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      disabled={isSubmitting}
-                      placeholder='For Age 13-16'
-                      {...field}
-                    />
+                    <Editor {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -115,12 +118,21 @@ const SubtitleForm = ({ initialData }: SubtitleFormProps) => {
           </form>
         </Form>
       ) : (
-        <>
-          <p className='text-sm mt-2'>{initialData.subtitle}</p>
-        </>
+        <div
+          className={cn(
+            'text-sm mt-2',
+            !initialData.programmingTools && 'text-slate-500 italic'
+          )}
+        >
+          {!initialData.programmingTools ? (
+            'No programmingTools'
+          ) : (
+            <Preview value={initialData.programmingTools} />
+          )}
+        </div>
       )}
     </div>
   );
 };
 
-export default SubtitleForm;
+export default CourseProgrammingToolsForm;

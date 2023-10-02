@@ -34,9 +34,7 @@ const SessionActions = ({
         variant: 'success',
       });
       router.refresh();
-      router.push(
-        `/admin/programs/${programId}/subprograms/${session.subprogramId}`
-      );
+      router.push(`/admin/programs/${programId}/courses/${session.courseId}`);
     } catch (error: any) {
       toast({
         description: error.message,
@@ -56,7 +54,7 @@ const SessionActions = ({
           id: session.id,
           pathname,
           payload: {
-            subprogramId: session.subprogramId,
+            courseId: session.courseId,
             isPublished: false,
           },
         });
