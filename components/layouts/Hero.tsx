@@ -24,7 +24,7 @@ const Hero = ({ title, subtitle, image, session }: HeroProps) => {
         />
       </div>
       <div className='lg:w-[60%] flex flex-col gap-5 lg:pt-20 lg:pl-12'>
-        <h1 className='text-[#000000c7] text-[30px] w-full lg:text-[70px] font-[600] font-josefin lg:leading-[75px] 2xl:w-[60%] lg:w-[78%] px-3 py-2'>
+        <h1 className='text-[#000000c7] text-[30px] w-full lg:text-[60px] font-[600] font-josefin lg:leading-[75px] 2xl:w-[60%] lg:w-[78%] px-3 py-2'>
           {title}
         </h1>
         <p className='text-[#000000ac] font-josefin font-[600] text-[18px] 2xl:!w-[55%] lg:!w-[78%]'>

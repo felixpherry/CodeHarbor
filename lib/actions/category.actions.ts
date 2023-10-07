@@ -19,7 +19,6 @@ export const updateCategories = async (
   pathname: string
 ) => {
   try {
-    console.log(deletedIds);
     await db.$transaction([
       db.category.deleteMany({
         where: {

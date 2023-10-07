@@ -40,7 +40,7 @@ const CourseProgramBadges = ({ programs }: CourseProgramBadgesProps) => {
     <div className='flex gap-3 flex-wrap mt-8'>
       <Badge
         onClick={deleteFilter}
-        variant={program ? 'program-badge' : 'program-badge-active'}
+        variant={program ? 'filter-badge' : 'filter-badge-active'}
         className='p-3 cursor-pointer'
       >
         All Programs
@@ -49,7 +49,7 @@ const CourseProgramBadges = ({ programs }: CourseProgramBadgesProps) => {
         <Badge
           key={id}
           onClick={() => handleFilter(id)}
-          variant={program === id ? 'program-badge-active' : 'program-badge'}
+          variant={program === id ? 'filter-badge-active' : 'filter-badge'}
           className='p-3 cursor-pointer'
         >
           {name}

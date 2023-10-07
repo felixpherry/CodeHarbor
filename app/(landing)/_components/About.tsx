@@ -1,13 +1,8 @@
 import Image from 'next/image';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '../../../components/ui/avatar';
 
 const About = () => {
   return (
-    <div id='tentang' className='bg-white w-full p-20'>
+    <div className='bg-light-white w-full p-20'>
       <h1 className='mb-20 text-4xl text-center font-bold tracking-tight leading-none'>
         Tentang Kami
       </h1>

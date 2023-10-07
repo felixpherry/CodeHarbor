@@ -17,7 +17,7 @@ interface CoursePageProps {
 }
 
 const Page = async ({ searchParams }: CoursePageProps) => {
-  console.log({ searchParams });
+  const levels = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED'];
   const courses = await db.course.findMany({
     where: {
       isPublished: true,
@@ -27,19 +27,25 @@ const Page = async ({ searchParams }: CoursePageProps) => {
       name: {
         contains: searchParams.search,
       },
-      level: searchParams.level?.toLocaleUpperCase() as Level | undefined,
+      level: levels.includes(searchParams.level?.toLocaleUpperCase() || '')
+        ? (searchParams.level?.toLocaleUpperCase() as Level)
+        : undefined,
       categoryId: searchParams.category,
       programId: searchParams.program,
     },
     include: {
-      sessions: {
-        where: {
-          isPublished: true,
-        },
-      },
       category: {
         select: {
           ageDescription: true,
+        },
+      },
+      _count: {
+        select: {
+          sessions: {
+            where: {
+              isPublished: true,
+            },
+          },
         },
       },
     },
@@ -59,12 +65,13 @@ const Page = async ({ searchParams }: CoursePageProps) => {
       name: {
         contains: searchParams.search,
       },
-      level: searchParams.level?.toLocaleUpperCase() as Level | undefined,
+      level: levels.includes(searchParams.level?.toLocaleUpperCase() || '')
+        ? (searchParams.level?.toLocaleUpperCase() as Level)
+        : undefined,
       categoryId: searchParams.category,
       programId: searchParams.program,
     },
   });
-  console.log({ count });
 
   const hasNextPage = (Number(searchParams.page) || 1) * 24 < count;
 
@@ -92,6 +99,13 @@ const Page = async ({ searchParams }: CoursePageProps) => {
             width={130}
             alt='rocket'
             className='absolute z-10 bottom-1 left-2 animate-bounce running w-24 h-24 md:w-40 md:h-40'
+          />
+          <Image
+            src='/planets.png'
+            height={150}
+            width={300}
+            alt='planets'
+            className='absolute z-10 bottom-8 right-2 animate-pulse h-[40px] w-[180px] md:h-[68px] md:w-[300px]'
           />
         </div>
       </div>

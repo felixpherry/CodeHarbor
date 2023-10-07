@@ -40,12 +40,12 @@ const Navbar = ({ session, logo }: NavbarProps) => {
           'fixed top-0 left-1/2 z-[80] -translate-x-1/2 shadow-xl animate-navbar-down'
       )}
     >
-      <div className='flexBetween container max-w-7xl'>
+      <div className={'flexBetween container max-w-7xl'}>
         <div className='flex-1 flexStart gap-10'>
           <Link href='/' className='flex items-center'>
             <Image
               className='mr-3'
-              src={logo?.image || '/logo.png'}
+              src={logo?.image || '/logo-no-bg.png'}
               width={70}
               height={70}
               alt='Lecturna'

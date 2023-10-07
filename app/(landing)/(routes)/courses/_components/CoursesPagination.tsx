@@ -26,7 +26,7 @@ const CoursesPagination = ({ hasNextPage }: CoursesPaginationProps) => {
   };
 
   return (
-    <div className='flex items-center justify-center gap-3 mt-10'>
+    <div className='flex items-center justify-center gap-3 mt-14'>
       <Button
         onClick={() => handlePageChange(page - 1)}
         disabled={page === 1}
