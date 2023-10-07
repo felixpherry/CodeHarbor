@@ -8,7 +8,7 @@ const Page = async () => {
       <h1 className='mb-12 text-4xl text-center font-bold tracking-tight leading-none'>
         Categories
       </h1>
-      <CategoriesForm categories={categories} />
+      {/* <CategoriesForm categories={categories} /> */}
     </div>
   );
 };
