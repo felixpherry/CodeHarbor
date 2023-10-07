@@ -4,12 +4,12 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { ImageIcon, Pencil, PlusCircle } from 'lucide-react';
 import { useState } from 'react';
-import { useToast } from '@/components/ui/use-toast';
 import { updateProgram } from '@/lib/actions/program.actions';
 import { usePathname } from 'next/navigation';
 import { Program } from '@prisma/client';
 import Image from 'next/image';
 import FileUpload from '@/components/shared/FileUpload';
+import { toast } from 'sonner';
 
 interface ImageFormProps {
   initialData: Program;
@@ -26,8 +26,6 @@ const ImageForm = ({ initialData }: ImageFormProps) => {
 
   const toggleEdit = () => setIsEditing((prev) => !prev);
 
-  const { toast } = useToast();
-
   const pathname = usePathname();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -37,16 +35,11 @@ const ImageForm = ({ initialData }: ImageFormProps) => {
         payload: { image: values.image },
         pathname,
       });
-      toast({
-        description: 'Successfully updated program',
-        variant: 'success',
-      });
+      toast.success('Successfully updated program');
+
       setIsEditing(false);
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     }
   };
 

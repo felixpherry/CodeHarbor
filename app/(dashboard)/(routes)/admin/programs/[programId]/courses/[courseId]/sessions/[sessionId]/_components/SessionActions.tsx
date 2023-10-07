@@ -2,12 +2,12 @@
 
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
 import { deleteSession, updateSession } from '@/lib/actions/program.actions';
 import { Session } from '@prisma/client';
 import { Trash } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface SessionActionsProps {
   session: Session;
@@ -21,7 +21,6 @@ const SessionActions = ({
   programId,
 }: SessionActionsProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -29,17 +28,11 @@ const SessionActions = ({
     try {
       setIsLoading(true);
       await deleteSession(session.id);
-      toast({
-        description: 'Successfully deleted session',
-        variant: 'success',
-      });
+      toast.success('Successfully deleted session');
       router.refresh();
       router.push(`/admin/programs/${programId}/courses/${session.courseId}`);
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -58,10 +51,7 @@ const SessionActions = ({
             isPublished: false,
           },
         });
-        toast({
-          description: 'Successfully unpublish session',
-          variant: 'success',
-        });
+        toast.success('Successfully unpublish session');
       } else {
         await updateSession({
           id: session.id,
@@ -70,16 +60,10 @@ const SessionActions = ({
             isPublished: true,
           },
         });
-        toast({
-          description: 'Successfully publish session',
-          variant: 'success',
-        });
+        toast.success('Successfully publish session');
       }
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }

@@ -7,11 +7,11 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
 import { updateFaq } from '@/lib/actions/faq.actions';
 import { Loader2, PlusCircle, Trash2 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface FaqInterface {
   id: string;
@@ -28,7 +28,6 @@ const FaqForm = ({ faq }: FaqFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const pathname = usePathname();
-  const { toast } = useToast();
 
   useEffect(() => {
     handleTextareaResize();
@@ -83,15 +82,9 @@ const FaqForm = ({ faq }: FaqFormProps) => {
     try {
       setIsLoading(true);
       await updateFaq(form, pathname);
-      toast({
-        description: 'Successfully updated FAQ',
-        variant: 'success',
-      });
+      toast.success('Successfully updated FAQ');
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.message(error.message);
     } finally {
       setIsLoading(false);
     }

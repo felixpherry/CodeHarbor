@@ -1,12 +1,11 @@
 import './globals.css';
 import '@smastrom/react-rating/style.css';
-import { Toaster } from '@/components/ui/toaster';
 import localFont from 'next/font/local';
 import { Poppins, Josefin_Sans } from 'next/font/google';
 
 import UIProvider from '@/providers/UIProvider';
-import { getCurrentUser } from '@/lib/session';
 import { cn } from '@/lib/utils';
+import ToasterProvider from '@/providers/ToasterProvider';
 
 const fabada = localFont({
   src: '../fonts/Fabada-Regular.ttf',
@@ -40,8 +39,8 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
       className={cn(fabada.variable, poppins.variable, josefin.variable)}
     >
       <body>
-        {children}
-        <Toaster />
+        <UIProvider>{children}</UIProvider>
+        <ToasterProvider />
       </body>
     </html>
   );

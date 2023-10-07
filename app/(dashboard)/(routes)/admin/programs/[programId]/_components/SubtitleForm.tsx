@@ -14,10 +14,10 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2, Pencil } from 'lucide-react';
 import { useState } from 'react';
-import { useToast } from '@/components/ui/use-toast';
 import { usePathname } from 'next/navigation';
 import { Program } from '@prisma/client';
 import { updateProgram } from '@/lib/actions/program.actions';
+import { toast } from 'sonner';
 
 interface SubtitleFormProps {
   initialData: Program;
@@ -43,8 +43,6 @@ const SubtitleForm = ({ initialData }: SubtitleFormProps) => {
 
   const { isSubmitting, isValid } = form.formState;
 
-  const { toast } = useToast();
-
   const pathname = usePathname();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -54,16 +52,10 @@ const SubtitleForm = ({ initialData }: SubtitleFormProps) => {
         payload: { subtitle: values.subtitle },
         pathname,
       });
-      toast({
-        description: 'Successfully updated program',
-        variant: 'success',
-      });
+      toast.success('Successfully updated program');
       setIsEditing(false);
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     }
   };
 

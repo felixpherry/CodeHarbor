@@ -28,7 +28,77 @@ export const fileRouter = {
 
       console.log('file url', file.url);
     }),
-  courseAttachment: f(['image', 'pdf', 'text', 'video', 'audio'])
+  fileNPWP: f({ image: { maxFileSize: '512KB', maxFileCount: 1 } })
+    .middleware(handleAuth)
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log('Upload complete for userId:', metadata.userId);
+
+      console.log('file url', file.url);
+    }),
+  fileIDCard: f({ image: { maxFileSize: '512KB', maxFileCount: 1 } })
+    .middleware(handleAuth)
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log('Upload complete for userId:', metadata.userId);
+
+      console.log('file url', file.url);
+    }),
+  profilePhoto: f({ image: { maxFileSize: '1MB', maxFileCount: 1 } })
+    .middleware(handleAuth)
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log('Upload complete for userId:', metadata.userId);
+
+      console.log('file url', file.url);
+    }),
+  courseAttachment: f({
+    image: {
+      maxFileSize: '1MB',
+      maxFileCount: 1,
+    },
+    pdf: {
+      maxFileSize: '1MB',
+      maxFileCount: 1,
+    },
+    text: {
+      maxFileSize: '1MB',
+      maxFileCount: 1,
+    },
+    video: {
+      maxFileSize: '1MB',
+      maxFileCount: 1,
+    },
+    audio: {
+      maxFileSize: '1MB',
+      maxFileCount: 1,
+    },
+  })
+    .middleware(handleAuth)
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log('Upload complete for userId:', metadata.userId);
+
+      console.log('file url', file.url);
+    }),
+  otherCourseAttachment: f({
+    image: {
+      maxFileSize: '1MB',
+      maxFileCount: 1,
+    },
+    pdf: {
+      maxFileSize: '1MB',
+      maxFileCount: 1,
+    },
+    text: {
+      maxFileSize: '1MB',
+      maxFileCount: 1,
+    },
+    video: {
+      maxFileSize: '1MB',
+      maxFileCount: 1,
+    },
+    audio: {
+      maxFileSize: '1MB',
+      maxFileCount: 1,
+    },
+  })
     .middleware(handleAuth)
     .onUploadComplete(async ({ metadata, file }) => {
       console.log('Upload complete for userId:', metadata.userId);

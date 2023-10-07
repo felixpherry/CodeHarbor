@@ -12,9 +12,9 @@ interface HeroProps {
 
 const Hero = ({ title, subtitle, image, session }: HeroProps) => {
   return (
-    <div className='flex flex-col text-center lg:flex-row-reverse lg:text-left bg-white'>
+    <div className='container max-w-7xl pb-20 flex flex-col text-center lg:flex-row-reverse lg:text-left relative'>
       <div className='absolute top-[100px] lg:top-[unset] 2xl:h-[700px] 2xl:w-[700px] lg:h-[600px] lg:w-[600px] h-[40vh] right-5 w-[40vh] hero_animation rounded-[50%] lg:right-8 2xl:right-14'></div>
-      <div className='lg:w-[40%] flex lg:min-h-screen items-center justify-end pt-[70px] lg:pt-[0] z-10'>
+      <div className='lg:w-[40%] flex items-center justify-end pt-[70px] lg:pt-[0] z-10'>
         <Image
           src={image}
           width={400}

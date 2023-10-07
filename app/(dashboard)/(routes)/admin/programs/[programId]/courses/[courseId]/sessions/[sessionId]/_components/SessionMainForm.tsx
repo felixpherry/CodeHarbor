@@ -14,10 +14,10 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2, Pencil } from 'lucide-react';
 import { useState } from 'react';
-import { useToast } from '@/components/ui/use-toast';
 import { usePathname } from 'next/navigation';
 import { Session } from '@prisma/client';
 import { updateSession } from '@/lib/actions/program.actions';
+import { toast } from 'sonner';
 
 interface SessionMainFormProps {
   initialData: Session;
@@ -41,8 +41,6 @@ const SessionMainForm = ({ initialData }: SessionMainFormProps) => {
 
   const { isSubmitting, isValid } = form.formState;
 
-  const { toast } = useToast();
-
   const pathname = usePathname();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -52,16 +50,10 @@ const SessionMainForm = ({ initialData }: SessionMainFormProps) => {
         payload: { main: values.main },
         pathname,
       });
-      toast({
-        description: 'Successfully updated session',
-        variant: 'success',
-      });
+      toast.success('Successfully updated session');
       setIsEditing(false);
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     }
   };
 

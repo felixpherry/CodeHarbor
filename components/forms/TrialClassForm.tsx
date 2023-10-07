@@ -36,12 +36,11 @@ import { Textarea } from '../ui/textarea';
 import DatePicker from '../shared/DatePicker';
 import DateTimePicker from '../shared/DateTimePicker';
 import { insertTrialClassData } from '@/lib/actions/trial-class.actions';
-import { useToast } from '../ui/use-toast';
+import { toast } from 'sonner';
 
 const TrialClassForm = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof TrialClassValidation>>({
     resolver: zodResolver(TrialClassValidation),
@@ -65,16 +64,11 @@ const TrialClassForm = () => {
     try {
       setIsLoading(true);
       await insertTrialClassData(values);
-      toast({
-        description:
-          'Pendaftaran berhasil. Mohon untuk menunggu info lebih lanjut dari kami.',
-        variant: 'success',
-      });
+      toast.success(
+        'Successfully registered. Stay tuned for our next information'
+      );
     } catch (error: any) {
-      toast({
-        description: 'Pendaftaran gagal. Silakan coba lagi.',
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
       form.reset();

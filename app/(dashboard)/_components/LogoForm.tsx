@@ -3,7 +3,6 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/components/ui/use-toast';
 import { updateLogo } from '@/lib/actions/logo.actions';
 import { uploadImage } from '@/lib/cloudinary';
 import { isBase64DataURL } from '@/lib/utils';
@@ -11,6 +10,7 @@ import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface LogoFormProps {
   id: string;
@@ -25,7 +25,6 @@ const LogoForm = ({ id, image }: LogoFormProps) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
-  const { toast } = useToast();
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -70,15 +69,9 @@ const LogoForm = ({ id, image }: LogoFormProps) => {
         pathname,
       });
 
-      toast({
-        description: 'Successfully updated logo.',
-        variant: 'success',
-      });
+      toast.success('Successfully updated logo.');
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }

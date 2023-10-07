@@ -20,7 +20,7 @@ export default async function Home({
   const faq = await fetchFaq();
 
   return (
-    <div className='bg-light-white'>
+    <div>
       <Hero
         session={session}
         title={hero?.title || ''}

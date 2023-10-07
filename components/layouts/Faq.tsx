@@ -21,7 +21,7 @@ const Faq = ({ faq }: FaqProps) => {
       <h1 className='mb-12 text-4xl text-center font-bold tracking-tight leading-none'>
         Frequently Asked Questions
       </h1>
-      <Accordion type='multiple' className='w-full px-10'>
+      <Accordion type='multiple' className='w-full px-10 max-w-7xl mx-auto'>
         {faq.map(({ question, answer, id }) => (
           <AccordionItem key={id} value={id} className='py-4'>
             <AccordionTrigger className='text-left text-sm font-bold text-slate-600 md:text-lg hover:no-underline'>

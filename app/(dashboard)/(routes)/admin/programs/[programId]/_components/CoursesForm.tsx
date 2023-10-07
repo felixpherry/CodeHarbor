@@ -13,7 +13,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { List, Loader2, Pencil, PlusCircle } from 'lucide-react';
 import { useState } from 'react';
-import { useToast } from '@/components/ui/use-toast';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Program, Course } from '@prisma/client';
@@ -21,6 +20,7 @@ import { Input } from '@/components/ui/input';
 import { addCourse } from '@/lib/actions/program.actions';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 interface CoursesFormProps {
   initialData: {
@@ -48,8 +48,6 @@ const CoursesForm = ({ initialData }: CoursesFormProps) => {
 
   const { isSubmitting, isValid } = form.formState;
 
-  const { toast } = useToast();
-
   const pathname = usePathname();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -60,17 +58,11 @@ const CoursesForm = ({ initialData }: CoursesFormProps) => {
         pathname,
       });
 
-      toast({
-        description: 'Successfully created course',
-        variant: 'success',
-      });
+      toast.success('Successfully created course');
       toggleCreating();
       form.reset();
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     }
   };
 

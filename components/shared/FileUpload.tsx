@@ -2,7 +2,7 @@
 
 import { UploadDropzone } from '@/lib/uploadthing';
 import type { fileRouter } from '@/app/api/uploadthing/core';
-import { useToast } from '../ui/use-toast';
+import { toast } from 'sonner';
 
 interface FileUploadProps {
   endpoint: keyof fileRouter;
@@ -10,16 +10,12 @@ interface FileUploadProps {
 }
 
 const FileUpload = ({ endpoint, onChange }: FileUploadProps) => {
-  const { toast } = useToast();
   return (
     <UploadDropzone
       endpoint={endpoint}
       onClientUploadComplete={(res) => onChange(res?.[0].url)}
       onUploadError={(error: Error) => {
-        toast({
-          description: error.message,
-          variant: 'destructive',
-        });
+        toast.error(error.message);
       }}
     />
   );

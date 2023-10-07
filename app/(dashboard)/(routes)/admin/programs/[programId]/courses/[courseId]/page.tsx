@@ -7,6 +7,7 @@ import {
   BarChart,
   LayoutDashboard,
   ListTodo,
+  Shapes,
   Wrench,
 } from 'lucide-react';
 import IconBadge from '@/components/shared/IconBadge';
@@ -20,6 +21,8 @@ import Banner from '@/components/shared/Banner';
 import CourseActions from './_components/CourseActions';
 import CourseProgrammingToolsForm from './_components/CourseProgrammingToolsForm';
 import CourseLevelForm from './_components/CourseLevelForm';
+import CourseImageForm from './_components/CourseImageForm';
+import CourseCodeForm from './_components/CourseCodeForm';
 
 const Page = async ({
   params: { programId, courseId },
@@ -91,10 +94,10 @@ const Page = async ({
                 <IconBadge icon={LayoutDashboard} />
                 <h2 className='text-xl'>Customize course</h2>
               </div>
+              <CourseImageForm initialData={course} />
               <CourseNameForm initialData={course} />
               <CourseDescriptionForm initialData={course} />
-              <CourseCategory initialData={course} options={options} />
-              <CourseLevelForm initialData={course} />
+              <CourseCodeForm initialData={course} />
             </div>
           </div>
           <div className='space-y-6'>
@@ -111,6 +114,20 @@ const Page = async ({
                 <h2 className='text-xl'>Programming Tools</h2>
               </div>
               <CourseProgrammingToolsForm initialData={course} />
+            </div>
+            <div>
+              <div className='flex items-center gap-x-2'>
+                <IconBadge icon={BarChart} />
+                <h2 className='text-xl'>Course Level</h2>
+              </div>
+              <CourseLevelForm initialData={course} />
+            </div>
+            <div>
+              <div className='flex items-center gap-x-2'>
+                <IconBadge icon={Shapes} />
+                <h2 className='text-xl'>Course Category</h2>
+              </div>
+              <CourseCategory initialData={course} options={options} />
             </div>
           </div>
         </div>

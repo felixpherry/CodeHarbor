@@ -17,19 +17,19 @@ import dynamicIconImports from 'lucide-react/dynamicIconImports';
 
 export const NavLinks = [
   {
-    href: '/#tentang',
-    key: 'Tentang',
-    text: 'Tentang',
+    href: '/',
+    key: 'Home',
+    text: 'Home',
   },
   {
-    href: '/#program',
-    key: 'Program',
-    text: 'Program',
+    href: '/courses',
+    key: 'Courses',
+    text: 'Courses',
   },
   {
-    href: '/#footer',
-    key: 'Kontak',
-    text: 'Kontak',
+    href: '/register-instructor',
+    key: 'Become an Instructor',
+    text: 'Become an Instructor',
   },
 ];
 

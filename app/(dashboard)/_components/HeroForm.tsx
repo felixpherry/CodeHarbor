@@ -5,11 +5,11 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Camera, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useToast } from '@/components/ui/use-toast';
 import { usePathname } from 'next/navigation';
 import { uploadImage } from '@/lib/cloudinary';
 import { isBase64DataURL } from '@/lib/utils';
 import { updateHero } from '@/lib/actions/hero.actions';
+import { toast } from 'sonner';
 
 interface HeroProps {
   id: string;
@@ -28,8 +28,6 @@ const HeroForm = ({ id, title, subtitle, image, session }: HeroProps) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
-
-  const { toast } = useToast();
 
   useEffect(() => {
     handleTextareaResize();
@@ -55,10 +53,7 @@ const HeroForm = ({ id, title, subtitle, image, session }: HeroProps) => {
     if (!file) return;
 
     if (!file.type.includes('image')) {
-      return toast({
-        description: 'Hanya dapat mengunggah file gambar',
-        variant: 'destructive',
-      });
+      return toast.error('Only accept type image');
     }
 
     const reader = new FileReader();
@@ -111,12 +106,9 @@ const HeroForm = ({ id, title, subtitle, image, session }: HeroProps) => {
         },
         pathname
       );
-      toast({ description: 'Successfully updated hero.', variant: 'success' });
+      toast.success('Successfully updated hero');
     } catch (error: any) {
-      toast({
-        description: 'Failed to update hero. Try again later.',
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }

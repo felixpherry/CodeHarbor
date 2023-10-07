@@ -17,10 +17,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
-import { useToast } from '@/components/ui/use-toast';
 import { SessionInterface } from '@/types';
 import { Loader2 } from 'lucide-react';
 import { createProgram } from '@/lib/actions/program.actions';
+import { toast } from 'sonner';
 
 interface CreateProgramFormProps {
   session: SessionInterface;
@@ -43,24 +43,16 @@ const CreateProgramForm = ({ session }: CreateProgramFormProps) => {
   const { isSubmitting, isValid } = form.formState;
   const router = useRouter();
 
-  const { toast } = useToast();
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const res = await createProgram({
         name: values.name,
         accountId: session.user.id,
       });
-      toast({
-        description: 'Successfully created program.',
-        variant: 'success',
-      });
+      toast.success('Successfully created program.');
       router.push(`/admin/programs/${res.id}`);
     } catch (error: any) {
-      toast({
-        description: 'Failed to create program',
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     }
   };
   return (

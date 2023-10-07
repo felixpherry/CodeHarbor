@@ -18,12 +18,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
-import { useToast } from '@/components/ui/use-toast';
 import { SessionInterface } from '@/types';
 import { Loader2 } from 'lucide-react';
 import { createProgram } from '@/lib/actions/program.actions';
 import { createClass } from '@/lib/actions/class.actions';
 import Combobox from '@/components/ui/combobox';
+import { toast } from 'sonner';
 
 interface CreateClassProps {
   session: SessionInterface;
@@ -60,8 +60,6 @@ const CreateClassForm = ({
   const { isSubmitting, isValid } = form.formState;
   const router = useRouter();
 
-  const { toast } = useToast();
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const res = await createClass({
@@ -69,16 +67,10 @@ const CreateClassForm = ({
         courseId: values.courseId,
         periodId: values.periodId,
       });
-      toast({
-        description: 'Successfully created class.',
-        variant: 'success',
-      });
+      toast.success('Successfully created class.');
       router.push(`/admin/classes/${res.id}`);
     } catch (error: any) {
-      toast({
-        description: 'Failed to create class',
-        variant: 'destructive',
-      });
+      toast.success(error.message);
     }
   };
   return (

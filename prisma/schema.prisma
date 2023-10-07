@@ -106,9 +106,11 @@ enum Level {
 model Course {
   id               String  @id @default(uuid())
   name             String  @unique
+  code             String? @unique
   description      String? @db.LongText
   programmingTools String? @db.Text
   level            Level?
+  image            String? @db.Text
   isPublished      Boolean @default(false)
 
   program   Program @relation(fields: [programId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -242,6 +244,8 @@ model Instructor {
   dateOfBirth          DateTime
   lastEducation        String
   educationInstitution String
+  fileIDCard           String?
+  fileNPWP             String?
 
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   accountId String  @unique
@@ -364,6 +368,7 @@ model Schedule {
   date          DateTime?
   time          String?
   meetingUrl    String?   @db.LongText
+  recordingUrl  String?   @db.LongText
 
   class            Class             @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   classId          String

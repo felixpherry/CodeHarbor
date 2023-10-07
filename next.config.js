@@ -12,6 +12,7 @@ const nextConfig = {
       'external-content.duckduckgo.com',
       'media.discordapp.net',
       'utfs.io',
+      '3dbay.io',
     ],
   },
 };

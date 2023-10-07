@@ -13,22 +13,27 @@ import {
 import { Button } from '@/components/ui/button';
 import { Loader2, Pencil } from 'lucide-react';
 import { useState } from 'react';
-import { useToast } from '@/components/ui/use-toast';
 import { usePathname } from 'next/navigation';
 import { Program } from '@prisma/client';
 import { updateProgram } from '@/lib/actions/program.actions';
 import Editor from '@/components/shared/Editor';
 import { cn } from '@/lib/utils';
 import Preview from '@/components/shared/Preview';
+import { toast } from 'sonner';
 
 interface DescriptionFormProps {
   initialData: Program;
 }
 
 const formSchema = z.object({
-  description: z.string().min(1, {
-    message: 'Description is required',
-  }),
+  description: z
+    .string()
+    .min(1, {
+      message: 'Description is required',
+    })
+    .max(200, {
+      message: 'Description should not be longer than 200 characters',
+    }),
 });
 
 const DescriptionForm = ({ initialData }: DescriptionFormProps) => {
@@ -45,8 +50,6 @@ const DescriptionForm = ({ initialData }: DescriptionFormProps) => {
 
   const { isSubmitting, isValid } = form.formState;
 
-  const { toast } = useToast();
-
   const pathname = usePathname();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -56,16 +59,10 @@ const DescriptionForm = ({ initialData }: DescriptionFormProps) => {
         payload: { description: values.description },
         pathname,
       });
-      toast({
-        description: 'Successfully updated program',
-        variant: 'success',
-      });
+      toast.success('Successfully updated program');
       setIsEditing(false);
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     }
   };
 

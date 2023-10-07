@@ -2,17 +2,12 @@
 
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
-import {
-  deleteProgram,
-  deleteCourse,
-  updateProgram,
-  updateCourse,
-} from '@/lib/actions/program.actions';
+import { deleteProgram, updateProgram } from '@/lib/actions/program.actions';
 import { Program } from '@prisma/client';
 import { Trash } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface ProgramActionsProps {
   program: Program;
@@ -21,7 +16,6 @@ interface ProgramActionsProps {
 
 const ProgramActions = ({ disabled, program }: ProgramActionsProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -29,17 +23,11 @@ const ProgramActions = ({ disabled, program }: ProgramActionsProps) => {
     try {
       setIsLoading(true);
       await deleteProgram(program.id);
-      toast({
-        description: 'Successfully deleted program',
-        variant: 'success',
-      });
+      toast.success('Successfully deleted program');
       router.refresh();
       router.push(`/admin/programs`);
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -57,10 +45,7 @@ const ProgramActions = ({ disabled, program }: ProgramActionsProps) => {
             isPublished: false,
           },
         });
-        toast({
-          description: 'Successfully unpublish program',
-          variant: 'success',
-        });
+        toast.success('Successfully unpublish program');
       } else {
         await updateProgram({
           id: program.id,
@@ -69,16 +54,10 @@ const ProgramActions = ({ disabled, program }: ProgramActionsProps) => {
             isPublished: true,
           },
         });
-        toast({
-          description: 'Successfully publish program',
-          variant: 'success',
-        });
+        toast.success('Successfully publish program');
       }
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }

@@ -8,6 +8,7 @@ type Props = {
     Required<{
       id: string;
       name: string;
+      ageDescription: string;
     }>
   >;
 };
@@ -44,6 +45,7 @@ const ProgramsFilter = ({ categories }: Props) => {
       scroll: false,
     });
   };
+
   return (
     <div className='relative pt-6 lg:pt-10 px-5 lg:px-[60px] border-gray-50 rounded-3xl border-[1px] mb-14'>
       <h1 className='text-4xl absolute -left-10 lg:left-[50%] -top-8 z-10 lg:translate-x-[-50%] px-10 pb-4 bg-light-white font-bold tracking-tight leading-none'>
@@ -55,10 +57,10 @@ const ProgramsFilter = ({ categories }: Props) => {
           handleClick={clearCategory}
           active={!searchParams.get('category')}
         />
-        {categories.map(({ name, id }) => (
+        {categories.map(({ ageDescription, id }) => (
           <Chip
             key={id}
-            label={name}
+            label={ageDescription}
             handleClick={() =>
               router.push(`?category=${id}`, {
                 scroll: false,

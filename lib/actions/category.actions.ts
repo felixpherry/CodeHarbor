@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { db } from '../db';
+import { Category } from '@prisma/client';
 
 export const fetchCategories = async () => {
   try {
@@ -12,8 +13,8 @@ export const fetchCategories = async () => {
 };
 
 export const updateCategories = async (
-  newCategories: Array<{ name: string }>,
-  updatedCategories: Array<{ id: string; name: string }>,
+  newCategories: Category[],
+  updatedCategories: Category[],
   deletedIds: string[],
   pathname: string
 ) => {
@@ -28,8 +29,9 @@ export const updateCategories = async (
         },
       }),
       db.category.createMany({
-        data: newCategories.map(({ name }) => ({
+        data: newCategories.map(({ name, ageDescription }) => ({
           name,
+          ageDescription,
         })),
       }),
     ]);

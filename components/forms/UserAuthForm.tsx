@@ -21,8 +21,8 @@ import {
 import { Input } from '../ui/input';
 import { PasswordInput } from '../shared/PasswordInput';
 import { Loader2 } from 'lucide-react';
-import { useToast } from '../ui/use-toast';
 import { Button } from '../ui/button';
+import { toast } from 'sonner';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -44,7 +44,6 @@ const UserAuthForm = ({ className, ...props }: UserAuthFormProps) => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
-  const { toast } = useToast();
   const router = useRouter();
 
   const handleSubmit = async (values: z.infer<typeof UserValidation>) => {
@@ -61,15 +60,9 @@ const UserAuthForm = ({ className, ...props }: UserAuthFormProps) => {
       }
 
       router.push('/');
-      toast({
-        description: 'Anda berhasil masuk ke dalam aplikasi',
-        variant: 'success',
-      });
+      toast.success('Successfully logged in');
     } catch (error: any) {
-      toast({
-        description: error?.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
       form.reset();

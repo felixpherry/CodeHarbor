@@ -13,7 +13,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Loader2, PlusCircle } from 'lucide-react';
 import { useState } from 'react';
-import { useToast } from '@/components/ui/use-toast';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
@@ -21,6 +20,7 @@ import { Input } from '@/components/ui/input';
 import { Session, Course } from '@prisma/client';
 import { addSession, reorderSessions } from '@/lib/actions/program.actions';
 import SessionsList from './SessionsList';
+import { toast } from 'sonner';
 
 interface SessionsFormProps {
   initialData: {
@@ -50,8 +50,6 @@ const SessionsForm = ({ initialData }: SessionsFormProps) => {
 
   const { isSubmitting, isValid } = form.formState;
 
-  const { toast } = useToast();
-
   const pathname = usePathname();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -61,17 +59,11 @@ const SessionsForm = ({ initialData }: SessionsFormProps) => {
         courseId: initialData.id,
         pathname,
       });
-      toast({
-        description: 'Successfully added session',
-        variant: 'success',
-      });
+      toast.success('Successfully added session');
       toggleCreating();
       form.reset();
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     }
   };
 
@@ -84,15 +76,9 @@ const SessionsForm = ({ initialData }: SessionsFormProps) => {
         updateData,
         pathname,
       });
-      toast({
-        description: 'Sessions reordered',
-        variant: 'success',
-      });
+      toast.success('Sessions reordered');
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     } finally {
       setIsUpdating(false);
     }

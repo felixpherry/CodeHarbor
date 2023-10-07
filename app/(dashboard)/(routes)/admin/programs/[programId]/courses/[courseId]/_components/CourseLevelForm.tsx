@@ -13,12 +13,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { Loader2, Pencil } from 'lucide-react';
 import { useState } from 'react';
-import { useToast } from '@/components/ui/use-toast';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Course } from '@prisma/client';
 import Combobox from '@/components/ui/combobox';
 import { updateCourse } from '@/lib/actions/program.actions';
+import { toast } from 'sonner';
 
 interface CourseLevelFormProps {
   initialData: Course;
@@ -57,8 +57,6 @@ const CourseLevelForm = ({ initialData }: CourseLevelFormProps) => {
 
   const { isSubmitting, isValid } = form.formState;
 
-  const { toast } = useToast();
-
   const pathname = usePathname();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -71,16 +69,10 @@ const CourseLevelForm = ({ initialData }: CourseLevelFormProps) => {
         },
         pathname,
       });
-      toast({
-        description: 'Successfully updated course',
-        variant: 'success',
-      });
+      toast.success('Successfully updated course');
       setIsEditing(false);
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     }
   };
 

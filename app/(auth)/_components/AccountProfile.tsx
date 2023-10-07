@@ -25,8 +25,8 @@ import { SessionInterface } from '@/types';
 import { PasswordInput } from '@/components/shared/PasswordInput';
 import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
-import { useToast } from '@/components/ui/use-toast';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface AccountProfileProps {
   account: {
@@ -57,8 +57,6 @@ const AccountProfile = ({ account, session }: AccountProfileProps) => {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-
-  const { toast } = useToast();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -113,17 +111,11 @@ const AccountProfile = ({ account, session }: AccountProfileProps) => {
         pathname,
       });
 
-      toast({
-        description: 'Successfully updated your profile.',
-        variant: 'success',
-      });
+      toast.success('Successfully updated your profile.');
 
       router.push(`/${session.user.role.toLocaleLowerCase()}/dashboard`);
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }

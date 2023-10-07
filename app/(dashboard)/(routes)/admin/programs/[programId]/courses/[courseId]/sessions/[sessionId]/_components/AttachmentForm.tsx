@@ -4,12 +4,12 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { File, Loader2, Pencil, PlusCircle, X } from 'lucide-react';
 import { useState } from 'react';
-import { useToast } from '@/components/ui/use-toast';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Attachment, Session } from '@prisma/client';
 import FileUpload from '@/components/shared/FileUpload';
 import { addAttachment, deleteAttachment } from '@/lib/actions/program.actions';
+import { toast } from 'sonner';
 
 interface AttachmentFormProps {
   initialData: {
@@ -29,8 +29,6 @@ const AttachmentForm = ({ initialData }: AttachmentFormProps) => {
 
   const toggleEdit = () => setIsEditing((prev) => !prev);
 
-  const { toast } = useToast();
-
   const pathname = usePathname();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -43,16 +41,10 @@ const AttachmentForm = ({ initialData }: AttachmentFormProps) => {
         sessionId: initialData.id,
         pathname,
       });
-      toast({
-        description: 'Successfully added attachment',
-        variant: 'success',
-      });
+      toast.success('Successfully added attachment');
       setIsEditing(false);
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     }
   };
 
@@ -60,15 +52,9 @@ const AttachmentForm = ({ initialData }: AttachmentFormProps) => {
     try {
       setDeletingId(id);
       await deleteAttachment(id, pathname);
-      toast({
-        description: 'Successfully deleted attachment',
-        variant: 'success',
-      });
+      toast.success('Successfully deleted attachment');
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     } finally {
       setDeletingId(null);
     }

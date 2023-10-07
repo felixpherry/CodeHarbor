@@ -2,12 +2,12 @@
 
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
 import { deleteCourse, updateCourse } from '@/lib/actions/program.actions';
 import { Course } from '@prisma/client';
 import { Trash } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface CourseActionsProps {
   course: Course;
@@ -16,7 +16,6 @@ interface CourseActionsProps {
 
 const CourseActions = ({ disabled, course }: CourseActionsProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -24,17 +23,11 @@ const CourseActions = ({ disabled, course }: CourseActionsProps) => {
     try {
       setIsLoading(true);
       await deleteCourse(course.id);
-      toast({
-        description: 'Successfully deleted course',
-        variant: 'success',
-      });
+      toast.success('Successfully deleted course');
       router.refresh();
       router.push(`/admin/programs/${course.programId}`);
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -53,10 +46,7 @@ const CourseActions = ({ disabled, course }: CourseActionsProps) => {
             isPublished: false,
           },
         });
-        toast({
-          description: 'Successfully unpublish course',
-          variant: 'success',
-        });
+        toast.success('Successfully unpublish course');
       } else {
         await updateCourse({
           id: course.id,
@@ -65,16 +55,10 @@ const CourseActions = ({ disabled, course }: CourseActionsProps) => {
             isPublished: true,
           },
         });
-        toast({
-          description: 'Successfully publish course',
-          variant: 'success',
-        });
+        toast.success('Successfully publish course');
       }
     } catch (error: any) {
-      toast({
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }

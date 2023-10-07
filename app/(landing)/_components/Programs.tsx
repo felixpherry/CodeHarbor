@@ -75,7 +75,7 @@ const Programs = async ({ category }: { category?: string }) => {
           Tidak ada program untuk kategori ini.
         </p>
       ) : (
-        <div className='grid justify-center gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4'>
+        <div className='grid justify-center gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 container'>
           {programs.map((program, idx) => (
             <div key={idx}>
               <ProgramCard program={program} />
