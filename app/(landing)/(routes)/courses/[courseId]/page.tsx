@@ -17,6 +17,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import CourseRecommendations from './_components/CourseRecommendations';
 import { Suspense } from 'react';
+import CardRecommendationsSkeleton from '@/app/(landing)/_components/skeletons/CardRecommendationsSkeleton';
 
 interface PageProps {
   params: {
@@ -265,7 +266,7 @@ const Page = async ({ params: { courseId } }: PageProps) => {
           />
           <span className='w-full h-0.5 bg-light-white-200' />
         </section>
-        <Suspense fallback={<p>Loading...</p>}>
+        <Suspense fallback={<CardRecommendationsSkeleton />}>
           <CourseRecommendations programId={programId} courseId={courseId} />
         </Suspense>
       </div>
