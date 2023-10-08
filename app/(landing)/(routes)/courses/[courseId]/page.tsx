@@ -1,13 +1,12 @@
 import { Badge, BadgeProps } from '@/components/ui/badge';
 import { db } from '@/lib/db';
-import { Level } from '@prisma/client';
 import {
   BarChart,
   CalendarCheck,
   CalendarDays,
-  Dot,
   GraduationCap,
   Shapes,
+  Users,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -16,6 +15,8 @@ import moment from 'moment';
 import Preview from '@/components/shared/Preview';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import CourseRecommendations from './_components/CourseRecommendations';
+import { Suspense } from 'react';
 
 interface PageProps {
   params: {
@@ -85,17 +86,8 @@ const Page = async ({ params: { courseId } }: PageProps) => {
     },
   });
 
-  console.log({ students });
-
-  console.log({ course });
-  const levelVariants: Record<Level, BadgeProps['variant']> = {
-    BEGINNER: 'beginner',
-    INTERMEDIATE: 'intermediate',
-    ADVANCED: 'advanced',
-  };
-
   return (
-    <div>
+    <div className='text-primary'>
       <div className='bg-gradient-to-l from-[#273575] to-[#004AAD]'>
         <div className='relative container max-w-7xl text-center py-24'>
           <div className='flex flex-col items-center gap-y-2'>
@@ -134,7 +126,6 @@ const Page = async ({ params: { courseId } }: PageProps) => {
             <Card className='shadow-lg hover:shadow-2xl rounded-md'>
               <CardContent className='overflow-visible p-0'>
                 <div className='relative'>
-                  <div className='card-image_shadow absolute h-full w-full top-0 left-0 rounded-tr-lg z-20' />
                   <Image
                     width={480}
                     height={140}
@@ -180,65 +171,103 @@ const Page = async ({ params: { courseId } }: PageProps) => {
                       {students} student{students !== 1 && 's'}
                     </span>
                   </div>
-                  <Button variant='primary-blue' className='w-full' asChild>
-                    <Link href={`/courses/${id}/enroll`}>Enroll</Link>
-                  </Button>
+                  <div className='flex flex-col gap-3'>
+                    <Button variant='primary-blue' className='w-full' asChild>
+                      <Link href={`/courses/${id}/enroll`}>Enroll</Link>
+                    </Button>
+                    <Button
+                      variant='primary-blue-outline'
+                      className='w-full'
+                      asChild
+                    >
+                      <Link href={`/register-trial-class`}>
+                        Register Trial Class
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </div>
-          <div className='row-start-2 mt-14 lg:mt-0 lg:row-start-1 col-start-1 col-end-3'>
-            <div className='flex flex-col gap-5 lg:px-20'>
+          <div className='row-start-2 mt-14 lg:mt-0 lg:row-start-1 col-start-1 col-end-3 lg:px-10'>
+            <div className='flex flex-col gap-5'>
               <h2 className='text-2xl md:text-3xl font-bold font-josefin'>
                 {name}
               </h2>
 
-              <div className='flex gap-4 flex-wrap'>
-                <Link href={`/programs/${programId}`}>
-                  <Badge className='cursor-pointer py-2 px-4'>
-                    {program.name}
-                  </Badge>
-                </Link>
-                <Badge variant='sky-lighten' className='py-2 px-4'>
-                  {category?.ageDescription}
+              <Link href={`/programs/${programId}`}>
+                <Badge className='cursor-pointer py-2 px-4'>
+                  {program.name}
                 </Badge>
-                <Badge variant={levelVariants[level || 'BEGINNER']}>
-                  {level}
-                </Badge>
-              </div>
-              <div className='flex gap-6 flex-wrap'>
-                <div className='flex items-center'>
-                  <GraduationCap className='w-4 h-4 mr-2 text-primary-blue' />
-                  <p>
-                    <span className='text-muted-foreground'>{students}</span>{' '}
-                    student{students !== 1 && 's'}
-                  </p>
+              </Link>
+              <div className='flex gap-6 flex-wrap mb-5'>
+                <div className='flex items-center gap-3'>
+                  <Shapes className='w-6 h-6 text-primary-blue' />
+                  <div className='flex flex-col'>
+                    <span className='text-muted-foreground'>Category</span>
+                    <span className='font-semibold'>
+                      {category?.ageDescription}
+                    </span>
+                  </div>
                 </div>
-                <div className='flex items-center'>
-                  <CalendarCheck className='w-4 h-4 mr-2 text-primary-blue' />
-                  <p>
-                    <span className='text-muted-foreground'>Last Updated</span>{' '}
-                    {moment(updatedAt).format('DD/MM/YYYY')}
-                  </p>
+                <div className='flex items-center gap-3'>
+                  <BarChart className='w-6 h-6 text-primary-blue' />
+                  <div className='flex flex-col'>
+                    <span className='text-muted-foreground'>Level</span>
+                    <span className='font-semibold'>
+                      {level?.[0]! + level?.substring(1)?.toLocaleLowerCase() ||
+                        ''}
+                    </span>
+                  </div>
+                </div>
+                <div className='flex items-center gap-3'>
+                  <Users className='w-6 h-6 text-primary-blue' />
+                  <div className='flex flex-col'>
+                    <span className='text-muted-foreground'>Students</span>
+                    <span className='font-semibold'>{students}</span>
+                  </div>
+                </div>
+                <div className='flex items-center gap-3'>
+                  <CalendarCheck className='w-6 h-6 text-primary-blue' />
+                  <div className='flex flex-col'>
+                    <span className='text-muted-foreground'>Last Updated</span>
+                    <span className='font-semibold'>
+                      {moment(updatedAt).format('DD/MM/YYYY')}
+                    </span>
+                  </div>
                 </div>
               </div>
               <h3 className='text-2xl font-bold'>Course Oveview</h3>
               <div className=''>
                 <Preview
                   value={description || ''}
-                  className='[&_.ql-editor]:px-0 font-bold'
+                  className='[&_.ql-editor]:px-0 text-muted-foreground'
                 />
               </div>
               <h3 className='text-2xl font-bold'>Programming Tools</h3>
               <div className=''>
                 <Preview
                   value={programmingTools || ''}
-                  className='[&_.ql-editor]:px-0 [&_ul]:!p-0 font-bold'
+                  className='[&_.ql-editor]:px-0 [&_ul]:!p-0 text-muted-foreground'
                 />
               </div>
             </div>
           </div>
         </div>
+        <section className='flexCenter w-full gap-8 mt-28 lg:px-10'>
+          <span className='w-full h-0.5 bg-light-white-200' />
+          <Image
+            src={'/logo.png'}
+            className='rounded-full min-w-[82px] h-[82px]'
+            width={82}
+            height={82}
+            alt='profile image'
+          />
+          <span className='w-full h-0.5 bg-light-white-200' />
+        </section>
+        <Suspense fallback={<p>Loading...</p>}>
+          <CourseRecommendations programId={programId} courseId={courseId} />
+        </Suspense>
       </div>
     </div>
   );
