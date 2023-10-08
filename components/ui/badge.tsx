@@ -19,6 +19,10 @@ const badgeVariants = cva(
           'border-transparent bg-secondary text-secondary-foreground hover:text-primary-blue hover:bg-sky-200/20',
         'filter-badge-active':
           'border-primary-blue text-primary-blue bg-sky-200/20',
+        'sky-lighten': 'border-transparent text-primary-blue bg-sky-200/20',
+        beginner: 'border-transparent bg-green-500 text-white',
+        intermediate: 'border-transparent bg-sky-600 text-white',
+        advanced: 'border-transparent bg-red-500 text-white',
       },
     },
     defaultVariants: {

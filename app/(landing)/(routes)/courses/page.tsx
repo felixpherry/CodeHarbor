@@ -1,10 +1,9 @@
-import { db } from '@/lib/db';
 import Image from 'next/image';
 import Link from 'next/link';
-import CourseCard from './_components/CourseCard';
 import CoursesFilter from './_components/CoursesFilter';
-import CoursesPagination from './_components/CoursesPagination';
-import { Level } from '@prisma/client';
+import Courses from './_components/Courses';
+import { Suspense } from 'react';
+import CoursesSkeleton from './_components/skeletons/CoursesSkeleton';
 
 interface CoursePageProps {
   searchParams: {
@@ -17,64 +16,6 @@ interface CoursePageProps {
 }
 
 const Page = async ({ searchParams }: CoursePageProps) => {
-  const levels = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED'];
-  const courses = await db.course.findMany({
-    where: {
-      isPublished: true,
-      program: {
-        isPublished: true,
-      },
-      name: {
-        contains: searchParams.search,
-      },
-      level: levels.includes(searchParams.level?.toLocaleUpperCase() || '')
-        ? (searchParams.level?.toLocaleUpperCase() as Level)
-        : undefined,
-      categoryId: searchParams.category,
-      programId: searchParams.program,
-    },
-    include: {
-      category: {
-        select: {
-          ageDescription: true,
-        },
-      },
-      _count: {
-        select: {
-          sessions: {
-            where: {
-              isPublished: true,
-            },
-          },
-        },
-      },
-    },
-    orderBy: {
-      name: 'asc',
-    },
-    take: 24,
-    skip: ((Number(searchParams.page) || 1) - 1) * 24,
-  });
-
-  const count = await db.course.count({
-    where: {
-      isPublished: true,
-      program: {
-        isPublished: true,
-      },
-      name: {
-        contains: searchParams.search,
-      },
-      level: levels.includes(searchParams.level?.toLocaleUpperCase() || '')
-        ? (searchParams.level?.toLocaleUpperCase() as Level)
-        : undefined,
-      categoryId: searchParams.category,
-      programId: searchParams.program,
-    },
-  });
-
-  const hasNextPage = (Number(searchParams.page) || 1) * 24 < count;
-
   return (
     <div>
       <div className='bg-gradient-to-l from-[#273575] to-[#004AAD]'>
@@ -113,15 +54,9 @@ const Page = async ({ searchParams }: CoursePageProps) => {
         <h3 className='text-4xl font-semibold'>Course Catalogue</h3>
         <p className='text-lg mt-1 text-slate-700'>Explore our courses</p>
         <CoursesFilter />
-        {!courses.length && (
-          <p className='font-semibold text-xl text-center'>Courses not found</p>
-        )}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-          {courses.map((course) => (
-            <CourseCard key={course.id} course={course} />
-          ))}
-        </div>
-        <CoursesPagination hasNextPage={hasNextPage} />
+        <Suspense fallback={<CoursesSkeleton />}>
+          <Courses searchParams={searchParams} />
+        </Suspense>
       </div>
     </div>
   );

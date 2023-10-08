@@ -81,7 +81,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
             asChild
             className='w-1/2 text-sm'
           >
-            <Link href={`/courses/${id}/register`}>Enroll</Link>
+            <Link href={`/courses/${id}/enroll`}>Enroll</Link>
           </Button>
           <Button
             variant='primary-blue-outline'
