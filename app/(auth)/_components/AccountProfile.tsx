@@ -231,7 +231,7 @@ const AccountProfile = ({ account, session }: AccountProfileProps) => {
                 Password
               </FormLabel>
               <FormDescription className='text-red-500'>
-                Change your password to secure your account!
+                Ganti password untuk keamanan akun Anda!
               </FormDescription>
               <FormControl>
                 <PasswordInput

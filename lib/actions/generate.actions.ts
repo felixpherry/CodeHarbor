@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 
 export const generateCategories = async () => {
   try {
-    await db.category.createMany({
+    return await db.category.createMany({
       data: [
         {
           name: 'Voyager',
@@ -32,78 +32,68 @@ export const generateCategories = async () => {
   }
 };
 
-export const generatePrograms = async () => {
+export const generateHero = async () => {
   try {
-    await db.program.createMany({
+    await db.hero.deleteMany();
+    return await db.hero.create({
+      data: {
+        title: 'Bangun Potensi Kreativitas Anak-anak Lewat Codings',
+        subtitle:
+          'Membantu mengembangkan Kreativitas, Karakter, dan Pemikiran Logis Anak-anak Melalui Kursus Coding',
+        image:
+          'https://res.cloudinary.com/dgtch1ffs/image/upload/v1696243224/yoxqefb9hlos7itwmwtz.png',
+      },
+    });
+  } catch (error: any) {
+    throw new Error(`Failed to generate hero: ${error.message}`);
+  }
+};
+
+export const generateFaq = async () => {
+  try {
+    return await db.faq.createMany({
       data: [
         {
-          name: 'Web Programming',
-          subtitle: 'Web (Beginner, Intermediate, Advanced)',
-          description:
-            'Terjunlah ke dunia menarik pengembangan web dengan program Pemrograman Web yang komprehensif kami. Baik Anda pemula, menengah, maupun mahir, program ini menawarkan kurikulum progresif yang memperlengkapi Anda dengan keterampilan untuk merancang dan mengembangkan situs web yang menakjubkan. Mulai dari HTML dan CSS hingga JavaScript dan kerangka kerja backend, temukan rahasia dari lanskap digital dan ungkapkan kreativitas Anda dalam dunia web yang terus berkembang. Daftar Sekarang.',
-          image:
-            'https://res.cloudinary.com/dgtch1ffs/image/upload/v1689776273/eezfvctdcefxczrikpzd.jpg',
-          userId: '79f208bf-dbcf-40d7-9873-bab3258031ae',
+          question:
+            'Apa yang membuat Lecturna berbeda dari kursus koding lainnya?',
+          answer:
+            'Lecturna mengajarkan konsep dasar koding melalui aktivitas yang menyenangkan seperti game, tantangan, proyek kreatif dan mengajarkan nilai-nilai karakter yang dapat diimplementasikan dalam kehidupan sehari-hari melalui pembelajaran coding.',
         },
         {
-          name: 'Mobile Programming',
-          subtitle: 'MiT Inventor App',
-          description:
-            'Mulailah perjalanan seru ke dunia pengembangan aplikasi seluler dengan program Pemrograman Mobile kami. Dengan menggunakan aplikasi MiT Inventor yang terkenal, Anda akan menemukan seni menciptakan aplikasi seluler yang inovatif dan menarik. Mulai dari merancang antarmuka pengguna hingga membuat fitur interaktif, program ini memberdayakan Anda untuk mewujudkan ide-ide Anda di dalam genggaman tangan. Temukan potensi teknologi seluler dan menjadi pendorong perubahan di era digital.',
-          image:
-            'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.qulix.com%2Fwp-content%2Fuploads%2F2020%2F05%2FArtboard-612101101.jpg&f=1&nofb=1&ipt=cbeae9b094030b03ec4511604b1114ca63283d8339c30010fa6ecccfb5e6b396&ipo=images',
-          userId: '79f208bf-dbcf-40d7-9873-bab3258031ae',
+          question:
+            'Apakah kursus koding Lecturna cocok untuk anak-anak usia berapa?',
+          answer:
+            'Kursus koding Lecturna ditujukan untuk anak-anak usia 7 hingga 17 tahun, memberikan mereka keunggulan awal dalam proyek koding masa depan mereka.',
         },
         {
-          name: 'Text Programming',
-          subtitle: 'Text Programming (Roblox)',
-          description:
-            'Masuki dunia pemrograman berbasis teks dengan program menarik kami, yang berpusat pada platform populer Roblox. Lepaskan imajinasi Anda dan bangun dunia maya yang mendalam, permainan interaktif, dan pengalaman menarik. Mulai dari mengkodekan mekanika dan menciptakan lingkungan yang dinamis hingga membuat skrip permainan yang rumit, program ini memberikan pondasi yang kokoh bagi para pengembang game dan para pencerita digital yang berbakat.',
-          image:
-            'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgamelevate.com%2Fwp-content%2Fuploads%2F2023%2F07%2FRoblox_-_Featured_Image.jpg&f=1&nofb=1&ipt=699128b6ef34850411f056aada4b5cbd91f48496049df6c49d611321ede955b0&ipo=images',
-          userId: '79f208bf-dbcf-40d7-9873-bab3258031ae',
+          question: 'Apa yang dijadikan fokus dalam kursus koding Lecturna?',
+          answer:
+            'Kursus koding Lecturna fokus pada pembuatan website, pengembangan aplikasi mobile, dan pengembangan game.',
         },
         {
-          name: 'Visual Programming',
-          subtitle: 'Visual Programming (Scratch)',
-          description:
-            'Kenalkan anak-anak pada keajaiban pemrograman dengan program Pemrograman Visual kami, yang menampilkan platform terkenal bernama Scratch. Melalui antarmuka yang ramah pengguna dan intuitif, anak-anak akan belajar dasar-dasar pemrograman sambil membuat cerita interaktif, animasi, dan permainan. Mulai dari menarik dan menjatuhkan blok-blok kode hingga berpikir logis, program ini membangun keterampilan berpikir komputasional dan menyalakan semangat mereka dalam teknologi seumur hidup.',
-          image:
-            'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmlyj654c2n0p.i.optimole.com%2Fr3qBotM-nKTTY9HB%2Fw%3Aauto%2Fh%3Aauto%2Fq%3Aauto%2Fhttp%3A%2F%2Fwww.drcodie.com%2Fwp-content%2Fuploads%2F2020%2F06%2Fscratch.jpg&f=1&nofb=1&ipt=413461b6757500f09b0601c3ee72dbaee58d35688032048f76560d9fc9ea4484&ipo=images',
-          userId: '79f208bf-dbcf-40d7-9873-bab3258031ae',
+          question:
+            'Apakah diperlukan pengetahuan koding sebelumnya untuk mengikuti kursus Lecturna?',
+          answer:
+            'Tidak, kursus koding Lecturna dirancang untuk semua tingkatan pemula. Kami menyediakan pembelajaran yang disesuaikan dengan level pemahaman anak-anak, sehingga tidak diperlukan pengetahuan koding sebelumnya.',
         },
       ],
     });
   } catch (error: any) {
-    throw new Error(`Failed to generate program data: ${error.message}`);
+    throw new Error(`Failed to generate FAQ: ${error.message}`);
   }
 };
 
-export const generateTrialClassData = async () => {
+export const generateLogo = async () => {
   try {
-    const data: Prisma.TrialClassRegistrationCreateInput[] = [];
-    for (let i = 0; i < 10; i++) {
-      data.push({
-        parentName: faker.person.fullName(),
-        childName: faker.person.fullName(),
-        address: faker.location.streetAddress(),
-        ambition: faker.person.jobTitle(),
-        birthPlace: faker.location.city(),
-        childGender: Math.random() < 0.5 ? 'FEMALE' : 'MALE',
-        dateOfBirth: faker.date.birthdate(),
-        educationInstitution: faker.company.name(),
-        email: faker.internet.email(),
-        gradeClass: `${Math.floor(Math.random() * 12) + 1}`,
-        hobby: faker.person.jobTitle(),
-        phoneNumber: faker.phone.number(),
-        trialClassDate: faker.date.future(),
-      });
-    }
-    await db.trialClassRegistration.createMany({
-      data,
+    await db.logo.deleteMany();
+    return await db.logo.create({
+      data: {
+        image:
+          'https://res.cloudinary.com/dgtch1ffs/image/upload/v1696243248/fx7rxn5qmwes2cs02qo3.webp',
+      },
     });
   } catch (error: any) {
-    throw new Error(`Failed to generate trial class data: ${error.message}`);
+    throw new Error(`Failed to generate logo: ${error.message}`);
   }
 };
 
@@ -114,7 +104,7 @@ export const generateUser = async () => {
     const parentPassword = await bcrypt.hash('parent', 10);
     const studentPassword = await bcrypt.hash('student', 10);
 
-    await db.account.create({
+    const admin = await db.account.create({
       data: {
         email: 'admin@gmail.com',
         password: adminPassword,
@@ -129,7 +119,7 @@ export const generateUser = async () => {
       },
     });
 
-    await db.account.create({
+    const instructor = await db.account.create({
       data: {
         email: 'instructor@gmail.com',
         password: instructorPassword,
@@ -153,7 +143,7 @@ export const generateUser = async () => {
       },
     });
 
-    await db.account.create({
+    const parent = await db.account.create({
       data: {
         email: 'parent@gmail.com',
         password: parentPassword,
@@ -168,7 +158,7 @@ export const generateUser = async () => {
       },
     });
 
-    await db.account.create({
+    const student = await db.account.create({
       data: {
         email: 'student@gmail.com',
         password: studentPassword,
@@ -179,8 +169,102 @@ export const generateUser = async () => {
         username: 'student',
       },
     });
+
+    return {
+      admin,
+      parent,
+      instructor,
+      student,
+    };
   } catch (error: any) {
     console.log(error.message);
     throw new Error(`Failed to generate user: ${error.message}`);
   }
 };
+
+export const seedData = async () => {
+  try {
+    await generateCategories();
+    await generateHero();
+    await generateFaq();
+    await generateLogo();
+    await generateUser();
+  } catch (error: any) {
+    throw new Error(`Failed to seed data: ${error.message}`);
+  }
+};
+
+// export const generatePrograms = async () => {
+//   try {
+//     await db.program.createMany({
+//       data: [
+//         {
+//           name: 'Web Programming',
+//           subtitle: 'Web (Beginner, Intermediate, Advanced)',
+//           description:
+//             'Terjunlah ke dunia menarik pengembangan web dengan program Pemrograman Web yang komprehensif kami. Baik Anda pemula, menengah, maupun mahir, program ini menawarkan kurikulum progresif yang memperlengkapi Anda dengan keterampilan untuk merancang dan mengembangkan situs web yang menakjubkan. Mulai dari HTML dan CSS hingga JavaScript dan kerangka kerja backend, temukan rahasia dari lanskap digital dan ungkapkan kreativitas Anda dalam dunia web yang terus berkembang. Daftar Sekarang.',
+//           image:
+//             'https://res.cloudinary.com/dgtch1ffs/image/upload/v1689776273/eezfvctdcefxczrikpzd.jpg',
+//           userId: '79f208bf-dbcf-40d7-9873-bab3258031ae',
+//         },
+//         {
+//           name: 'Mobile Programming',
+//           subtitle: 'MiT Inventor App',
+//           description:
+//             'Mulailah perjalanan seru ke dunia pengembangan aplikasi seluler dengan program Pemrograman Mobile kami. Dengan menggunakan aplikasi MiT Inventor yang terkenal, Anda akan menemukan seni menciptakan aplikasi seluler yang inovatif dan menarik. Mulai dari merancang antarmuka pengguna hingga membuat fitur interaktif, program ini memberdayakan Anda untuk mewujudkan ide-ide Anda di dalam genggaman tangan. Temukan potensi teknologi seluler dan menjadi pendorong perubahan di era digital.',
+//           image:
+//             'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.qulix.com%2Fwp-content%2Fuploads%2F2020%2F05%2FArtboard-612101101.jpg&f=1&nofb=1&ipt=cbeae9b094030b03ec4511604b1114ca63283d8339c30010fa6ecccfb5e6b396&ipo=images',
+//           userId: '79f208bf-dbcf-40d7-9873-bab3258031ae',
+//         },
+//         {
+//           name: 'Text Programming',
+//           subtitle: 'Text Programming (Roblox)',
+//           description:
+//             'Masuki dunia pemrograman berbasis teks dengan program menarik kami, yang berpusat pada platform populer Roblox. Lepaskan imajinasi Anda dan bangun dunia maya yang mendalam, permainan interaktif, dan pengalaman menarik. Mulai dari mengkodekan mekanika dan menciptakan lingkungan yang dinamis hingga membuat skrip permainan yang rumit, program ini memberikan pondasi yang kokoh bagi para pengembang game dan para pencerita digital yang berbakat.',
+//           image:
+//             'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgamelevate.com%2Fwp-content%2Fuploads%2F2023%2F07%2FRoblox_-_Featured_Image.jpg&f=1&nofb=1&ipt=699128b6ef34850411f056aada4b5cbd91f48496049df6c49d611321ede955b0&ipo=images',
+//           userId: '79f208bf-dbcf-40d7-9873-bab3258031ae',
+//         },
+//         {
+//           name: 'Visual Programming',
+//           subtitle: 'Visual Programming (Scratch)',
+//           description:
+//             'Kenalkan anak-anak pada keajaiban pemrograman dengan program Pemrograman Visual kami, yang menampilkan platform terkenal bernama Scratch. Melalui antarmuka yang ramah pengguna dan intuitif, anak-anak akan belajar dasar-dasar pemrograman sambil membuat cerita interaktif, animasi, dan permainan. Mulai dari menarik dan menjatuhkan blok-blok kode hingga berpikir logis, program ini membangun keterampilan berpikir komputasional dan menyalakan semangat mereka dalam teknologi seumur hidup.',
+//           image:
+//             'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmlyj654c2n0p.i.optimole.com%2Fr3qBotM-nKTTY9HB%2Fw%3Aauto%2Fh%3Aauto%2Fq%3Aauto%2Fhttp%3A%2F%2Fwww.drcodie.com%2Fwp-content%2Fuploads%2F2020%2F06%2Fscratch.jpg&f=1&nofb=1&ipt=413461b6757500f09b0601c3ee72dbaee58d35688032048f76560d9fc9ea4484&ipo=images',
+//           userId: '79f208bf-dbcf-40d7-9873-bab3258031ae',
+//         },
+//       ],
+//     });
+//   } catch (error: any) {
+//     throw new Error(`Failed to generate program data: ${error.message}`);
+//   }
+// };
+
+// export const generateTrialClassData = async () => {
+//   try {
+//     const data: Prisma.TrialClassRegistrationCreateInput[] = [];
+//     for (let i = 0; i < 10; i++) {
+//       data.push({
+//         parentName: faker.person.fullName(),
+//         childName: faker.person.fullName(),
+//         address: faker.location.streetAddress(),
+//         ambition: faker.person.jobTitle(),
+//         birthPlace: faker.location.city(),
+//         childGender: Math.random() < 0.5 ? 'FEMALE' : 'MALE',
+//         dateOfBirth: faker.date.birthdate(),
+//         educationInstitution: faker.company.name(),
+//         email: faker.internet.email(),
+//         gradeClass: `${Math.floor(Math.random() * 12) + 1}`,
+//         hobby: faker.person.jobTitle(),
+//         phoneNumber: faker.phone.number(),
+//         trialClassDate: faker.date.future(),
+//       });
+//     }
+//     await db.trialClassRegistration.createMany({
+//       data,
+//     });
+//   } catch (error: any) {
+//     throw new Error(`Failed to generate trial class data: ${error.message}`);
+//   }
+// };

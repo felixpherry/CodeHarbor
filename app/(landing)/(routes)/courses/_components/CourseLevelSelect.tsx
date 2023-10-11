@@ -29,12 +29,12 @@ const CourseLevelSelect = () => {
   return (
     <Select value={level} onValueChange={handleFilter}>
       <SelectTrigger className='col-span-1 w-full min-h-[56px] focus:outline-none active:outline-none text-slate-500 text-medium font-semibold shadow-md'>
-        <SelectValue placeholder='Course levels' />
+        <SelectValue placeholder='Pilih Tingkatan' />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
           <SelectItem value='' className='font-semibold'>
-            Course levels
+            Semua Tingkatan
           </SelectItem>
           <SelectItem value='beginner'>Beginner</SelectItem>
           <SelectItem value='intermediate'>Intermediate</SelectItem>

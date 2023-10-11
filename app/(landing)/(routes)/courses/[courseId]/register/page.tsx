@@ -1,14 +1,23 @@
 import Image from 'next/image';
-import InstructorRegistrationForm from './_components/InstructorRegistrationForm';
 import Link from 'next/link';
 import { db } from '@/lib/db';
+import { notFound } from 'next/navigation';
+import CourseRegistrationForm from './_components/CourseRegistrationForm';
 
-const Page = async () => {
-  const skills = await db.skill.findMany({
-    orderBy: {
-      name: 'asc',
+interface PageProps {
+  params: {
+    courseId: string;
+  };
+}
+
+const Page = async ({ params: { courseId } }: PageProps) => {
+  const course = await db.course.findUnique({
+    where: {
+      id: courseId,
     },
   });
+
+  if (!course) return notFound();
 
   return (
     <div>
@@ -16,16 +25,16 @@ const Page = async () => {
         <div className='relative container max-w-7xl text-center py-24'>
           <div className='flex flex-col items-center gap-y-2'>
             <h1 className='font-josefin font-bold text-3xl md:text-4xl lg:text-5xl text-white animate-appearance-in'>
-              Daftar Instruktur
+              Daftar Kursus {course.name}
             </h1>
             <ul className='flex justify-center items-center gap-3 text-white font-semibold'>
               <li>
-                <Link href='/' className='hover:text-primary-yellow'>
-                  Beranda
+                <Link href='/courses' className='hover:text-primary-yellow'>
+                  Kursus
                 </Link>
               </li>
               <li className='bg-white w-[6px] h-[6px] rounded-full'></li>
-              <li>Daftar Instruktur</li>
+              <li>Daftar Kursus {course.name}</li>
             </ul>
           </div>
           <Image
@@ -47,7 +56,7 @@ const Page = async () => {
       </div>
 
       <div className='flex justify-center'>
-        <InstructorRegistrationForm skills={skills} />
+        <CourseRegistrationForm courseId={courseId} />
       </div>
     </div>
   );

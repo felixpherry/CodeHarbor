@@ -43,7 +43,7 @@ const CourseProgramBadges = ({ programs }: CourseProgramBadgesProps) => {
         variant={program ? 'filter-badge' : 'filter-badge-active'}
         className='p-3 cursor-pointer'
       >
-        All Programs
+        Semua Program
       </Badge>
       {programs.map(({ id, name }) => (
         <Badge

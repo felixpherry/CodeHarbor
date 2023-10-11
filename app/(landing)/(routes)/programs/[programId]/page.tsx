@@ -58,7 +58,7 @@ const Page = async ({ params: { programId } }: PageProps) => {
             <ul className='flex justify-center items-center gap-3 text-white font-semibold'>
               <li>
                 <Link href='/' className='hover:text-primary-yellow'>
-                  Home
+                  Beranda
                 </Link>
               </li>
               <li className='bg-white w-[6px] h-[6px] rounded-full'></li>
@@ -99,10 +99,10 @@ const Page = async ({ params: { programId } }: PageProps) => {
                   <div className='flex justify-between items-center font-semibold'>
                     <span className='flex items-center gap-2'>
                       <Code2 className='w-6 h-6 text-primary-blue' />
-                      <span>Courses</span>
+                      <span>Kursus</span>
                     </span>
                     <span className='text-muted-foreground'>
-                      {courses.length} course{courses.length !== 1 && 's'}
+                      {courses.length} kursus
                     </span>
                   </div>
                   <Button
@@ -111,7 +111,7 @@ const Page = async ({ params: { programId } }: PageProps) => {
                     asChild
                   >
                     <Link href={`/register-trial-class`}>
-                      Register Trial Class
+                      Daftar Trial Class
                     </Link>
                   </Button>
                 </div>
@@ -129,9 +129,9 @@ const Page = async ({ params: { programId } }: PageProps) => {
                 <div className='flex items-center gap-3'>
                   <Code2 className='w-6 h-6 text-primary-blue' />
                   <div className='flex flex-col'>
-                    <span className='text-muted-foreground'>Courses</span>
+                    <span className='text-muted-foreground'>Kursus</span>
                     <span className='font-semibold'>
-                      {courses.length} course{courses.length !== 1 && 's'}
+                      {courses.length} kursus
                     </span>
                   </div>
                 </div>
@@ -145,7 +145,7 @@ const Page = async ({ params: { programId } }: PageProps) => {
                   </div>
                 </div>
               </div>
-              <h3 className='text-2xl font-bold'>Program Oveview</h3>
+              <h3 className='text-2xl font-bold'>Deskripsi</h3>
               <div className=''>
                 <Preview
                   value={description || ''}
@@ -158,7 +158,7 @@ const Page = async ({ params: { programId } }: PageProps) => {
         <div className='lg:px-10 mt-28'>
           <section className='flexCenter w-full gap-8 mt-28'>
             <span className='w-full h-0.5 bg-light-white-200' />
-            <span className='text-center text-3xl font-bold'>Courses</span>
+            <span className='text-center text-3xl font-bold'>Kursus</span>
             <span className='w-full h-0.5 bg-light-white-200' />
           </section>
 

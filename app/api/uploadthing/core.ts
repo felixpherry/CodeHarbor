@@ -6,8 +6,8 @@ const f = createUploadthing();
 
 const handleAuth = async () => {
   const session = (await getCurrentUser()) as SessionInterface;
+  console.log({ session });
   if (!session) throw new Error('Unauthorized');
-
   return {
     userId: session.user.id,
   };

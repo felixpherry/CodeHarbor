@@ -22,16 +22,16 @@ const Page = async ({ searchParams }: CoursePageProps) => {
         <div className='relative container max-w-7xl text-center py-24'>
           <div className='flex flex-col items-center gap-y-2'>
             <h1 className='font-josefin font-bold text-3xl md:text-4xl lg:text-5xl text-white animate-appearance-in'>
-              Courses
+              Kursus
             </h1>
             <ul className='flex justify-center items-center gap-3 text-white font-semibold'>
               <li>
                 <Link href='/' className='hover:text-primary-yellow'>
-                  Home
+                  Beranda
                 </Link>
               </li>
               <li className='bg-white w-[6px] h-[6px] rounded-full'></li>
-              <li>Courses</li>
+              <li>Kursus</li>
             </ul>
           </div>
           <Image
@@ -51,8 +51,8 @@ const Page = async ({ searchParams }: CoursePageProps) => {
         </div>
       </div>
       <div className='container max-w-7xl my-28'>
-        <h3 className='text-4xl font-semibold'>Course Catalogue</h3>
-        <p className='text-lg mt-1 text-slate-700'>Explore our courses</p>
+        <h3 className='text-4xl font-semibold'>Daftar Kursus</h3>
+        <p className='text-lg mt-1 text-slate-700'>Jelajahi kursus kami</p>
         <CoursesFilter />
         <Suspense fallback={<CoursesSkeleton />}>
           <Courses searchParams={searchParams} />

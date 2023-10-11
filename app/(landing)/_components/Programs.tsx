@@ -17,16 +17,18 @@ const Programs = async ({ programs }: ProgramsProps) => {
   return (
     <div className='container max-w-7xl my-28'>
       <div className='text-center'>
-        <h3 className='text-4xl font-bold'>Explore Our Program Catalog</h3>
+        <h3 className='text-4xl font-bold'>Jelajahi Katalog Program Kami</h3>
         <p className='text-lg mt-3 text-slate-700'>
-          Discover a World of Learning Opportunities
+          Temukan dunia pembelajaran yang tak terhingga
         </p>
       </div>
       <div className='my-10'>
         <ProgramsFilter categories={categories} />
       </div>
       {!programs.length && (
-        <p className='font-semibold text-xl text-center'>Programs not found</p>
+        <p className='font-semibold text-xl text-center'>
+          Program tidak dapat ditemukan
+        </p>
       )}
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
         {programs.map((program) => (

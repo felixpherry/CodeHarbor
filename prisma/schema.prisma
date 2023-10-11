@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Hero {
-  id       String @id @default(uuid())
+  id       String @id @default(cuid())
   title    String
   subtitle String
   image    String @db.Text
@@ -19,7 +19,7 @@ model Hero {
 }
 
 model Logo {
-  id    String @id @default(uuid())
+  id    String @id @default(cuid())
   image String @db.Text
 
   createdAt DateTime @default(now())
@@ -27,7 +27,7 @@ model Logo {
 }
 
 model Faq {
-  id       String @id @default(uuid())
+  id       String @id @default(cuid())
   question String @db.Text
   answer   String @db.Text
 
@@ -47,28 +47,27 @@ enum RegistrationStatus {
 }
 
 model TrialClassRegistration {
-  id                   String             @id @default(uuid())
-  childName            String
-  dateOfBirth          DateTime
-  birthPlace           String
-  childGender          Gender
-  educationInstitution String
-  gradeClass           String
-  trialClassDate       DateTime
-  parentName           String
-  email                String             @unique
-  phoneNumber          String             @unique
-  address              String             @db.Text
-  hobby                String
-  ambition             String
-  status               RegistrationStatus @default(PENDING)
+  id             String             @id @default(cuid())
+  childName      String
+  dateOfBirth    DateTime
+  birthPlace     String
+  trialClassDate DateTime
+  parentName     String
+  email          String             @unique
+  phoneNumber    String             @unique
+  status         RegistrationStatus @default(PENDING)
+
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  courseId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([courseId])
 }
 
 model Category {
-  id             String @id @default(uuid())
+  id             String @id @default(cuid())
   name           String @unique
   ageDescription String @unique
 
@@ -79,7 +78,7 @@ model Category {
 }
 
 model Program {
-  id          String  @id @default(uuid())
+  id          String  @id @default(cuid())
   name        String  @unique
   subtitle    String?
   description String? @db.LongText
@@ -104,7 +103,7 @@ enum Level {
 }
 
 model Course {
-  id               String  @id @default(uuid())
+  id               String  @id @default(cuid())
   name             String  @unique
   code             String? @unique
   description      String? @db.LongText
@@ -119,10 +118,11 @@ model Course {
   category   Category? @relation(fields: [categoryId], references: [id])
   categoryId String?
 
-  registrations ProgramClassRegistration[]
-  classes       Class[]
-  sessions      Session[]
-  instructors   Instructor[]
+  registrations           CourseRegistration[]
+  classes                 Class[]
+  sessions                Session[]
+  instructors             Instructor[]
+  trialClassRegistrations TrialClassRegistration[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -131,8 +131,24 @@ model Course {
   @@index([categoryId])
 }
 
-model ProgramClassRegistration {
-  id                   String             @id @default(uuid())
+model Coupon {
+  id String @id @default(cuid())
+
+  name        String
+  email       String
+  phoneNumber String
+  code        String @unique
+
+  expiredAt DateTime
+
+  registrations CourseRegistration[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CourseRegistration {
+  id                   String             @id @default(cuid())
   childName            String
   dateOfBirth          DateTime
   birthPlace           String
@@ -143,8 +159,8 @@ model ProgramClassRegistration {
   email                String             @unique
   phoneNumber          String             @unique
   address              String             @db.Text
-  hobby                String
-  ambition             String
+  coupon               Coupon?            @relation(fields: [couponId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  couponId             String?
   status               RegistrationStatus @default(PENDING)
 
   course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -154,10 +170,11 @@ model ProgramClassRegistration {
   updatedAt DateTime @updatedAt
 
   @@index([courseId])
+  @@index([couponId])
 }
 
 model Skill {
-  id   String @id @default(uuid())
+  id   String @id @default(cuid())
   name String
 
   instructorRegistrations InstructorRegistration[]
@@ -175,7 +192,7 @@ enum LastEducation {
 }
 
 model InstructorRegistration {
-  id                   String             @id @default(uuid())
+  id                   String             @id @default(cuid())
   name                 String
   dateOfBirth          DateTime
   lastEducation        LastEducation
@@ -204,7 +221,7 @@ enum Role {
 }
 
 model Account {
-  id          String  @id @default(uuid())
+  id          String  @id @default(cuid())
   name        String
   username    String? @unique
   email       String  @unique
@@ -226,7 +243,7 @@ model Account {
 }
 
 model Admin {
-  id String @id @default(uuid())
+  id String @id @default(cuid())
 
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   accountId String  @unique
@@ -240,7 +257,7 @@ model Admin {
 }
 
 model Instructor {
-  id                   String   @id @default(uuid())
+  id                   String   @id @default(cuid())
   dateOfBirth          DateTime
   lastEducation        String
   educationInstitution String
@@ -261,7 +278,7 @@ model Instructor {
 }
 
 model Parent {
-  id String @id @default(uuid())
+  id String @id @default(cuid())
 
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   accountId String  @unique
@@ -275,7 +292,7 @@ model Parent {
 }
 
 model Period {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   name      String   @unique
   startDate DateTime
   endDate   DateTime
@@ -287,7 +304,7 @@ model Period {
 }
 
 model Class {
-  id   String @id @default(uuid())
+  id   String @id @default(cuid())
   name String
 
   course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -312,7 +329,7 @@ model Class {
 }
 
 model Session {
-  id String @id @default(uuid())
+  id String @id @default(cuid())
 
   main        String  @db.LongText
   description String? @db.LongText
@@ -333,7 +350,7 @@ model Session {
 }
 
 model Attachment {
-  id       String @id @default(uuid())
+  id       String @id @default(cuid())
   filename String
   fileUrl  String @db.Text
   fileType String
@@ -348,7 +365,7 @@ model Attachment {
 }
 
 model OtherAttachment {
-  id      String @id @default(uuid())
+  id      String @id @default(cuid())
   name    String
   type    String
   fileUrl String
@@ -363,7 +380,7 @@ model OtherAttachment {
 }
 
 model Schedule {
-  id            String    @id @default(uuid())
+  id            String    @id @default(cuid())
   sessionNumber Int
   date          DateTime?
   time          String?
@@ -381,7 +398,7 @@ model Schedule {
 }
 
 model Student {
-  id        String @id @default(uuid())
+  id        String @id @default(cuid())
   studentId String @unique
 
   dateOfBirth          DateTime

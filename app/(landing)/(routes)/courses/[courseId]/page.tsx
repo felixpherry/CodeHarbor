@@ -98,7 +98,7 @@ const Page = async ({ params: { courseId } }: PageProps) => {
             <ul className='flex justify-center items-center gap-3 text-white font-semibold'>
               <li>
                 <Link href='/courses' className='hover:text-primary-yellow'>
-                  Courses
+                  Kursus
                 </Link>
               </li>
               <li className='bg-white w-[6px] h-[6px] rounded-full'></li>
@@ -139,7 +139,7 @@ const Page = async ({ params: { courseId } }: PageProps) => {
                   <div className='flex justify-between items-center font-semibold'>
                     <span className='flex items-center gap-2'>
                       <Shapes className='w-6 h-6 text-primary-blue' />
-                      <span>Category</span>
+                      <span>Kategori</span>
                     </span>
                     <span className='text-muted-foreground'>
                       {category?.ageDescription}
@@ -148,7 +148,7 @@ const Page = async ({ params: { courseId } }: PageProps) => {
                   <div className='flex justify-between items-center font-semibold'>
                     <span className='flex items-center gap-2'>
                       <BarChart className='w-6 h-6 text-primary-blue' />
-                      <span>Level</span>
+                      <span>Tingkatan</span>
                     </span>
                     <span className='text-muted-foreground'>
                       {level?.[0]! + level?.substring(1).toLocaleLowerCase()!}
@@ -157,24 +157,27 @@ const Page = async ({ params: { courseId } }: PageProps) => {
                   <div className='flex justify-between items-center font-semibold'>
                     <span className='flex items-center gap-2'>
                       <CalendarDays className='w-6 h-6 text-primary-blue' />
-                      <span>Sessions</span>
+                      <span>Sesi</span>
                     </span>
                     <span className='text-muted-foreground'>
-                      {_count.sessions} session{_count.sessions !== 1 && 's'}
+                      {_count.sessions} sesi
                     </span>
                   </div>
-                  <div className='flex justify-between items-center font-semibold'>
-                    <span className='flex items-center gap-2'>
-                      <GraduationCap className='w-6 h-6 text-primary-blue' />
-                      <span>Enrolled</span>
-                    </span>
-                    <span className='text-muted-foreground'>
-                      {students} student{students !== 1 && 's'}
-                    </span>
-                  </div>
+                  {students >= 10 && (
+                    <div className='flex justify-between items-center font-semibold'>
+                      <span className='flex items-center gap-2'>
+                        <GraduationCap className='w-6 h-6 text-primary-blue' />
+                        <span>Enrolled</span>
+                      </span>
+                      <span className='text-muted-foreground'>
+                        {students} siswa
+                      </span>
+                    </div>
+                  )}
+
                   <div className='flex flex-col gap-3'>
                     <Button variant='primary-blue' className='w-full' asChild>
-                      <Link href={`/courses/${id}/enroll`}>Enroll</Link>
+                      <Link href={`/courses/${id}/register`}>Daftar</Link>
                     </Button>
                     <Button
                       variant='primary-blue-outline'
@@ -182,7 +185,7 @@ const Page = async ({ params: { courseId } }: PageProps) => {
                       asChild
                     >
                       <Link href={`/register-trial-class`}>
-                        Register Trial Class
+                        Daftar Trial Class
                       </Link>
                     </Button>
                   </div>
@@ -205,7 +208,7 @@ const Page = async ({ params: { courseId } }: PageProps) => {
                 <div className='flex items-center gap-3'>
                   <Shapes className='w-6 h-6 text-primary-blue' />
                   <div className='flex flex-col'>
-                    <span className='text-muted-foreground'>Category</span>
+                    <span className='text-muted-foreground'>Kategori</span>
                     <span className='font-semibold'>
                       {category?.ageDescription}
                     </span>
@@ -214,20 +217,23 @@ const Page = async ({ params: { courseId } }: PageProps) => {
                 <div className='flex items-center gap-3'>
                   <BarChart className='w-6 h-6 text-primary-blue' />
                   <div className='flex flex-col'>
-                    <span className='text-muted-foreground'>Level</span>
+                    <span className='text-muted-foreground'>Tingkatan</span>
                     <span className='font-semibold'>
                       {level?.[0]! + level?.substring(1)?.toLocaleLowerCase() ||
                         ''}
                     </span>
                   </div>
                 </div>
-                <div className='flex items-center gap-3'>
-                  <Users className='w-6 h-6 text-primary-blue' />
-                  <div className='flex flex-col'>
-                    <span className='text-muted-foreground'>Students</span>
-                    <span className='font-semibold'>{students}</span>
+                {students >= 10 && (
+                  <div className='flex items-center gap-3'>
+                    <Users className='w-6 h-6 text-primary-blue' />
+                    <div className='flex flex-col'>
+                      <span className='text-muted-foreground'>Siswa</span>
+                      <span className='font-semibold'>{students}</span>
+                    </div>
                   </div>
-                </div>
+                )}
+
                 <div className='flex items-center gap-3'>
                   <CalendarCheck className='w-6 h-6 text-primary-blue' />
                   <div className='flex flex-col'>
@@ -238,15 +244,15 @@ const Page = async ({ params: { courseId } }: PageProps) => {
                   </div>
                 </div>
               </div>
-              <h3 className='text-2xl font-bold'>Course Oveview</h3>
+              <h3 className='text-2xl font-bold'>Deskripsi</h3>
               <div className=''>
                 <Preview
                   value={description || ''}
                   className='[&_.ql-editor]:px-0 text-muted-foreground'
                 />
               </div>
-              <h3 className='text-2xl font-bold'>Programming Tools</h3>
-              <div className=''>
+              <h3 className='text-2xl font-bold'>Alat Pemrograman</h3>
+              <div>
                 <Preview
                   value={programmingTools || ''}
                   className='[&_.ql-editor]:px-0 [&_ul]:!p-0 text-muted-foreground'

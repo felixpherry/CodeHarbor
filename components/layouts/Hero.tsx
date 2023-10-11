@@ -36,14 +36,17 @@ const Hero = ({ title, subtitle, image, session }: HeroProps) => {
               <Button
                 variant='primary-blue'
                 className='h-14 rounded-full px-12 text-base font-semibold'
+                asChild
               >
-                Daftar Trial Class
+                <Link href='/register-trial-class'>Daftar Trial Class</Link>
               </Button>
+
               <Button
                 variant='primary-blue-outline'
                 className='h-14 rounded-full px-12 text-base font-semibold'
+                asChild
               >
-                Lihat Program
+                <Link href='/courses'>Lihat Kursus</Link>
               </Button>
             </>
           ) : (

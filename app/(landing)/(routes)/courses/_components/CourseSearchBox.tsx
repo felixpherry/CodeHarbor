@@ -21,7 +21,7 @@ const CourseSearchBox = () => {
     };
     const fn = setTimeout(searchCourses, 1000);
     return () => clearTimeout(fn);
-  }, [search]);
+  }, [pathname, router, search, searchParams]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -35,7 +35,7 @@ const CourseSearchBox = () => {
         value={search}
         onChange={handleSearch}
         className='flex h-9 w-full rounded-md border border-slate-200 bg-transparent px-3 py-1 text-sm placeholder:text-slate-500 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none border-none shadow-none outline-none'
-        placeholder='Search courses...'
+        placeholder='Cari kursus...'
       />
     </div>
   );

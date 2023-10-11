@@ -35,9 +35,9 @@ const ProgramRecommendations = async ({
   return (
     <div className='mt-10 lg:px-10'>
       <div className='flex justify-between items-center'>
-        <h3 className='text-3xl font-semibold'>Other Programs</h3>
+        <h3 className='text-3xl font-semibold'>Program Lainnya</h3>
         <Link href='/' className='hover:underline text-primary-blue'>
-          View All
+          Lihat Semua
         </Link>
       </div>
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8'>

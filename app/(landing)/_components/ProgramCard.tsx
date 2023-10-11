@@ -33,11 +33,9 @@ const ProgramCard = ({ program }: ProgramCardProps) => {
           <h3 className='text-2xl font-semibold'>
             <Link href={`/programs/${id}`}>{name}</Link>
           </h3>
-          <div className='flex items-center gap-2 text-sm text-muted-foreground mt-2'>
-            <GraduationCap className='w-4 h-4 text-primary-blue' />
-            <span>
-              {_count.courses} course{_count.courses !== 1 && 's'}
-            </span>
+          <div className='flex items-center gap-2 text-lg text-muted-foreground mt-2'>
+            <GraduationCap className='w-6 h-6 text-primary-blue' />
+            <span>{_count.courses} kursus</span>
           </div>
         </div>
         <span className='text-sm text-muted-foreground'>
@@ -54,7 +52,7 @@ const ProgramCard = ({ program }: ProgramCardProps) => {
           asChild
           className='w-full text-sm'
         >
-          <Link href={`/programs/${id}`}>Program Details</Link>
+          <Link href={`/programs/${id}`}>Lihat Detail</Link>
         </Button>
       </CardFooter>
     </Card>

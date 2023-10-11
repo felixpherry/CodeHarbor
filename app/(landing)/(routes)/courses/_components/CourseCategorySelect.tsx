@@ -37,12 +37,12 @@ const CourseCategorySelect = ({ categories }: CourseCategorySelectProps) => {
   return (
     <Select value={category} onValueChange={handleFilter}>
       <SelectTrigger className='col-span-1 w-full min-h-[56px] focus:outline-none active:outline-none text-slate-500 text-medium font-semibold shadow-md'>
-        <SelectValue placeholder='Categories' />
+        <SelectValue placeholder='Pilih Kategori' />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
           <SelectItem value='' className='font-semibold'>
-            Categories
+            Semua Kategori
           </SelectItem>
           {categories.map(({ id, ageDescription }) => (
             <SelectItem key={id} value={id}>

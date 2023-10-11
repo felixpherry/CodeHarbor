@@ -1,29 +1,17 @@
 import * as z from 'zod';
 
 export const TrialClassValidation = z.object({
-  childName: z.string().nonempty({
+  childName: z.string().min(1, {
     message: 'Nama anak wajib diisi',
   }),
   dateOfBirth: z.date(),
-  birthPlace: z.string().nonempty({
+  birthPlace: z.string().min(1, {
     message: 'Tempat lahir anak wajib diisi',
   }),
-  childGender: z.enum(['MALE', 'FEMALE'], {
-    required_error: 'Jenis kelamin wajib diisi',
-  }),
-  educationInstitution: z.string().nonempty({
-    message: 'Asal sekolah wajib diisi',
-  }),
-  gradeClass: z.string().nonempty({
-    message: 'Kelas wajib diisi',
-  }),
-  parentName: z.string().nonempty({
+  parentName: z.string().min(1, {
     message: 'Nama orang tua wajib diisi',
   }),
-  address: z.string().nonempty({
-    message: 'Alamat wajib diisi',
-  }),
-  phoneNumber: z.string().nonempty({
+  phoneNumber: z.string().min(1, {
     message: 'No. HP wajib diisi',
   }),
   email: z
@@ -31,12 +19,9 @@ export const TrialClassValidation = z.object({
     .email({
       message: 'Masukkan email yang valid',
     })
-    .nonempty(),
-  hobby: z.string().nonempty({
-    message: 'Hobi wajib diisi',
-  }),
-  ambition: z.string().nonempty({
-    message: 'Cita-cita wajib diisi',
-  }),
+    .min(1),
   trialClassDate: z.date(),
+  courseId: z.string().min(1, {
+    message: 'Kursus wajib dipilih',
+  }),
 });

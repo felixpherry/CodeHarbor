@@ -57,9 +57,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
             <div className='flex flex-start items-center gap-1 text-sm text-muted-foreground mt-2'>
               <div className='flex items-center gap-1'>
                 <CalendarDays className='w-4 h-4 text-primary-blue' />
-                <span>
-                  {_count.sessions} session{_count.sessions !== 1 && 's'}
-                </span>
+                <span>{_count.sessions} sesi</span>
               </div>
               <div className='flex items-center gap-1'>
                 <Dot className='w-5 h-5 text-primary-blue' />
@@ -81,7 +79,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
             asChild
             className='w-1/2 text-sm'
           >
-            <Link href={`/courses/${id}/enroll`}>Enroll</Link>
+            <Link href={`/courses/${id}/register`}>Daftar</Link>
           </Button>
           <Button
             variant='primary-blue-outline'
@@ -89,7 +87,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
             asChild
             className='w-1/2 text-sm'
           >
-            <Link href={`/courses/${id}`}>Course Details</Link>
+            <Link href={`/courses/${id}`}>Lihat Detail</Link>
           </Button>
         </CardFooter>
       </Card>

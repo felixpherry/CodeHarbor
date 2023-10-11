@@ -45,7 +45,7 @@ const ProgramsFilter = ({ categories }: ProgramsFilterProps) => {
         variant={category ? 'filter-badge' : 'filter-badge-active'}
         className='p-3 cursor-pointer'
       >
-        All Categories
+        Semua Kategori
       </Badge>
       {categories.map(({ id, ageDescription }) => (
         <Badge

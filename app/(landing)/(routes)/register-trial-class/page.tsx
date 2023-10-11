@@ -1,12 +1,15 @@
 import Image from 'next/image';
-import InstructorRegistrationForm from './_components/InstructorRegistrationForm';
 import Link from 'next/link';
 import { db } from '@/lib/db';
+import TrialClassRegistrationForm from './_components/TrialClassRegistrationForm';
 
 const Page = async () => {
-  const skills = await db.skill.findMany({
-    orderBy: {
-      name: 'asc',
+  const courses = await db.course.findMany({
+    where: {
+      isPublished: true,
+      program: {
+        isPublished: true,
+      },
     },
   });
 
@@ -16,7 +19,7 @@ const Page = async () => {
         <div className='relative container max-w-7xl text-center py-24'>
           <div className='flex flex-col items-center gap-y-2'>
             <h1 className='font-josefin font-bold text-3xl md:text-4xl lg:text-5xl text-white animate-appearance-in'>
-              Daftar Instruktur
+              Daftar Trial Class
             </h1>
             <ul className='flex justify-center items-center gap-3 text-white font-semibold'>
               <li>
@@ -25,7 +28,7 @@ const Page = async () => {
                 </Link>
               </li>
               <li className='bg-white w-[6px] h-[6px] rounded-full'></li>
-              <li>Daftar Instruktur</li>
+              <li>Daftar Trial Class</li>
             </ul>
           </div>
           <Image
@@ -47,7 +50,7 @@ const Page = async () => {
       </div>
 
       <div className='flex justify-center'>
-        <InstructorRegistrationForm skills={skills} />
+        <TrialClassRegistrationForm courses={courses} />
       </div>
     </div>
   );

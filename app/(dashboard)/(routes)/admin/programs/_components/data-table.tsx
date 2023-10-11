@@ -54,19 +54,19 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className='flex items-center justify-between py-4'>
+      <div className='flex flex-col items-start md:flex-row md:items-center justify-between py-4 gap-y-3'>
         <Input
           placeholder='Filter programs...'
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
             table.getColumn('name')?.setFilterValue(event.target.value)
           }
-          className='max-w-sm'
+          className='w-full md:w-96'
         />
-        <Button asChild>
+        <Button size='sm' asChild>
           <Link href='/admin/programs/create'>
-            <PlusCircle />
-            New Program
+            <PlusCircle className='h-4 w-4' />
+            Add
           </Link>
         </Button>
       </div>

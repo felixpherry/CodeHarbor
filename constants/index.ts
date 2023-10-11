@@ -18,18 +18,18 @@ import dynamicIconImports from 'lucide-react/dynamicIconImports';
 export const NavLinks = [
   {
     href: '/',
-    key: 'Home',
-    text: 'Home',
+    key: 'Beranda',
+    text: 'Beranda',
   },
   {
     href: '/courses',
-    key: 'Courses',
-    text: 'Courses',
+    key: 'Kursus',
+    text: 'Kursus',
   },
   {
     href: '/register-instructor',
-    key: 'Become an Instructor',
-    text: 'Become an Instructor',
+    key: 'Daftar Instruktur',
+    text: 'Daftar Instruktur',
   },
 ];
 

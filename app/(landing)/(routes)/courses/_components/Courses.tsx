@@ -49,8 +49,8 @@ const Courses = async ({ searchParams }: CoursesProps) => {
     orderBy: {
       name: 'asc',
     },
-    take: 24,
-    skip: ((Number(searchParams.page) || 1) - 1) * 24,
+    take: 12,
+    skip: ((Number(searchParams.page) || 1) - 1) * 12,
   });
 
   const count = await db.course.count({
@@ -70,11 +70,13 @@ const Courses = async ({ searchParams }: CoursesProps) => {
     },
   });
 
-  const hasNextPage = (Number(searchParams.page) || 1) * 24 < count;
+  const hasNextPage = (Number(searchParams.page) || 1) * 12 < count;
   return (
     <>
       {!courses.length && (
-        <p className='font-semibold text-xl text-center'>Courses not found</p>
+        <p className='font-semibold text-xl text-center'>
+          Kursus tidak dapat ditemukan
+        </p>
       )}
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
         {courses.map((course) => (

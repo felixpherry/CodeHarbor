@@ -32,12 +32,7 @@ const Page = async ({
 
   if (!session) return notFound();
 
-  const requiredFields = [
-    session.main,
-    session.description,
-    session.reference,
-    session.attachments.length,
-  ];
+  const requiredFields = [session.main, session.description, session.reference];
 
   const totalFields = requiredFields.length;
 
