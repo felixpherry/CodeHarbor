@@ -4,7 +4,9 @@ export const TrialClassValidation = z.object({
   childName: z.string().min(1, {
     message: 'Nama anak wajib diisi',
   }),
-  dateOfBirth: z.date(),
+  dateOfBirth: z.coerce.date({
+    required_error: 'Tanggal lahir wajib diisi',
+  }),
   birthPlace: z.string().min(1, {
     message: 'Tempat lahir anak wajib diisi',
   }),

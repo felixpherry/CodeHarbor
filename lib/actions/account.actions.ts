@@ -3,6 +3,11 @@
 import { revalidatePath } from 'next/cache';
 import { db } from '../db';
 import bcrypt from 'bcrypt';
+import { getCurrentUser } from '../session';
+
+export const getSession = async () => {
+  return await getCurrentUser();
+};
 
 export const fetchAccountDetail = async (id: string) => {
   try {

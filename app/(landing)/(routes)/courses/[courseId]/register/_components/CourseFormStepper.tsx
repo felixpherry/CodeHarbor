@@ -8,7 +8,7 @@ interface CourseFormSidebarProps {
 
 const CourseFormStepper = ({ steps, currentStep }: CourseFormSidebarProps) => {
   return (
-    <Card className='w-full md:w-[330px] h-fit p-8 shadow bg-gradient-to-l from-[#273575] to-[#004AAD] text-white'>
+    <Card className='h-fit p-8 shadow bg-gradient-to-l from-[#273575] to-[#004AAD] text-white'>
       <CardContent className='flex flex-col gap-6'>
         {steps.map((step, idx) => (
           <div key={idx} className='flex gap-3 items-center'>

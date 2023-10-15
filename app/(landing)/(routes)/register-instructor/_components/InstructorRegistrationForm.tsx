@@ -1,6 +1,5 @@
 'use client';
 
-import DatePicker from '@/components/shared/DatePicker';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -26,19 +25,25 @@ import { Card, CardContent, CardTitle } from '@/components/ui/card';
 
 const formSchema = z.object({
   name: z.string().min(1, {
-    message: 'Name is required',
+    message: 'Nama wajib diisi',
   }),
-  dateOfBirth: z.date(),
-  lastEducation: z.enum(['SMA', 'S1', 'S2', 'S3']),
+  dateOfBirth: z.coerce.date({
+    required_error: 'Tanggal lahir wajib diisi',
+  }),
+  lastEducation: z.enum(['SMA', 'S1', 'S2', 'S3'], {
+    required_error: 'Pendidikan terakhir wajib dipilih',
+  }),
   educationInstitution: z.string().min(1, {
-    message: 'Education institution is required',
+    message: 'Institusi pendidikan wajib diisi',
   }),
-  email: z.string().email(),
-  phoneNumber: z.coerce.string().nonempty({
-    message: 'Phone number is required',
+  email: z.string().email({
+    message: 'Masukkan email yang valid',
+  }),
+  phoneNumber: z.coerce.string().min(1, {
+    message: 'No. HP wajib diisi',
   }),
   address: z.string().min(1, {
-    message: 'Address is required',
+    message: 'Alamat wajib diisi',
   }),
   skills: z.any(),
 });
@@ -167,7 +172,11 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
                   <FormItem>
                     <FormLabel>Tanggal Lahir</FormLabel>
                     <FormControl>
-                      <DatePicker date={field.value} setDate={field.onChange} />
+                      <Input
+                        type='date'
+                        value={field.value.toString()}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -32,6 +32,8 @@ const ProgramRecommendations = async ({
     },
     take: 3,
   });
+
+  if (!programs.length) return null;
   return (
     <div className='mt-10 lg:px-10'>
       <div className='flex justify-between items-center'>

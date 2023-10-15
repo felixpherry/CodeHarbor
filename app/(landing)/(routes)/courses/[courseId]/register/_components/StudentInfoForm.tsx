@@ -1,6 +1,5 @@
 'use client';
 
-import DatePicker from '@/components/shared/DatePicker';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -28,7 +27,9 @@ export const studentInfoSchema = z.object({
   childName: z.string().min(1, {
     message: 'Nama anak wajib diisi',
   }),
-  dateOfBirth: z.date(),
+  dateOfBirth: z.coerce.date({
+    required_error: 'Tanggal lahir anak wajib diisi',
+  }),
   birthPlace: z.string().min(1, {
     message: 'Tempat lahir anak wajib diisi',
   }),
@@ -114,7 +115,11 @@ const StudentInfoForm = ({
               <FormItem>
                 <FormLabel>Tanggal Lahir</FormLabel>
                 <FormControl>
-                  <DatePicker date={field.value} setDate={field.onChange} />
+                  <Input
+                    type='date'
+                    value={field.value.toString()}
+                    onChange={field.onChange}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

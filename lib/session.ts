@@ -104,7 +104,7 @@ export const authOptions: NextAuthOptions = {
 
       if (!account) return { ...session };
 
-      const { id, role, status, phoneNumber, image, onboarded } = account;
+      const { id, role, status, image } = account;
       return {
         ...session,
         user: {

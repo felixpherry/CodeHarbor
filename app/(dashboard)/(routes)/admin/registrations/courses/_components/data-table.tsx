@@ -2,14 +2,14 @@
 
 import {
   ColumnDef,
-  ColumnFiltersState,
   SortingState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  ColumnFiltersState,
+  getFilteredRowModel,
 } from '@tanstack/react-table';
 
 import {
@@ -23,20 +23,26 @@ import {
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import Link from 'next/link';
-import { PlusCircle } from 'lucide-react';
+import StatusSelect from '../../_components/StatusSelect';
+import CoursesFilterSelect from '../../_components/CoursesFilterSelect';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  courseOptions: {
+    text: string;
+    value: string;
+  }[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  courseOptions,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
   const table = useReactTable({
     data,
     columns,
@@ -54,24 +60,22 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className='flex flex-col items-start md:flex-row md:items-center justify-between py-4 gap-y-3'>
+      <div className='flex items-center py-4 gap-x-5 gap-y-2 flex-col md:flex-row'>
         <Input
-          placeholder='Search programs...'
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            table.getColumn('name')?.setFilterValue(event.target.value)
+          placeholder='Search name...'
+          value={
+            (table.getColumn('childName')?.getFilterValue() as string) ?? ''
           }
-          className='w-full md:w-96'
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            table.getColumn('childName')?.setFilterValue(event.target.value)
+          }
+          className='w-full md:w-1/3'
         />
-        <Button size='sm' asChild>
-          <Link href='/admin/programs/create'>
-            <PlusCircle className='h-4 w-4' />
-            Add
-          </Link>
-        </Button>
+        <StatusSelect />
+        <CoursesFilterSelect courseOptions={courseOptions} />
       </div>
       <div className='rounded-md border'>
-        <Table>
+        <Table className='text-muted-foreground font-semibold'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -92,19 +96,23 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map((row, rowIdx) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell, cellIdx) => {
+                    if (cellIdx === 0)
+                      return <TableCell>{rowIdx + 1}</TableCell>;
+                    return (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    );
+                  })}
                 </TableRow>
               ))
             ) : (

@@ -9,12 +9,17 @@ import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
+import { registerCourse } from '../_actions';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 interface CourseConfirmationFormProps {
   currentStep: number;
   setCurrentStep: (newStep: number) => void;
   studentInfo: z.infer<typeof studentInfoSchema>;
   parentInfo: z.infer<typeof parentInfoSchema>;
+  couponId: string;
+  courseId: string;
 }
 
 const CourseConfirmationForm = ({
@@ -22,11 +27,35 @@ const CourseConfirmationForm = ({
   setCurrentStep,
   studentInfo,
   parentInfo,
+  couponId,
+  courseId,
 }: CourseConfirmationFormProps) => {
-  const [useCoupon, setUseCoupon] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const handleStepBack = () => {
     setCurrentStep(currentStep - 1);
+  };
+
+  const router = useRouter();
+
+  const onSubmit = async () => {
+    try {
+      setIsLoading(true);
+      await registerCourse({
+        payload: {
+          couponId,
+          courseId,
+          ...studentInfo,
+          ...parentInfo,
+        },
+      });
+
+      toast.success('Pendaftaran berhasil. Silakan tunggu kontak dari admin.');
+      router.push('/');
+    } catch {
+      toast.error('Pendaftaran gagal. Silakan coba beberapa saat lagi');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -35,100 +64,87 @@ const CourseConfirmationForm = ({
       <p className='text-muted-foreground'>
         Periksa kembali semua data sebelum mengonfirmasi
       </p>
-      <div className='flex flex-col gap-5 mt-10'>
-        <Card className='shadow p-5'>
-          <CardContent>
+      <div className='mt-10 p-8 shadow rounded-sm flex flex-col gap-12 md:gap-16'>
+        <div className=''>
+          <div className='flex justify-between items-center'>
             <h3 className='text-xl font-semibold'>Data Calon Siswa</h3>
-            <div className='flex flex-col gap-3 mt-3'>
-              <div className='flex justify-between text-primary font-semibold'>
-                <span className='text-muted-foreground'>Nama Anak</span>
-                <span>{studentInfo.childName}</span>
-              </div>
-              <div className='flex justify-between text-primary font-semibold'>
-                <span className='text-muted-foreground'>Jenis Kelamin</span>
-                <span>
-                  {studentInfo.childGender === 'MALE'
-                    ? 'Laki-laki'
-                    : 'Perempuan'}
-                </span>
-              </div>
-              <div className='flex justify-between text-primary font-semibold'>
-                <span className='text-muted-foreground'>
-                  Tempat, Tanggal Lahir
-                </span>
-                <span>
-                  {studentInfo.birthPlace},{' '}
-                  {moment(studentInfo.dateOfBirth).format('DD MMMM YYYY')}
-                </span>
-              </div>
-              <div className='flex justify-between text-primary font-semibold'>
-                <span className='text-muted-foreground'>Kelas</span>
-                <span>{studentInfo.gradeClass}</span>
-              </div>
-              <div className='flex justify-between text-primary font-semibold'>
-                <span className='text-muted-foreground'>Asal Sekolah</span>
-                <span>{studentInfo.educationInstitution}</span>
-              </div>
-              <p
-                onClick={() => setCurrentStep(1)}
-                className='underline text-muted-foreground cursor-pointer hover:text-primary-blue font-medium'
-              >
-                Ubah data
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className='shadow p-5'>
-          <CardContent>
-            <h3 className='text-xl font-semibold'>Data Orang Tua</h3>
-            <div className='flex flex-col gap-3 mt-3'>
-              <div className='flex justify-between text-primary font-semibold'>
-                <span className='text-muted-foreground'>Nama Orang Tua</span>
-                <span>{parentInfo.parentName}</span>
-              </div>
-              <div className='flex justify-between text-primary font-semibold'>
-                <span className='text-muted-foreground'>Email</span>
-                <span>{parentInfo.email}</span>
-              </div>
-              <div className='flex justify-between text-primary font-semibold'>
-                <span className='text-muted-foreground'>No. HP</span>
-                <span>{parentInfo.phoneNumber}</span>
-              </div>
-              <div className='flex justify-between text-primary font-semibold'>
-                <span className='text-muted-foreground'>Alamat</span>
-                <span>{parentInfo.address}</span>
-              </div>
-              <p
-                onClick={() => setCurrentStep(2)}
-                className='underline text-muted-foreground cursor-pointer hover:text-primary-blue font-medium'
-              >
-                Ubah data
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-        {useCoupon ? (
-          <div className='relative'>
-            <Input placeholder='Masukkan Kode Kupon' />
-            <span className='text-primary-blue absolute right-4 cursor-pointer top-2 underline text-sm'>
-              Gunakan Kupon
+            <span
+              onClick={() => setCurrentStep(1)}
+              className='text-blue-500 hover:text-primary-blue cursor-pointer hover:underline font-medium'
+            >
+              Ganti
             </span>
           </div>
-        ) : (
-          <span
-            onClick={() => setUseCoupon(true)}
-            className='bg-sky-200/20 text-primary-blue underline w-fit cursor-pointer p-2 rounded-sm font-normal'
-          >
-            Klik untuk menggunakan kupon
-          </span>
-        )}
+          <div className='border-b border-slate-300 my-5'></div>
+          <div className='flex flex-col gap-2'>
+            <div className='flex flex-col md:flex-row justify-between text-primary font-semibold'>
+              <span className='text-muted-foreground'>Nama Anak</span>
+              <span>{studentInfo.childName}</span>
+            </div>
+            <div className='flex flex-col md:flex-row justify-between text-primary font-semibold'>
+              <span className='text-muted-foreground'>Jenis Kelamin</span>
+              <span>
+                {studentInfo.childGender === 'MALE' ? 'Laki-laki' : 'Perempuan'}
+              </span>
+            </div>
+            <div className='flex flex-col md:flex-row justify-between text-primary font-semibold'>
+              <span className='text-muted-foreground'>
+                Tempat, Tanggal Lahir
+              </span>
+              <span>
+                {studentInfo.birthPlace},{' '}
+                {moment(studentInfo.dateOfBirth).format('DD MMMM YYYY')}
+              </span>
+            </div>
+            <div className='flex flex-col md:flex-row justify-between text-primary font-semibold'>
+              <span className='text-muted-foreground'>Kelas</span>
+              <span>{studentInfo.gradeClass}</span>
+            </div>
+            <div className='flex flex-col md:flex-row justify-between text-primary font-semibold'>
+              <span className='text-muted-foreground'>Asal Sekolah</span>
+              <span>{studentInfo.educationInstitution}</span>
+            </div>
+          </div>
+        </div>
+        <div className=''>
+          <div className='flex justify-between items-center'>
+            <h3 className='text-xl font-semibold'>Data Orang Tua</h3>
+            <span
+              onClick={() => setCurrentStep(2)}
+              className='text-blue-500 hover:text-primary-blue cursor-pointer hover:underline font-medium'
+            >
+              Ganti
+            </span>
+          </div>
+          <div className='border-b border-slate-300 my-5'></div>
+          <div className='flex flex-col gap-2'>
+            <div className='flex flex-col md:flex-row justify-between text-primary font-semibold'>
+              <span className='text-muted-foreground'>Nama Orang Tua</span>
+              <span>{parentInfo.parentName}</span>
+            </div>
+            <div className='flex flex-col md:flex-row justify-between text-primary font-semibold'>
+              <span className='text-muted-foreground'>Email</span>
+              <span>{parentInfo.email}</span>
+            </div>
+            <div className='flex flex-col md:flex-row justify-between text-primary font-semibold'>
+              <span className='text-muted-foreground'>No. HP</span>
+              <span>{parentInfo.phoneNumber}</span>
+            </div>
+            <div className='flex flex-col md:flex-row justify-between text-primary font-semibold'>
+              <span className='text-muted-foreground'>Alamat</span>
+              <span>{parentInfo.address}</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
+      <div className='flex flex-col gap-5 mt-10'>
         <div className='flex justify-between'>
           <Button type='button' variant='outline' onClick={handleStepBack}>
             Kembali
           </Button>
-          <Button type='submit'>
-            {/* {isSubmitting && <Loader2 className='animate-spin mr-2 h-4 w-4' />} */}
+          <Button onClick={onSubmit} disabled={isLoading} type='submit'>
+            {isLoading && <Loader2 className='animate-spin mr-2 h-4 w-4' />}
             Konfirmasi
           </Button>
         </div>

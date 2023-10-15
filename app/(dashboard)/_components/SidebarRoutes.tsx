@@ -8,6 +8,7 @@ import {
   Hexagon,
   Layout,
   Receipt,
+  ScrollText,
   Shapes,
   Users,
   Users2,
@@ -35,6 +36,11 @@ const adminRoutes = [
     icon: Receipt,
     label: 'Transactions',
     href: '/admin/transactions',
+  },
+  {
+    icon: ScrollText,
+    label: 'Registrations',
+    href: '/admin/registrations/trial-class',
   },
   {
     icon: Code2,

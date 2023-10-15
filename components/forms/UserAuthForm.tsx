@@ -23,6 +23,8 @@ import { PasswordInput } from '../shared/PasswordInput';
 import { Loader2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { toast } from 'sonner';
+import { getSession } from '@/lib/actions/account.actions';
+import { SessionInterface } from '@/types';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -59,7 +61,9 @@ const UserAuthForm = ({ className, ...props }: UserAuthFormProps) => {
         throw new Error(res?.error);
       }
 
-      router.push('/');
+      const session = (await getSession()) as SessionInterface;
+
+      router.push(`/${session?.user.role.toLocaleLowerCase()}/dashboard`);
       toast.success('Successfully logged in');
     } catch (error: any) {
       toast.error(error.message);

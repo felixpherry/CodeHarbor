@@ -1,6 +1,5 @@
 'use client';
 
-import DatePicker from '@/components/shared/DatePicker';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -84,7 +83,7 @@ const TrialClassRegistrationForm = ({ courses }: { courses: Course[] }) => {
                 name='courseId'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Pilih Program</FormLabel>
+                    <FormLabel>Pilih Kursus</FormLabel>
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}
@@ -144,7 +143,11 @@ const TrialClassRegistrationForm = ({ courses }: { courses: Course[] }) => {
                   <FormItem>
                     <FormLabel>Tanggal Lahir</FormLabel>
                     <FormControl>
-                      <DatePicker date={field.value} setDate={field.onChange} />
+                      <Input
+                        type='date'
+                        value={field.value.toString()}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

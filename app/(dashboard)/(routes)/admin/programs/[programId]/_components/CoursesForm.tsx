@@ -120,11 +120,6 @@ const CoursesForm = ({ initialData }: CoursesFormProps) => {
             )}
           >
             {!initialData.courses.length && 'No courses'}
-            {/* <ChaptersList
-              onEdit={onEdit}
-              onReorder={onReorder}
-              items={initialData.chapters || []}
-            /> */}
 
             <div>
               {initialData.courses.map((course) => (

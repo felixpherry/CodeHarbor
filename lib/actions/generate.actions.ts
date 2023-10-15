@@ -241,30 +241,60 @@ export const seedData = async () => {
 //   }
 // };
 
-// export const generateTrialClassData = async () => {
-//   try {
-//     const data: Prisma.TrialClassRegistrationCreateInput[] = [];
-//     for (let i = 0; i < 10; i++) {
-//       data.push({
-//         parentName: faker.person.fullName(),
-//         childName: faker.person.fullName(),
-//         address: faker.location.streetAddress(),
-//         ambition: faker.person.jobTitle(),
-//         birthPlace: faker.location.city(),
-//         childGender: Math.random() < 0.5 ? 'FEMALE' : 'MALE',
-//         dateOfBirth: faker.date.birthdate(),
-//         educationInstitution: faker.company.name(),
-//         email: faker.internet.email(),
-//         gradeClass: `${Math.floor(Math.random() * 12) + 1}`,
-//         hobby: faker.person.jobTitle(),
-//         phoneNumber: faker.phone.number(),
-//         trialClassDate: faker.date.future(),
-//       });
-//     }
-//     await db.trialClassRegistration.createMany({
-//       data,
-//     });
-//   } catch (error: any) {
-//     throw new Error(`Failed to generate trial class data: ${error.message}`);
-//   }
-// };
+export const generateTrialClassData = async () => {
+  try {
+    const data: Prisma.TrialClassRegistrationCreateManyInput[] = [];
+    for (let i = 0; i < 100; i++) {
+      data.push({
+        parentName: faker.person.fullName(),
+        childName: faker.person.fullName(),
+
+        birthPlace: faker.location.city(),
+
+        dateOfBirth: faker.date.birthdate(),
+
+        email: faker.internet.email(),
+        courseId: 'clnmxyuqb0000jo080zj5tbx7',
+        phoneNumber: faker.phone.number(),
+        trialClassDate: faker.date.future(),
+      });
+    }
+    await db.trialClassRegistration.createMany({
+      data,
+    });
+  } catch (error: any) {
+    throw new Error(`Failed to generate trial class data: ${error.message}`);
+  }
+};
+
+export const generateCourseRegistrationData = async () => {
+  try {
+    const data: Prisma.CourseRegistrationCreateManyInput[] = [];
+    for (let i = 0; i < 100; i++) {
+      data.push({
+        parentName: faker.person.fullName(),
+        childName: faker.person.fullName(),
+
+        birthPlace: faker.location.city(),
+
+        dateOfBirth: faker.date.birthdate(),
+
+        email: faker.internet.email(),
+        courseId: '15728267-2af7-447b-9f77-fe020cb6c14a',
+        phoneNumber: faker.phone.number(),
+        address: faker.location.streetAddress(),
+        childGender: 'FEMALE',
+        educationInstitution: faker.company.name(),
+        gradeClass: '12',
+        couponId: 'clnnbnixk0000ui80uu7ipma3',
+      });
+    }
+    await db.courseRegistration.createMany({
+      data,
+    });
+  } catch (error: any) {
+    throw new Error(
+      `Failed to generate course registration data: ${error.message}`
+    );
+  }
+};

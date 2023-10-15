@@ -85,7 +85,7 @@ const Navbar = ({ session, logo }: NavbarProps) => {
             <>
               <Button variant='primary-blue-outline' asChild>
                 <Link
-                  href='login'
+                  href='/login'
                   className='hidden md:inline-flex !rounded-full text-sm font-semibold'
                 >
                   <UserCircle2 />

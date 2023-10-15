@@ -32,7 +32,7 @@ const Page = async () => {
         Lengkapi profil Anda untuk menggunakan aplikasi Lecturna
       </p>
 
-      <section className='mt-9 bg-light-white p-10'>
+      <section className='mt-9 bg-light-white p-10 shadow rounded-lg'>
         <AccountProfile account={accountData} session={session} />
       </section>
     </main>

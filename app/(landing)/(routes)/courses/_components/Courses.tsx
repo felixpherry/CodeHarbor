@@ -2,6 +2,7 @@ import { db } from '@/lib/db';
 import CourseCard from './CourseCard';
 import CoursesPagination from './CoursesPagination';
 import { Level } from '@prisma/client';
+import { generateTrialClassData } from '@/lib/actions/generate.actions';
 
 interface CoursesProps {
   searchParams: {

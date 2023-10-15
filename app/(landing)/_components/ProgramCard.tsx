@@ -2,7 +2,7 @@ import Preview from '@/components/shared/Preview';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Program } from '@prisma/client';
-import { GraduationCap } from 'lucide-react';
+import { Code2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -34,7 +34,7 @@ const ProgramCard = ({ program }: ProgramCardProps) => {
             <Link href={`/programs/${id}`}>{name}</Link>
           </h3>
           <div className='flex items-center gap-2 text-lg text-muted-foreground mt-2'>
-            <GraduationCap className='w-6 h-6 text-primary-blue' />
+            <Code2 className='w-6 h-6 text-primary-blue' />
             <span>{_count.courses} kursus</span>
           </div>
         </div>

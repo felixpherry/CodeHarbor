@@ -277,6 +277,8 @@ model Instructor {
   @@index([accountId])
 }
 
+
+
 model Parent {
   id String @id @default(cuid())
 
