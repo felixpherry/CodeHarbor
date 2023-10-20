@@ -279,7 +279,8 @@ export const generateCourseRegistrationData = async () => {
 
         dateOfBirth: faker.date.birthdate(),
 
-        email: faker.internet.email(),
+        childEmail: faker.internet.email(),
+        parentEmail: faker.internet.email(),
         courseId: '15728267-2af7-447b-9f77-fe020cb6c14a',
         phoneNumber: faker.phone.number(),
         address: faker.location.streetAddress(),
@@ -292,6 +293,40 @@ export const generateCourseRegistrationData = async () => {
     await db.courseRegistration.createMany({
       data,
     });
+  } catch (error: any) {
+    throw new Error(
+      `Failed to generate course registration data: ${error.message}`
+    );
+  }
+};
+
+export const generateInstructorRegistrationData = async () => {
+  try {
+    // const data: Prisma.InstructorRegistrationCreateInput[] = [];
+    for (let i = 0; i < 100; i++) {
+      const data: Prisma.InstructorRegistrationCreateInput = {
+        name: faker.person.fullName(),
+        lastEducation: 'S1',
+        dateOfBirth: faker.date.birthdate(),
+        email: faker.internet.email(),
+        phoneNumber: faker.phone.number(),
+        address: faker.location.streetAddress(),
+        educationInstitution: faker.company.name(),
+        // skills: {
+        //   connect: {
+        //     id: 'clnobz0jj0002ui2o0k9egwou',
+        //   },
+        // },
+        skills: {
+          connect: {
+            id: 'clnobz0jj0002ui2o0k9egwou',
+          },
+        },
+      };
+      await db.instructorRegistration.create({
+        data,
+      });
+    }
   } catch (error: any) {
     throw new Error(
       `Failed to generate course registration data: ${error.message}`

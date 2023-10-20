@@ -6,6 +6,7 @@ import { Poppins, Josefin_Sans } from 'next/font/google';
 import UIProvider from '@/providers/UIProvider';
 import { cn } from '@/lib/utils';
 import ToasterProvider from '@/providers/ToasterProvider';
+import { Metadata } from 'next';
 
 const fabada = localFont({
   src: '../fonts/Fabada-Regular.ttf',
@@ -26,10 +27,13 @@ const josefin = Josefin_Sans({
   variable: '--font-josefin',
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Lecturna',
   description:
     'Lecturna offers a coding course specifically designed to assist children in acquiring the skills necessary for creating websites, developing mobile apps, and engaging in game development.',
+  // icons: {
+  //   icon: '/favicon.ico',
+  // },
 };
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {

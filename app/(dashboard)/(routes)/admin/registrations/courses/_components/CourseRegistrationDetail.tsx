@@ -10,30 +10,37 @@ import {
   DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog';
-import { TrialClassRegistration } from '@prisma/client';
+import { CourseRegistration } from '@prisma/client';
 import moment from 'moment';
 
-interface TrialClassDetailProps {
+interface CourseRegistrationDetailProps {
   data: {
     course: {
       name: string;
     };
-  } & TrialClassRegistration;
+    coupon: {
+      code: string;
+    };
+  } & CourseRegistration;
 }
 
-const TrialClassDetail = ({ data }: TrialClassDetailProps) => {
+const CourseRegistrationDetail = ({ data }: CourseRegistrationDetailProps) => {
   const {
+    address,
     birthPlace,
+    childGender,
     childName,
-    status,
-    trialClassDate,
+    coupon,
+    course,
+    createdAt,
     dateOfBirth,
+    educationInstitution,
     email,
+    gradeClass,
+    id,
     parentName,
     phoneNumber,
-    createdAt,
-    course,
-    id,
+    status,
   } = data;
 
   const rows = [
@@ -54,6 +61,18 @@ const TrialClassDetail = ({ data }: TrialClassDetailProps) => {
       value: moment(dateOfBirth).format('DD-MM-YYYY'),
     },
     {
+      key: 'Gender',
+      value: childGender,
+    },
+    {
+      key: 'Grade Class',
+      value: gradeClass,
+    },
+    {
+      key: 'Education Institution',
+      value: educationInstitution,
+    },
+    {
       key: 'Email',
       value: email,
     },
@@ -66,8 +85,8 @@ const TrialClassDetail = ({ data }: TrialClassDetailProps) => {
       value: parentName,
     },
     {
-      key: 'Trial Class Date',
-      value: moment(trialClassDate).format('DD-MM-YYYY HH:MM'),
+      key: 'Address',
+      value: address,
     },
     {
       key: 'Registration Date',
@@ -85,13 +104,16 @@ const TrialClassDetail = ({ data }: TrialClassDetailProps) => {
       </DialogTrigger>
       <DialogContent className='p-8'>
         <DialogHeader>
-          <DialogTitle>Trial Class Registration Details</DialogTitle>
+          <DialogTitle>Course Registration Details</DialogTitle>
         </DialogHeader>
         <div className='flex gap-x-5 items-center my-3'>
           <h3 className='font-semibold text-xl'>{childName}</h3>
           <Badge variant={statusVariant}>
             {status[0] + status.substring(1).toLocaleLowerCase()}
           </Badge>
+          {coupon?.code && (
+            <Badge variant='sky-lighten'>Coupon {coupon.code}</Badge>
+          )}
         </div>
         <div className='flex flex-col gap-3'>
           {rows.map(({ key, value }) => (
@@ -116,4 +138,4 @@ const TrialClassDetail = ({ data }: TrialClassDetailProps) => {
   );
 };
 
-export default TrialClassDetail;
+export default CourseRegistrationDetail;

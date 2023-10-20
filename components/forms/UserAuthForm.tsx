@@ -96,7 +96,7 @@ const UserAuthForm = ({ className, ...props }: UserAuthFormProps) => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder='felixpherry@gmail.com' {...field} />
+                  <Input placeholder='johndoe@example.com' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

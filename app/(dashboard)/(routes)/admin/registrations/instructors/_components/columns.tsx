@@ -1,0 +1,162 @@
+'use client';
+
+import { ConfirmModal } from '@/components/modals/ConfirmModal';
+import { Badge, BadgeProps } from '@/components/ui/badge';
+import { InstructorRegistration, RegistrationStatus } from '@prisma/client';
+import { ColumnDef } from '@tanstack/react-table';
+import { ArrowUpDown, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { usePathname } from 'next/navigation';
+import { toast } from 'sonner';
+// import { updateCourseRegistrationStatus } from '../_actions';
+// import CourseRegistrationDetail from './CourseRegistrationDetail';
+// import CourseRegistrationSuccess from './CourseRegistrationSuccess';
+import moment from 'moment';
+
+export const columns: ColumnDef<InstructorRegistration>[] = [
+  {
+    header: 'No',
+  },
+  {
+    accessorKey: 'name',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='whitespace-nowrap'
+        >
+          Name
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <span className='font-bold text-primary'>{row.getValue('name')}</span>
+      );
+    },
+  },
+  {
+    accessorKey: 'email',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='whitespace-nowrap'
+        >
+          Phone Number
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: 'phoneNumber',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='whitespace-nowrap'
+        >
+          Phone Number
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: 'status',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='whitespace-nowrap'
+        >
+          Status
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const status: RegistrationStatus = row.getValue('status') || 'PENDING';
+
+      const statusVariant = (
+        row.getValue('status') as string
+      ).toLocaleLowerCase() as BadgeProps['variant'];
+      return (
+        <Badge variant={statusVariant}>
+          {status[0] + status.substring(1).toLocaleLowerCase()}
+        </Badge>
+      );
+    },
+  },
+  //   {
+  //     id: 'actions',
+  //     header: 'Actions',
+  //     cell: ({ row }) => {
+  //       const { id, email, dateOfBirth } = row.original;
+  //       // eslint-disable-next-line react-hooks/rules-of-hooks
+  //       const pathname = usePathname();
+
+  //       const confirmStatus = async (status: RegistrationStatus) => {
+  //         try {
+  //           await updateCourseRegistrationStatus({
+  //             id,
+  //             status,
+  //             pathname,
+  //           });
+  //           toast.custom(
+  //             (t) => (
+  //               <CourseRegistrationSuccess toastId={t} payload={row.original} />
+  //             ),
+  //             {
+  //               duration: 100000,
+  //             }
+  //           );
+  //         } catch (error: any) {
+  //           toast.error('Failed to update registration status');
+  //         }
+  //       };
+
+  //       return (
+  //         <div className='flex items-center gap-6'>
+  //           {row.getValue('status') === 'PENDING' && (
+  //             <>
+  //               <ConfirmModal
+  //                 title='Approve Registration'
+  //                 description='Do you want to approve this registration'
+  //                 onConfirm={() => confirmStatus('APPROVED')}
+  //               >
+  //                 <ThumbsUp className='text-green-500 cursor-pointer' />
+  //               </ConfirmModal>
+  //               <ConfirmModal
+  //                 title='Reject Registration'
+  //                 description='Do you want to reject this registration'
+  //                 onConfirm={() => confirmStatus('REJECTED')}
+  //               >
+  //                 <ThumbsDown className='text-red-500 cursor-pointer' />
+  //               </ConfirmModal>
+  //             </>
+  //           )}
+
+  //           <CourseRegistrationDetail
+  //             data={
+  //               row.original as {
+  //                 course: {
+  //                   name: string;
+  //                 };
+  //                 coupon: {
+  //                   code: string;
+  //                 };
+  //               } & CourseRegistration
+  //             }
+  //           />
+  //         </div>
+  //       );
+  //     },
+  //   },
+];

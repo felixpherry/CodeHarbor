@@ -123,6 +123,7 @@ model Course {
   sessions                Session[]
   instructors             Instructor[]
   trialClassRegistrations TrialClassRegistration[]
+  studentCourses          StudentCourses[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -150,13 +151,14 @@ model Coupon {
 model CourseRegistration {
   id                   String             @id @default(cuid())
   childName            String
+  childEmail           String             @unique
   dateOfBirth          DateTime
   birthPlace           String
   childGender          Gender
   gradeClass           String
   educationInstitution String
   parentName           String
-  email                String             @unique
+  parentEmail          String             @unique
   phoneNumber          String             @unique
   address              String             @db.Text
   coupon               Coupon?            @relation(fields: [couponId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -169,6 +171,7 @@ model CourseRegistration {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([childEmail, parentEmail])
   @@index([courseId])
   @@index([couponId])
 }
@@ -256,6 +259,63 @@ model Admin {
   @@index([accountId])
 }
 
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+model MasterDay {
+  id       String    @id @default(cuid())
+  day      DayOfWeek
+  isActive Boolean   @default(true)
+
+  schedules InstructorMasterSchedule[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MasterShift {
+  id String @id @default(cuid())
+
+  startTime String
+  endTime   String
+
+  isActive Boolean @default(true)
+
+  schedules InstructorMasterSchedule[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model InstructorMasterSchedule {
+  id String @id @default(cuid())
+
+  day   MasterDay @relation(fields: [dayId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  dayId String
+
+  shift   MasterShift @relation(fields: [shiftId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  shiftId String
+
+  instructor   Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  instructorId String
+
+  classes Class[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([dayId])
+  @@index([shiftId])
+  @@index([instructorId])
+}
+
 model Instructor {
   id                   String   @id @default(cuid())
   dateOfBirth          DateTime
@@ -267,17 +327,15 @@ model Instructor {
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   accountId String  @unique
 
-  classes Class[]
-  skills  Skill[]
-  courses Course[]
+  skills    Skill[]
+  courses   Course[]
+  schedules InstructorMasterSchedule[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([accountId])
 }
-
-
 
 model Parent {
   id String @id @default(cuid())
@@ -299,7 +357,8 @@ model Period {
   startDate DateTime
   endDate   DateTime
 
-  classes Class[]
+  classes        Class[]
+  studentCourses StudentCourses[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -315,8 +374,8 @@ model Class {
   period   Period @relation(fields: [periodId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   periodId String
 
-  instructor   Instructor? @relation(fields: [instructorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  instructorId String?
+  instructorMasterSchedule   InstructorMasterSchedule @relation(fields: [instructorMasterScheduleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  instructorMasterScheduleId String
 
   students  Student[]
   schedules Schedule[]
@@ -325,9 +384,9 @@ model Class {
   updatedAt DateTime @updatedAt
 
   @@unique([name, periodId])
-  @@index([instructorId])
   @@index([courseId])
   @@index([periodId])
+  @@index([instructorMasterScheduleId])
 }
 
 model Session {
@@ -382,12 +441,10 @@ model OtherAttachment {
 }
 
 model Schedule {
-  id            String    @id @default(cuid())
+  id            String  @id @default(cuid())
   sessionNumber Int
-  date          DateTime?
-  time          String?
-  meetingUrl    String?   @db.LongText
-  recordingUrl  String?   @db.LongText
+  meetingUrl    String? @db.LongText
+  recordingUrl  String? @db.LongText
 
   class            Class             @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   classId          String
@@ -408,8 +465,8 @@ model Student {
   gender               Gender
   gradeSchool          String
   educationInstitution String
-  hobby                String
-  ambition             String
+  hobby                String?
+  ambition             String?
 
   parent   Parent @relation(fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   parentId String
@@ -417,7 +474,8 @@ model Student {
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   accountId String  @unique
 
-  classes Class[]
+  classes        Class[]
+  studentCourses StudentCourses[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -425,3 +483,81 @@ model Student {
   @@index([parentId])
   @@index([accountId])
 }
+
+model StudentCourses {
+  id String @id @default(cuid())
+
+  courses  Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  courseId String
+
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  studentId String
+
+  period   Period? @relation(fields: [periodId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  periodId String?
+
+  status RegistrationStatus
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+  @@index([studentId])
+  @@index([periodId])
+}
+
+// Python
+// Kotlin
+
+// Budi
+
+// CourseRegistration Python
+
+// Account
+// Student
+// Parent
+// StudentCourses:
+//   course Python
+//   status APPROVED
+
+// Group By Courses
+// Python 5 5 2 ✅
+// Kotlin 5 5 3 ✅
+// Scratch 5 5 5 5 5
+
+// MasterInstructorSchedule
+
+// Budi Kotlin Python
+// Budi Senin 11 - 12
+// Budi Selasa 12 - 13
+// Budi Minggu 9-10
+
+// Andi Python Scratch
+// Andi Senin 8 - 9
+// Andi Selasa 9 - 10
+// Andi Minggu 7 - 8
+// Andi Jumat 13 - 14
+
+// Jokowi Kotlin Scratch
+// Jokowi Rabu 8 - 9
+// Jokowi Kamis 10 - 11
+
+// Budi Senin 11 - 12 ✅ 5
+// Budi Selasa 12 - 13 ✅ 5
+// Budi Minggu 9-10 ✅ 2
+// Andi Senin 8 - 9 ✅ 6
+// Andi Selasa 9 - 10 ✅ 6
+// Andi Minggu 7 - 8 ✅ 6
+// Andi Jumat 13 - 14 ✅ 7
+// Jokowi Rabu 8 - 9 ✅ 6
+// Jokowi Kamis 10 - 11 ✅ 7
+
+// 1 x Sabtu 9 - 10 
+
+// Class yg MasterScheduleID = 1
+
+// period 
+
+// pas query schedule
+// query schedule where bisa dipake
+// [10]

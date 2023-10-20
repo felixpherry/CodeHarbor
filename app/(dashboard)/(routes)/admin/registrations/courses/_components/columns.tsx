@@ -5,10 +5,13 @@ import { Badge, BadgeProps } from '@/components/ui/badge';
 import { CourseRegistration, RegistrationStatus } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, ThumbsDown, ThumbsUp } from 'lucide-react';
-import moment from 'moment';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
+import { updateCourseRegistrationStatus } from '../_actions';
+import CourseRegistrationDetail from './CourseRegistrationDetail';
+import CourseRegistrationSuccess from './CourseRegistrationSuccess';
+import moment from 'moment';
 
 export const columns: ColumnDef<CourseRegistration>[] = [
   {
@@ -93,58 +96,69 @@ export const columns: ColumnDef<CourseRegistration>[] = [
       );
     },
   },
-  //   {
-  //     id: 'actions',
-  //     header: 'Actions',
-  //     cell: ({ row }) => {
-  //       const { id } = row.original;
-  //       const pathname = usePathname();
+  {
+    id: 'actions',
+    header: 'Actions',
+    cell: ({ row }) => {
+      const { id, email, dateOfBirth } = row.original;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const pathname = usePathname();
 
-  //       const confirmStatus = async (status: RegistrationStatus) => {
-  //         try {
-  //           await updateTrialClassRegistrationStatus({
-  //             id,
-  //             status,
-  //             pathname,
-  //           });
-  //           toast.success('Successfully updated registration status');
-  //         } catch (error: any) {
-  //           toast.error('Failed to update registration status');
-  //         }
-  //       };
+      const confirmStatus = async (status: RegistrationStatus) => {
+        try {
+          await updateCourseRegistrationStatus({
+            id,
+            status,
+            pathname,
+          });
+          toast.custom(
+            (t) => (
+              <CourseRegistrationSuccess toastId={t} payload={row.original} />
+            ),
+            {
+              duration: 100000,
+            }
+          );
+        } catch (error: any) {
+          toast.error('Failed to update registration status');
+        }
+      };
 
-  //       return (
-  //         <div className='flex items-center gap-6'>
-  //           {row.getValue('status') === 'PENDING' && (
-  //             <>
-  //               <ConfirmModal
-  //                 title='Approve Registration'
-  //                 description='Do you want to approve this registration'
-  //                 onConfirm={() => confirmStatus('APPROVED')}
-  //               >
-  //                 <ThumbsUp className='text-green-500 cursor-pointer' />
-  //               </ConfirmModal>
-  //               <ConfirmModal
-  //                 title='Reject Registration'
-  //                 description='Do you want to reject this registration'
-  //                 onConfirm={() => confirmStatus('REJECTED')}
-  //               >
-  //                 <ThumbsDown className='text-red-500 cursor-pointer' />
-  //               </ConfirmModal>
-  //             </>
-  //           )}
+      return (
+        <div className='flex items-center gap-6'>
+          {row.getValue('status') === 'PENDING' && (
+            <>
+              <ConfirmModal
+                title='Approve Registration'
+                description='Do you want to approve this registration'
+                onConfirm={() => confirmStatus('APPROVED')}
+              >
+                <ThumbsUp className='text-green-500 cursor-pointer' />
+              </ConfirmModal>
+              <ConfirmModal
+                title='Reject Registration'
+                description='Do you want to reject this registration'
+                onConfirm={() => confirmStatus('REJECTED')}
+              >
+                <ThumbsDown className='text-red-500 cursor-pointer' />
+              </ConfirmModal>
+            </>
+          )}
 
-  //           <TrialClassDetail
-  //             data={
-  //               row.original as {
-  //                 course: {
-  //                   name: string;
-  //                 };
-  //               } & TrialClassRegistration
-  //             }
-  //           />
-  //         </div>
-  //       );
-  //     },
-  //   },
+          <CourseRegistrationDetail
+            data={
+              row.original as {
+                course: {
+                  name: string;
+                };
+                coupon: {
+                  code: string;
+                };
+              } & CourseRegistration
+            }
+          />
+        </div>
+      );
+    },
+  },
 ];
