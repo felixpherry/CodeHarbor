@@ -2,7 +2,7 @@
 
 import { faker } from '@faker-js/faker';
 import { db } from '../db';
-import { Prisma } from '@prisma/client';
+import { Gender, Prisma } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
 export const generateCategories = async () => {
@@ -254,7 +254,7 @@ export const generateTrialClassData = async () => {
         dateOfBirth: faker.date.birthdate(),
 
         email: faker.internet.email(),
-        courseId: 'clnmxyuqb0000jo080zj5tbx7',
+        courseId: 'clnzn0kja0002ui0oub4l8y2t',
         phoneNumber: faker.phone.number(),
         trialClassDate: faker.date.future(),
       });
@@ -271,7 +271,7 @@ export const generateCourseRegistrationData = async () => {
   try {
     const data: Prisma.CourseRegistrationCreateManyInput[] = [];
     for (let i = 0; i < 100; i++) {
-      data.push({
+      const registrationData = {
         parentName: faker.person.fullName(),
         childName: faker.person.fullName(),
 
@@ -281,14 +281,19 @@ export const generateCourseRegistrationData = async () => {
 
         childEmail: faker.internet.email(),
         parentEmail: faker.internet.email(),
-        courseId: '15728267-2af7-447b-9f77-fe020cb6c14a',
+        courseId: 'clnzn0kja0002ui0oub4l8y2t',
         phoneNumber: faker.phone.number(),
         address: faker.location.streetAddress(),
-        childGender: 'FEMALE',
+        childGender: 'FEMALE' as Gender,
         educationInstitution: faker.company.name(),
         gradeClass: '12',
-        couponId: 'clnnbnixk0000ui80uu7ipma3',
-      });
+        couponId: 'clnzol8ul0000uijk5a1hs7p0',
+      };
+      if (registrationData.childEmail === registrationData.parentEmail) {
+        i--;
+        continue;
+      }
+      data.push(registrationData);
     }
     await db.courseRegistration.createMany({
       data,
@@ -312,14 +317,9 @@ export const generateInstructorRegistrationData = async () => {
         phoneNumber: faker.phone.number(),
         address: faker.location.streetAddress(),
         educationInstitution: faker.company.name(),
-        // skills: {
-        //   connect: {
-        //     id: 'clnobz0jj0002ui2o0k9egwou',
-        //   },
-        // },
         skills: {
           connect: {
-            id: 'clnobz0jj0002ui2o0k9egwou',
+            id: 'clnxak8ow000euil4y3d7brg2',
           },
         },
       };

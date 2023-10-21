@@ -8,7 +8,10 @@ import { ArrowUpDown, ThumbsDown, ThumbsUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
-import { updateCourseRegistrationStatus } from '../_actions';
+import {
+  createAccountForStudent,
+  updateCourseRegistrationStatus,
+} from '../_actions';
 import CourseRegistrationDetail from './CourseRegistrationDetail';
 import CourseRegistrationSuccess from './CourseRegistrationSuccess';
 import moment from 'moment';
@@ -100,7 +103,7 @@ export const columns: ColumnDef<CourseRegistration>[] = [
     id: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
-      const { id, dateOfBirth, childEmail } = row.original;
+      const { id } = row.original;
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const pathname = usePathname();
 
@@ -111,14 +114,27 @@ export const columns: ColumnDef<CourseRegistration>[] = [
             status,
             pathname,
           });
-          toast.custom(
-            (t) => (
-              <CourseRegistrationSuccess toastId={t} payload={row.original} />
-            ),
-            {
-              duration: 100000,
+
+          toast.success('Successfully updated registration status');
+          // toast.custom(
+          //   (t) => (
+          //     <CourseRegistrationSuccess toastId={t} payload={row.original} />
+          //   ),
+          //   {
+          //     duration: 100000,
+          //   }
+          // );
+          if (status === 'APPROVED') {
+            try {
+              await createAccountForStudent(row.original);
+
+              toast.success(
+                'Successfully created account for the user. Please contact the user for the account credentials'
+              );
+            } catch (error: any) {
+              toast.error('Failed to create account for the user');
             }
-          );
+          }
         } catch (error: any) {
           toast.error('Failed to update registration status');
         }

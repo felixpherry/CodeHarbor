@@ -496,7 +496,7 @@ model StudentCourses {
   period   Period? @relation(fields: [periodId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   periodId String?
 
-  status RegistrationStatus
+  status RegistrationStatus @default(PENDING)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

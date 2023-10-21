@@ -70,11 +70,24 @@ export const createAccountForStudent = async (payload: CourseRegistration) => {
       date.getMonth() < 9 ? '0' + `${date.getMonth() + 1}` : date.getMonth() + 1
     }${Date.now() % 1000000}`;
 
+    const period = await db.period.findFirst({
+      where: {
+        startDate: {
+          gt: new Date(),
+        },
+      },
+      orderBy: {
+        startDate: 'asc',
+      },
+      select: {
+        id: true,
+      },
+    });
+
     const account = await db.account.create({
       data: {
         email: childEmail,
         name: childName,
-        username: childName,
         role: 'STUDENT',
         address,
         password: hashedPassword,
@@ -92,7 +105,6 @@ export const createAccountForStudent = async (payload: CourseRegistration) => {
                   create: {
                     email: parentEmail,
                     name: parentName,
-                    username: parentName,
                     role: 'PARENT',
                     address,
                     password: hashedPassword,
@@ -102,8 +114,10 @@ export const createAccountForStudent = async (payload: CourseRegistration) => {
               },
             },
             studentCourses: {
-              connect: {
-                id: courseId,
+              create: {
+                status: 'APPROVED',
+                courseId,
+                periodId: period!.id,
               },
             },
           },

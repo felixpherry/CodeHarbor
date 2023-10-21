@@ -8,10 +8,11 @@ import { ArrowUpDown, ThumbsDown, ThumbsUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
-// import { updateCourseRegistrationStatus } from '../_actions';
-// import CourseRegistrationDetail from './CourseRegistrationDetail';
-// import CourseRegistrationSuccess from './CourseRegistrationSuccess';
-import moment from 'moment';
+import {
+  createAccountForInstructor,
+  updateInstructorRegistrationStatus,
+} from '../_actions';
+import InstructorRegistrationDetail from './InstructorRegistrationDetail';
 
 export const columns: ColumnDef<InstructorRegistration>[] = [
   {
@@ -46,7 +47,7 @@ export const columns: ColumnDef<InstructorRegistration>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className='whitespace-nowrap'
         >
-          Phone Number
+          Email
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
@@ -94,69 +95,70 @@ export const columns: ColumnDef<InstructorRegistration>[] = [
       );
     },
   },
-  //   {
-  //     id: 'actions',
-  //     header: 'Actions',
-  //     cell: ({ row }) => {
-  //       const { id, email, dateOfBirth } = row.original;
-  //       // eslint-disable-next-line react-hooks/rules-of-hooks
-  //       const pathname = usePathname();
+  {
+    id: 'actions',
+    header: 'Actions',
+    cell: ({ row }) => {
+      const { id } = row.original;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const pathname = usePathname();
 
-  //       const confirmStatus = async (status: RegistrationStatus) => {
-  //         try {
-  //           await updateCourseRegistrationStatus({
-  //             id,
-  //             status,
-  //             pathname,
-  //           });
-  //           toast.custom(
-  //             (t) => (
-  //               <CourseRegistrationSuccess toastId={t} payload={row.original} />
-  //             ),
-  //             {
-  //               duration: 100000,
-  //             }
-  //           );
-  //         } catch (error: any) {
-  //           toast.error('Failed to update registration status');
-  //         }
-  //       };
+      const instructorData = row.original as {
+        skills: {
+          id: string;
+          name: string;
+        }[];
+      } & InstructorRegistration;
 
-  //       return (
-  //         <div className='flex items-center gap-6'>
-  //           {row.getValue('status') === 'PENDING' && (
-  //             <>
-  //               <ConfirmModal
-  //                 title='Approve Registration'
-  //                 description='Do you want to approve this registration'
-  //                 onConfirm={() => confirmStatus('APPROVED')}
-  //               >
-  //                 <ThumbsUp className='text-green-500 cursor-pointer' />
-  //               </ConfirmModal>
-  //               <ConfirmModal
-  //                 title='Reject Registration'
-  //                 description='Do you want to reject this registration'
-  //                 onConfirm={() => confirmStatus('REJECTED')}
-  //               >
-  //                 <ThumbsDown className='text-red-500 cursor-pointer' />
-  //               </ConfirmModal>
-  //             </>
-  //           )}
+      const confirmStatus = async (status: RegistrationStatus) => {
+        try {
+          await updateInstructorRegistrationStatus({
+            id,
+            status,
+            pathname,
+          });
 
-  //           <CourseRegistrationDetail
-  //             data={
-  //               row.original as {
-  //                 course: {
-  //                   name: string;
-  //                 };
-  //                 coupon: {
-  //                   code: string;
-  //                 };
-  //               } & CourseRegistration
-  //             }
-  //           />
-  //         </div>
-  //       );
-  //     },
-  //   },
+          toast.success('Successfully updated registration status');
+          if (status === 'APPROVED') {
+            try {
+              await createAccountForInstructor(instructorData);
+
+              toast.success(
+                'Successfully created account for the instructor. Please contact the instructor for the account credentials'
+              );
+            } catch (error: any) {
+              toast.error('Failed to create account for the instructor');
+            }
+          }
+        } catch (error: any) {
+          toast.error('Failed to update registration status');
+        }
+      };
+
+      return (
+        <div className='flex items-center gap-6'>
+          {row.getValue('status') === 'PENDING' && (
+            <>
+              <ConfirmModal
+                title='Approve Registration'
+                description='Do you want to approve this registration'
+                onConfirm={() => confirmStatus('APPROVED')}
+              >
+                <ThumbsUp className='text-green-500 cursor-pointer' />
+              </ConfirmModal>
+              <ConfirmModal
+                title='Reject Registration'
+                description='Do you want to reject this registration'
+                onConfirm={() => confirmStatus('REJECTED')}
+              >
+                <ThumbsDown className='text-red-500 cursor-pointer' />
+              </ConfirmModal>
+            </>
+          )}
+
+          <InstructorRegistrationDetail data={instructorData} />
+        </div>
+      );
+    },
+  },
 ];

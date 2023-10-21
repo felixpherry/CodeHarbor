@@ -14,6 +14,7 @@ export const fetchCouponByCode = async (code: string) => {
       },
     });
   } catch (error: any) {
+    console.log(error.message);
     throw new Error(`Error fetching coupon: ${error.message}`);
   }
 };

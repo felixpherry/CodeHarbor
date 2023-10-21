@@ -22,9 +22,7 @@ const CourseRegistrationSuccess = ({
     try {
       setIsLoading(true);
       const { email, password } = await createAccountForStudent(payload);
-      toast.success('Successfully created account', {
-        description: `Email: ${email} | Password: ${password}`,
-      });
+      toast.success('Successfully created account');
     } catch (error: any) {
       toast.error('Failed creating account');
     } finally {

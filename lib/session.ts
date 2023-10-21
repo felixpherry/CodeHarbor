@@ -36,6 +36,7 @@ export const authOptions: NextAuthOptions = {
         const account = await db.account.findUnique({
           where: {
             email: email,
+            status: 'ACTIVE',
           },
         });
 

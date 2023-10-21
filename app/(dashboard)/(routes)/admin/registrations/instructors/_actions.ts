@@ -49,7 +49,7 @@ export const createAccountForInstructor = async (
     skills: {
       id: string;
       name: string;
-    };
+    }[];
   } & InstructorRegistration
 ) => {
   try {
@@ -61,6 +61,7 @@ export const createAccountForInstructor = async (
       lastEducation,
       name,
       phoneNumber,
+      skills,
     } = payload;
 
     const hashedPassword = await bcrypt.hash(
@@ -79,11 +80,9 @@ export const createAccountForInstructor = async (
             dateOfBirth,
             educationInstitution,
             lastEducation,
-            // skills: {
-            //     connect: {
-
-            //     }
-            // }
+            skills: {
+              connect: skills.map(({ id }) => ({ id })),
+            },
           },
         },
         password: hashedPassword,
