@@ -100,7 +100,7 @@ export const columns: ColumnDef<CourseRegistration>[] = [
     id: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
-      const { id, email, dateOfBirth } = row.original;
+      const { id, dateOfBirth, childEmail } = row.original;
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const pathname = usePathname();
 

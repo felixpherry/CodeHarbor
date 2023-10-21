@@ -79,7 +79,11 @@ const SessionActions = ({
       >
         {session.isPublished ? 'Unpublish' : 'Publish'}
       </Button>
-      <ConfirmModal onConfirm={onDelete}>
+      <ConfirmModal
+        onConfirm={onDelete}
+        title='Are you sure'
+        description='This action cannot be undone'
+      >
         <Button size='sm' disabled={isLoading}>
           <Trash className='h-4 w-4' />
         </Button>

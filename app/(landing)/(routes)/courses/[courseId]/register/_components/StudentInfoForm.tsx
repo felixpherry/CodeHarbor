@@ -27,6 +27,9 @@ export const studentInfoSchema = z.object({
   childName: z.string().min(1, {
     message: 'Nama anak wajib diisi',
   }),
+  childEmail: z.string().email({
+    message: 'Email anak wajib diisi',
+  }),
   dateOfBirth: z.coerce.date({
     required_error: 'Tanggal lahir anak wajib diisi',
   }),
@@ -88,6 +91,20 @@ const StudentInfoForm = ({
                 <FormDescription>
                   Nama lengkap sesuai akta lahir
                 </FormDescription>
+                <FormControl>
+                  <Input disabled={isSubmitting} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={studentInfo.control}
+            name='childEmail'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email Anak</FormLabel>
+                <FormDescription>Email pribadi anak</FormDescription>
                 <FormControl>
                   <Input disabled={isSubmitting} {...field} />
                 </FormControl>

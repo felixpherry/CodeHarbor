@@ -84,7 +84,7 @@ export const createAccountForStudent = async (payload: CourseRegistration) => {
             dateOfBirth,
             educationInstitution,
             gender: childGender,
-            gradeSchool: gradeClass,
+            gradeClass,
             studentId,
             parent: {
               create: {

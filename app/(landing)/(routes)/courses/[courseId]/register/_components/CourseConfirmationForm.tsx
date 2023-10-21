@@ -40,6 +40,12 @@ const CourseConfirmationForm = ({
   const onSubmit = async () => {
     try {
       setIsLoading(true);
+      if (studentInfo.childEmail === parentInfo.parentEmail) {
+        return toast.error(
+          'Pendaftaran gagal. Alamat email orang tua dan anak tidak dapat sama. Harap pastikan alamat email keduanya berbeda untuk melanjutkan.'
+        );
+      }
+
       await registerCourse({
         payload: {
           couponId,
@@ -80,6 +86,10 @@ const CourseConfirmationForm = ({
             <div className='flex flex-col md:flex-row justify-between text-primary font-semibold'>
               <span className='text-muted-foreground'>Nama Anak</span>
               <span>{studentInfo.childName}</span>
+            </div>
+            <div className='flex flex-col md:flex-row justify-between text-primary font-semibold'>
+              <span className='text-muted-foreground'>Email Anak</span>
+              <span>{studentInfo.childEmail}</span>
             </div>
             <div className='flex flex-col md:flex-row justify-between text-primary font-semibold'>
               <span className='text-muted-foreground'>Jenis Kelamin</span>
@@ -124,7 +134,7 @@ const CourseConfirmationForm = ({
             </div>
             <div className='flex flex-col md:flex-row justify-between text-primary font-semibold'>
               <span className='text-muted-foreground'>Email</span>
-              <span>{parentInfo.email}</span>
+              <span>{parentInfo.parentEmail}</span>
             </div>
             <div className='flex flex-col md:flex-row justify-between text-primary font-semibold'>
               <span className='text-muted-foreground'>No. HP</span>

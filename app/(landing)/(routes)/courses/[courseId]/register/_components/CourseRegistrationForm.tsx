@@ -19,6 +19,7 @@ const CourseRegistrationForm = ({ courseId }: { courseId: string }) => {
     z.infer<typeof studentInfoSchema>
   >({
     childName: '',
+    childEmail: '',
     birthPlace: '',
     dateOfBirth: new Date(),
     childGender: 'MALE',
@@ -30,7 +31,7 @@ const CourseRegistrationForm = ({ courseId }: { courseId: string }) => {
     z.infer<typeof parentInfoSchema>
   >({
     address: '',
-    email: '',
+    parentEmail: '',
     parentName: '',
     phoneNumber: '',
   });
@@ -39,9 +40,6 @@ const CourseRegistrationForm = ({ courseId }: { courseId: string }) => {
     id: '',
     code: '',
   });
-
-  const pathname = usePathname();
-  const router = useRouter();
 
   return (
     <div className='container max-w-7xl py-28'>

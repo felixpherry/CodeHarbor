@@ -35,7 +35,8 @@ const CourseRegistrationDetail = ({ data }: CourseRegistrationDetailProps) => {
     createdAt,
     dateOfBirth,
     educationInstitution,
-    email,
+    childEmail,
+    parentEmail,
     gradeClass,
     id,
     parentName,
@@ -51,6 +52,10 @@ const CourseRegistrationDetail = ({ data }: CourseRegistrationDetailProps) => {
     {
       key: 'Course',
       value: course.name,
+    },
+    {
+      key: 'Child Email',
+      value: childEmail,
     },
     {
       key: 'Birth Place',
@@ -73,16 +78,16 @@ const CourseRegistrationDetail = ({ data }: CourseRegistrationDetailProps) => {
       value: educationInstitution,
     },
     {
-      key: 'Email',
-      value: email,
+      key: 'Parent Name',
+      value: parentName,
+    },
+    {
+      key: 'Parent Email',
+      value: parentEmail,
     },
     {
       key: 'Phone Number',
       value: phoneNumber,
-    },
-    {
-      key: 'Parent Name',
-      value: parentName,
     },
     {
       key: 'Address',

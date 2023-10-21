@@ -21,7 +21,7 @@ export const parentInfoSchema = z.object({
   parentName: z.string().min(1, {
     message: 'Nama orang tua wajib diisi',
   }),
-  email: z.string().email({
+  parentEmail: z.string().email({
     message: 'Mohon masukkan email yang valid',
   }),
   phoneNumber: z.string().min(1, {
@@ -87,10 +87,11 @@ const ParentInfoForm = ({
           />
           <FormField
             control={parentInfo.control}
-            name='email'
+            name='parentEmail'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
+                <FormDescription>Email pribadi orang tua</FormDescription>
                 <FormControl>
                   <Input disabled={isSubmitting} {...field} />
                 </FormControl>
