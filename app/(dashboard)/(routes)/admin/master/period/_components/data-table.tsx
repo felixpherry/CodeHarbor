@@ -23,6 +23,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
+import { modals } from '@mantine/modals';
+import PeriodForm from './PeriodForm';
+import { PlusCircle } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -53,7 +56,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className='flex items-center py-4 gap-x-5 gap-y-2 flex-col md:flex-row'>
+      <div className='flex flex-col items-start md:flex-row md:items-center justify-between py-4 gap-y-3'>
         <Input
           placeholder='Search period...'
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
@@ -62,7 +65,21 @@ export function DataTable<TData, TValue>({
           }
           className='w-full md:w-1/3'
         />
+        <Button
+          size='sm'
+          onClick={() => {
+            modals.open({
+              title: 'Add Period',
+              children: <PeriodForm type='ADD' />,
+              centered: true,
+            });
+          }}
+        >
+          <PlusCircle className='h-4 w-4' />
+          Add
+        </Button>
       </div>
+
       <div className='rounded-md border'>
         <Table className='text-muted-foreground font-semibold'>
           <TableHeader>

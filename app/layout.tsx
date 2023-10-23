@@ -5,6 +5,7 @@ import '@mantine/dates/styles.css';
 import localFont from 'next/font/local';
 import { Poppins, Josefin_Sans } from 'next/font/google';
 import { MantineProvider, ColorSchemeScript } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
 
 import { cn } from '@/lib/utils';
 import ToasterProvider from '@/providers/ToasterProvider';
@@ -45,7 +46,9 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider>
+          <ModalsProvider>{children}</ModalsProvider>
+        </MantineProvider>
         <ToasterProvider />
       </body>
     </html>

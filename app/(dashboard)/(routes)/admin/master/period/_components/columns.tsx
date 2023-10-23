@@ -1,20 +1,18 @@
 'use client';
 
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
-import { Badge, BadgeProps } from '@/components/ui/badge';
 import { Period, RegistrationStatus } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
-import {
-  ArrowUpDown,
-  PenSquare,
-  ThumbsDown,
-  ThumbsUp,
-  Trash2,
-} from 'lucide-react';
+import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
 import moment from 'moment';
+import { IconEdit, IconTrash } from '@tabler/icons-react';
+import PeriodForm from './PeriodForm';
+import { modals } from '@mantine/modals';
+import { Text } from '@mantine/core';
+import { deletePeriod } from '../_actions';
 
 export const columns: ColumnDef<Period>[] = [
   {
@@ -82,33 +80,56 @@ export const columns: ColumnDef<Period>[] = [
     id: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
-      const { id, startDate, endDate } = row.original;
+      const { id, name } = row.original;
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const pathname = usePathname();
 
-      const confirmStatus = async (status: RegistrationStatus) => {
+      const confirmDelete = async () => {
         try {
+          await deletePeriod({
+            id,
+            pathname,
+          });
+          toast.success('Successfully deleted period');
         } catch (error: any) {
-          toast.error('Failed to update registration status');
+          toast.error('Failed to delete period');
         }
       };
 
       return (
         <div className='flex items-center gap-6'>
-          <ConfirmModal
-            title='Approve Registration'
-            description='Do you want to approve this registration'
-            onConfirm={() => confirmStatus('APPROVED')}
-          >
-            <Trash2 className='text-red-500 cursor-pointer' />
-          </ConfirmModal>
-          <ConfirmModal
-            title='Reject Registration'
-            description='Do you want to reject this registration'
-            onConfirm={() => confirmStatus('REJECTED')}
-          >
-            <PenSquare className='text-primary-blue cursor-pointer' />
-          </ConfirmModal>
+          <IconTrash
+            onClick={() => {
+              modals.openConfirmModal({
+                title: `Delete ${name}?`,
+                centered: true,
+                children: (
+                  <Text size='sm'>
+                    Are you sure you want to delete this period? This action can
+                    not be undone
+                  </Text>
+                ),
+                labels: {
+                  confirm: 'Delete',
+                  cancel: 'Cancel',
+                },
+                confirmProps: { color: 'red' },
+                onConfirm: confirmDelete,
+              });
+            }}
+            className='text-red-500 cursor-pointer'
+          />
+
+          <IconEdit
+            onClick={() => {
+              modals.open({
+                title: 'Edit Period',
+                children: <PeriodForm type='EDIT' initialData={row.original} />,
+                centered: true,
+              });
+            }}
+            className='text-primary-blue cursor-pointer'
+          />
         </div>
       );
     },
