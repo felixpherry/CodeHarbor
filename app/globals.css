@@ -8,6 +8,11 @@
   font-size: 16px !important;
 }
 
+.mantine-Switch-trackLabel,
+.mantine-Switch-thumb {
+  cursor: pointer;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -50,13 +55,13 @@ body,
   }
 
   .no-scrollbar::-webkit-scrollbar {
-    display: none;
+    display: none !important;
   }
 
-  /* Hide scrollbar for IE, Edge and Firefox */
   .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+    --scrollarea-scrollbar-size: 0 !important;
   }
 }
 
@@ -325,7 +330,7 @@ body,
 }
 
 .account-form_image-input {
-  @apply cursor-pointer border-none bg-transparent outline-none file:text-primary-500 !important;
+  @apply cursor-pointer border-none bg-transparent outline-none file:text-primary-blue !important;
 }
 
 .account-form_input {

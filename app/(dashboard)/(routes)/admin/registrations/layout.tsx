@@ -1,4 +1,3 @@
-import { GraduationCap, List, Presentation } from 'lucide-react';
 import RegistrationTabs from './_components/RegistrationTabs';
 import { db } from '@/lib/db';
 
@@ -27,7 +26,7 @@ const Layout = async ({ children }: LayoutProps) => {
 
   return (
     <div className='w-full min-h-[calc(100vh-80px)] bg-[#F7F9FD] p-8'>
-      <div className='container'>
+      <div className='container max-w-7xl px-0'>
         <RegistrationTabs
           courseRegistrationCount={courseRegistrationCount}
           instructorRegistrationCount={instructorRegistrationCount}

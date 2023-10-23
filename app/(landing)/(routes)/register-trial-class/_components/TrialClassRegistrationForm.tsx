@@ -29,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import DateTimePicker from '@/components/shared/DateTimePicker';
+import { DateTimePicker } from '@mantine/dates';
 
 const TrialClassRegistrationForm = ({ courses }: { courses: Course[] }) => {
   const form = useForm<z.infer<typeof TrialClassValidation>>({
@@ -202,10 +202,11 @@ const TrialClassRegistrationForm = ({ courses }: { courses: Course[] }) => {
                   <FormItem>
                     <FormLabel>Pilihan Hari Trial Class</FormLabel>
                     <FormControl>
-                      <DateTimePicker
+                      {/* <DateTimePicker
                         date={field.value}
                         setDate={field.onChange}
-                      />
+                      /> */}
+                      <DateTimePicker {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

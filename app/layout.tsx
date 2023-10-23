@@ -1,9 +1,11 @@
 import './globals.css';
 import '@smastrom/react-rating/style.css';
+import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
 import localFont from 'next/font/local';
 import { Poppins, Josefin_Sans } from 'next/font/google';
+import { MantineProvider, ColorSchemeScript } from '@mantine/core';
 
-import UIProvider from '@/providers/UIProvider';
 import { cn } from '@/lib/utils';
 import ToasterProvider from '@/providers/ToasterProvider';
 import { Metadata } from 'next';
@@ -31,9 +33,6 @@ export const metadata: Metadata = {
   title: 'Lecturna',
   description:
     'Lecturna offers a coding course specifically designed to assist children in acquiring the skills necessary for creating websites, developing mobile apps, and engaging in game development.',
-  // icons: {
-  //   icon: '/favicon.ico',
-  // },
 };
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
@@ -42,8 +41,11 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
       lang='en'
       className={cn(fabada.variable, poppins.variable, josefin.variable)}
     >
+      <head>
+        <ColorSchemeScript />
+      </head>
       <body>
-        <UIProvider>{children}</UIProvider>
+        <MantineProvider>{children}</MantineProvider>
         <ToasterProvider />
       </body>
     </html>

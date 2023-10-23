@@ -1,23 +1,28 @@
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@mantine/core';
+
 import Logo from './Logo';
 import SidebarRoutes from './SidebarRoutes';
-import Link from 'next/link';
 
 const Sidebar = () => {
   return (
-    <div className='h-full border-r flex flex-col overflow-y-auto bg-white shadow-sm'>
-      <div className='p-6 mx-auto'>
-        <Link href='/'>
-          <Logo />
-        </Link>
+    <nav className='bg-white p-4 pt-0 flex flex-col border-r shadow-sm h-full w-full'>
+      <div className='p-4 border-b shadow-sm -mx-4 h-20'>
+        <div className='flex justify-between items-center'>
+          <div className='flex gap-2 items-center'>
+            <Logo />
+            <div className='font-fabada text-primary-blue text-xl font-semibold'>
+              Lecturna
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className='relative overflow-hidden flex flex-col w-full'>
-        <ScrollArea className='h-full w-full rounded-inherit'>
-          <SidebarRoutes />
-        </ScrollArea>
-      </div>
-    </div>
+      <ScrollArea className='flex-1 -mx-4 no-scrollbar'>
+        <SidebarRoutes />
+      </ScrollArea>
+
+      {/* <div className='-mx-4 border-t shadow-sm'><UserButton /></div> */}
+    </nav>
   );
 };
 

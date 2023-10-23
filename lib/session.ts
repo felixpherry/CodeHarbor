@@ -36,7 +36,6 @@ export const authOptions: NextAuthOptions = {
         const account = await db.account.findUnique({
           where: {
             email: email,
-            status: 'ACTIVE',
           },
         });
 
@@ -49,6 +48,12 @@ export const authOptions: NextAuthOptions = {
         if (!account.password) {
           throw new Error(
             "Silakan gunakan opsi 'Masuk dengan Google' untuk mengakses akun Anda"
+          );
+        }
+
+        if (account.status === 'BANNED') {
+          throw new Error(
+            'Akun Anda dinonaktifkan sementara. Silakan hubungi admin untuk mengaktifkan kembali akun Anda'
           );
         }
 

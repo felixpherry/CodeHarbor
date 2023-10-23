@@ -1,90 +1,77 @@
 'use client';
 
-import {
-  AppWindow,
-  Code2,
-  FileQuestion,
-  GraduationCap,
-  Hexagon,
-  Layout,
-  Receipt,
-  ScrollText,
-  Shapes,
-  Users,
-  Users2,
-} from 'lucide-react';
+import { IconTableOptions } from '@tabler/icons-react';
 import SidebarItem from './SidebarItem';
+import { Code2, Layout, ScrollText, Users, Users2, Wrench } from 'lucide-react';
 
 const adminRoutes = [
+  { label: 'Dashboard', icon: Layout, href: '/admin/dashboard' },
+  { label: 'Accounts', icon: Users, href: '/admin/accounts' },
   {
-    icon: Layout,
-    label: 'Dashboard',
-    href: '/admin/dashboard',
+    label: 'Master',
+    icon: Wrench,
+    initiallyOpened: false,
+    links: [
+      {
+        label: 'Day',
+        href: '/admin/master/day',
+      },
+      {
+        label: 'Period',
+        href: '/admin/master/period',
+      },
+      {
+        label: 'Shift',
+        href: '/admin/master/shift',
+      },
+    ],
   },
-
   {
-    icon: Users,
-    label: 'Accounts',
-    href: '/admin/accounts',
-  },
-  {
-    icon: GraduationCap,
-    label: 'Students',
-    href: '/admin/students',
-  },
-  {
-    icon: Receipt,
-    label: 'Transactions',
-    href: '/admin/transactions',
-  },
-  {
-    icon: ScrollText,
     label: 'Registrations',
+    icon: ScrollText,
     href: '/admin/registrations/trial-class',
   },
   {
-    icon: Code2,
     label: 'Programs',
+    icon: Code2,
     href: '/admin/programs',
   },
   {
-    icon: Users2,
     label: 'Classes',
+    icon: Users2,
     href: '/admin/classes',
   },
   {
-    icon: AppWindow,
-    label: 'Hero',
-    href: '/admin/hero',
-  },
-  {
-    icon: FileQuestion,
-    label: 'FAQ',
-    href: '/admin/faq',
-  },
-  {
-    icon: Shapes,
-    label: 'Categories',
-    href: '/admin/categories',
-  },
-  {
-    icon: Hexagon,
-    label: 'Logo',
-    href: '/admin/logo',
+    label: 'Customization',
+    icon: IconTableOptions,
+    initiallyOpened: false,
+    links: [
+      {
+        label: 'Hero',
+        href: '/admin/hero',
+      },
+      {
+        label: 'FAQ',
+        href: '/admin/faq',
+      },
+      {
+        label: 'Categories',
+        href: '/admin/categories',
+      },
+      {
+        label: 'Logo',
+        href: '/admin/logo',
+      },
+    ],
   },
 ];
 
 const SidebarRoutes = () => {
   const routes = adminRoutes;
   return (
-    <div className='flex flex-col w-full px-3'>
-      {routes.map((route) => (
-        <SidebarItem
-          key={route.href}
-          icon={route.icon}
-          label={route.label}
-          href={route.href}
-        />
+    <div className='py-8'>
+      {routes.map((item) => (
+        <SidebarItem {...item} key={item.label} />
       ))}
     </div>
   );

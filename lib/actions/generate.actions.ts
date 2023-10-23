@@ -2,7 +2,7 @@
 
 import { faker } from '@faker-js/faker';
 import { db } from '../db';
-import { Gender, Prisma } from '@prisma/client';
+import { Gender, Period, Prisma } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
 export const generateCategories = async () => {
@@ -182,6 +182,71 @@ export const generateUser = async () => {
   }
 };
 
+export const generateMasterDay = async () => {
+  try {
+    return await db.masterDay.createMany({
+      data: [
+        {
+          day: 'MONDAY',
+        },
+        {
+          day: 'TUESDAY',
+        },
+        {
+          day: 'WEDNESDAY',
+        },
+        {
+          day: 'THURSDAY',
+        },
+        {
+          day: 'FRIDAY',
+        },
+        {
+          day: 'SATURDAY',
+        },
+        {
+          day: 'SUNDAY',
+        },
+      ],
+    });
+  } catch (error: any) {
+    throw new Error(`Failed to generate master day: ${error.message}`);
+  }
+};
+
+export const generatePeriod = async () => {
+  try {
+    const periods: Prisma.PeriodUncheckedCreateInput[] = [];
+    for (let year = 2025; year <= 2100; year++) {
+      periods.push({
+        name: `Q1-${year}`,
+        startDate: new Date(`${year}-01-01`),
+        endDate: new Date(`${year}-03-31`),
+      });
+      periods.push({
+        name: `Q2-${year}`,
+        startDate: new Date(`${year}-01-04`),
+        endDate: new Date(`${year}-06-30`),
+      });
+      periods.push({
+        name: `Q3-${year}`,
+        startDate: new Date(`${year}-07-01`),
+        endDate: new Date(`${year}-09-30`),
+      });
+      periods.push({
+        name: `Q4-${year}`,
+        startDate: new Date(`${year}-10-01`),
+        endDate: new Date(`${year}-12-31`),
+      });
+    }
+    return await db.period.createMany({
+      data: periods,
+    });
+  } catch (error: any) {
+    throw new Error(`Failed to generate period: ${error.message}`);
+  }
+};
+
 export const seedData = async () => {
   try {
     await generateCategories();
@@ -193,8 +258,6 @@ export const seedData = async () => {
     throw new Error(`Failed to seed data: ${error.message}`);
   }
 };
-
-// export const generatePrograms = async () => {
 //   try {
 //     await db.program.createMany({
 //       data: [

@@ -10,18 +10,18 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Chip, Select, SelectItem, SelectedItems } from '@nextui-org/react';
+import { Input, MultiSelect, Select } from '@mantine/core';
 import { Skill } from '@prisma/client';
 import { Loader2 } from 'lucide-react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { usePathname, useRouter } from 'next/navigation';
 import { registerInstructor } from '../_actions';
 import { toast } from 'sonner';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import { DateInput } from '@mantine/dates';
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -45,7 +45,9 @@ const formSchema = z.object({
   address: z.string().min(1, {
     message: 'Alamat wajib diisi',
   }),
-  skills: z.any(),
+  skills: z.string().array().min(1, {
+    message: 'Skill wajib diisi',
+  }),
 });
 
 const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
@@ -85,6 +87,7 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
         pathname,
       });
 
+      console.log(values);
       form.reset();
 
       router.push('/');
@@ -115,6 +118,11 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
       value: 'S3',
     },
   ];
+
+  const skillOptions = skills.map(({ id, name }) => ({
+    label: name,
+    value: id,
+  }));
 
   return (
     <div className='container max-w-2xl py-28'>
@@ -172,10 +180,10 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
                   <FormItem>
                     <FormLabel>Tanggal Lahir</FormLabel>
                     <FormControl>
-                      <Input
-                        type='date'
-                        value={field.value.toString()}
-                        onChange={field.onChange}
+                      <DateInput
+                        valueFormat='DD-MM-YYYY'
+                        clearable
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -199,20 +207,18 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
                 control={form.control}
                 name='lastEducation'
                 render={({ field }) => (
-                  <FormItem className='bg-white'>
+                  <FormItem>
+                    <FormLabel>Pendidikan Terakhir</FormLabel>
                     <FormControl>
                       <Select
-                        label='Pendidikan Terakhir'
-                        labelPlacement='outside'
                         placeholder='Pilih'
+                        data={lastEducations}
+                        searchable
+                        clearable
+                        checkIconPosition='right'
+                        nothingFoundMessage='Pencarian tidak ditemukan.'
                         {...field}
-                      >
-                        {lastEducations.map(({ label, value }) => (
-                          <SelectItem key={value} value={value}>
-                            {label}
-                          </SelectItem>
-                        ))}
-                      </Select>
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -232,44 +238,22 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
                 )}
               />
 
-              <Controller
+              <FormField
                 control={form.control}
                 name='skills'
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Skill</FormLabel>
                     <FormControl>
-                      <Select
-                        label='Skills'
-                        selectionMode='multiple'
-                        placeholder='Pilih minimal 1'
-                        selectedKeys={field.value ?? []}
-                        onSelectionChange={field.onChange}
-                        ref={field.ref}
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        classNames={{
-                          base: 'w-full',
-                          trigger: 'min-h-unit-12 py-2',
-                        }}
-                        labelPlacement='outside'
-                        renderValue={(items: SelectedItems<string>) => {
-                          return (
-                            <div className='flex gap-2 overflow-hidden'>
-                              {items.map((item) => (
-                                <Chip key={item.key}>
-                                  {item.textValue ?? ''}
-                                </Chip>
-                              ))}
-                            </div>
-                          );
-                        }}
-                      >
-                        {skills.map(({ id, name }) => (
-                          <SelectItem key={id} value={id}>
-                            {name}
-                          </SelectItem>
-                        ))}
-                      </Select>
+                      <MultiSelect
+                        data={skillOptions}
+                        searchable
+                        clearable
+                        checkIconPosition='right'
+                        nothingFoundMessage='Pencarian tidak ditemukan'
+                        // minLength={1}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

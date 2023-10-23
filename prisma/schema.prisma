@@ -118,12 +118,13 @@ model Course {
   category   Category? @relation(fields: [categoryId], references: [id])
   categoryId String?
 
-  registrations           CourseRegistration[]
-  classes                 Class[]
-  sessions                Session[]
-  instructors             Instructor[]
+  registrations CourseRegistration[]
+  classes       Class[]
+  sessions      Session[]
+
   trialClassRegistrations TrialClassRegistration[]
-  studentCourses          StudentCourses[]
+  studentCourses          StudentCourse[]
+  instructorCourses       InstructorCourse[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -274,7 +275,7 @@ model MasterDay {
   day      DayOfWeek
   isActive Boolean   @default(true)
 
-  schedules InstructorMasterSchedule[]
+  schedules InstructorSchedule[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -288,13 +289,13 @@ model MasterShift {
 
   isActive Boolean @default(true)
 
-  schedules InstructorMasterSchedule[]
+  schedules InstructorSchedule[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model InstructorMasterSchedule {
+model InstructorSchedule {
   id String @id @default(cuid())
 
   day   MasterDay @relation(fields: [dayId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -306,14 +307,40 @@ model InstructorMasterSchedule {
   instructor   Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   instructorId String
 
+  period   Period @relation(fields: [periodId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  periodId String
+
   class Class?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([dayId, shiftId, instructorId, periodId])
   @@index([dayId])
   @@index([shiftId])
   @@index([instructorId])
+  @@index([periodId])
+}
+
+model InstructorCourse {
+  id String @id @default(cuid())
+
+  instructor   Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  instructorId String
+
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  courseId String
+
+  period   Period @relation(fields: [periodId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  periodId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([courseId, instructorId, periodId])
+  @@index([instructorId])
+  @@index([courseId])
+  @@index([periodId])
 }
 
 model Instructor {
@@ -327,9 +354,10 @@ model Instructor {
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   accountId String  @unique
 
-  skills    Skill[]
-  courses   Course[]
-  schedules InstructorMasterSchedule[]
+  skills Skill[]
+
+  instructorSchedules InstructorSchedule[]
+  instructorCourses   InstructorCourse[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -357,8 +385,10 @@ model Period {
   startDate DateTime
   endDate   DateTime
 
-  classes        Class[]
-  studentCourses StudentCourses[]
+  classes             Class[]
+  studentCourses      StudentCourse[]
+  instructorSchedules InstructorSchedule[]
+  instructorCourses   InstructorCourse[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -374,8 +404,8 @@ model Class {
   period   Period @relation(fields: [periodId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   periodId String
 
-  instructorMasterSchedule   InstructorMasterSchedule? @relation(fields: [instructorMasterScheduleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  instructorMasterScheduleId String?                   @unique
+  instructorSchedule   InstructorSchedule? @relation(fields: [instructorScheduleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  instructorScheduleId String?             @unique
 
   students  Student[]
   schedules Schedule[]
@@ -386,7 +416,7 @@ model Class {
   @@unique([name, periodId])
   @@index([courseId])
   @@index([periodId])
-  @@index([instructorMasterScheduleId])
+  @@index([instructorScheduleId])
 }
 
 model Session {
@@ -475,7 +505,7 @@ model Student {
   accountId String  @unique
 
   classes        Class[]
-  studentCourses StudentCourses[]
+  studentCourses StudentCourse[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -484,7 +514,7 @@ model Student {
   @@index([accountId])
 }
 
-model StudentCourses {
+model StudentCourse {
   id String @id @default(cuid())
 
   courses  Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -501,6 +531,7 @@ model StudentCourses {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([courseId, studentId, periodId])
   @@index([courseId])
   @@index([studentId])
   @@index([periodId])
@@ -516,7 +547,7 @@ model StudentCourses {
 // Account
 // Student
 // Parent
-// StudentCourses:
+// StudentCourse:
 //   course Python
 //   status APPROVED
 
@@ -561,3 +592,7 @@ model StudentCourses {
 // pas query schedule
 // query schedule where bisa dipake
 // [10]
+
+// getCurrentPeriod
+
+// getNextPeriod
