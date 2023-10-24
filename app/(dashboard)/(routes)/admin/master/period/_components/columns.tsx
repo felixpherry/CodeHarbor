@@ -1,7 +1,6 @@
 'use client';
 
-import { ConfirmModal } from '@/components/modals/ConfirmModal';
-import { Period, RegistrationStatus } from '@prisma/client';
+import { Period } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
