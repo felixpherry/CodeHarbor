@@ -12,7 +12,7 @@ import { Switch, Text, rem, useMantineTheme } from '@mantine/core';
 import { Badge } from '@/components/ui/badge';
 import { changeShiftStatus, deleteShift } from '../_actions';
 import ShiftForm from './ShiftForm';
-import { experimental_useOptimistic as useOptimistic } from 'react';
+import { useOptimistic } from 'react';
 
 export const columns: ColumnDef<MasterShift>[] = [
   {

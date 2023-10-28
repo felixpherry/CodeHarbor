@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { Switch, rem, useMantineTheme } from '@mantine/core';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { changeDayStatus } from '../_actions';
-import { experimental_useOptimistic as useOptimistic } from 'react';
+import { useOptimistic } from 'react';
 
 export const columns: ColumnDef<MasterDay>[] = [
   {

@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import '~@uploadthing/react/styles.css';
+@import '@uploadthing/react/styles.css';
 
 .ql-container {
   font-size: 16px !important;
@@ -330,7 +330,7 @@ body,
 }
 
 .account-form_image-input {
-  @apply cursor-pointer border-none bg-transparent outline-none file:text-primary-blue !important;
+  @apply cursor-pointer border-none bg-transparent outline-none file:text-primary-blue file:cursor-pointer !important;
 }
 
 .account-form_input {

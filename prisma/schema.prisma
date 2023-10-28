@@ -295,6 +295,28 @@ model MasterShift {
   updatedAt DateTime @updatedAt
 }
 
+model Instructor {
+  id                   String   @id @default(cuid())
+  dateOfBirth          DateTime
+  lastEducation        String
+  educationInstitution String
+  fileIDCard           String?
+  fileNPWP             String?
+
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId String  @unique
+
+  skills Skill[]
+
+  instructorSchedules InstructorSchedule[]
+  instructorCourses   InstructorCourse[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([accountId])
+}
+
 model InstructorSchedule {
   id String @id @default(cuid())
 
@@ -341,28 +363,6 @@ model InstructorCourse {
   @@index([instructorId])
   @@index([courseId])
   @@index([periodId])
-}
-
-model Instructor {
-  id                   String   @id @default(cuid())
-  dateOfBirth          DateTime
-  lastEducation        String
-  educationInstitution String
-  fileIDCard           String?
-  fileNPWP             String?
-
-  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  accountId String  @unique
-
-  skills Skill[]
-
-  instructorSchedules InstructorSchedule[]
-  instructorCourses   InstructorCourse[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([accountId])
 }
 
 model Parent {

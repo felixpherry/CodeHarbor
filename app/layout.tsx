@@ -46,7 +46,25 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider>
+        <MantineProvider
+          theme={{
+            primaryColor: 'primary-blue',
+            colors: {
+              'primary-blue': [
+                '#e9f0ff',
+                '#d2dcff',
+                '#a2b5f8',
+                '#708cf4',
+                '#466af0',
+                '#2c54ee',
+                '#1d49ee',
+                '#0f3bd4',
+                '#0434be',
+                '#002ca8',
+              ],
+            },
+          }}
+        >
           <ModalsProvider>{children}</ModalsProvider>
         </MantineProvider>
         <ToasterProvider />

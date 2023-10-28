@@ -2,7 +2,6 @@ import { getCurrentUser } from '@/lib/session';
 import Navbar from './_components/Navbar';
 import { SessionInterface } from '@/types';
 import { redirect } from 'next/navigation';
-import { fetchAccountDetail } from '@/lib/actions/account.actions';
 import Sidebar from './_components/Sidebar';
 
 interface DashboardLayoutProps {
@@ -13,10 +12,6 @@ const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
   const session = (await getCurrentUser()) as SessionInterface;
 
   if (!session) return redirect('/login');
-
-  const accountDetail = await fetchAccountDetail(session?.user.id);
-
-  if (!accountDetail?.onboarded) return redirect('/onboarding');
 
   return (
     <div className='h-full'>

@@ -251,7 +251,6 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
                         clearable
                         checkIconPosition='right'
                         nothingFoundMessage='Pencarian tidak ditemukan'
-                        // minLength={1}
                         {...field}
                       />
                     </FormControl>
