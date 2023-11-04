@@ -1,6 +1,8 @@
 import { fetchAccountDetail } from '@/lib/actions/account.actions';
+import { fetchLogo } from '@/lib/actions/logo.actions';
 import { getCurrentUser } from '@/lib/session';
 import { SessionInterface } from '@/types';
+import Image from 'next/image';
 import { redirect } from 'next/navigation';
 
 type Props = {
@@ -16,7 +18,20 @@ const StudentLayout = async ({ children }: Props) => {
 
   if (userInfo?.onboarded) return redirect('/student/dashboard');
 
-  return <>{children}</>;
+  const logo = await fetchLogo();
+
+  return (
+    <main className='flex flex-col justify-center items-center p-5'>
+      <Image
+        src={logo?.image || '/logo.png'}
+        alt='logo'
+        height={80}
+        width={80}
+        className='mt-10'
+      />
+      {children}
+    </main>
+  );
 };
 
 export default StudentLayout;

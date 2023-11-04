@@ -37,12 +37,10 @@ interface InstructorOnboardingConfirmationProps {
 
 const InstructorOnboardingConfirmation = ({
   accountDetail,
-  setAccountDetail,
   courses,
   days,
   instructorCourses,
   instructorPersonalInfo,
-  setInstructorPersonalInfo,
   instructorSchedules,
   setActive,
   shifts,

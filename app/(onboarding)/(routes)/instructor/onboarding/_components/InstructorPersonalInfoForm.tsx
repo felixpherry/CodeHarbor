@@ -9,26 +9,21 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FileInput, Input, MultiSelect, Textarea } from '@mantine/core';
+import { FileInput, Input, MultiSelect, Select, Textarea } from '@mantine/core';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
-import { Skill } from '@prisma/client';
+import { LastEducation, Skill } from '@prisma/client';
 import { DateInput } from '@mantine/dates';
+import { PhoneNumberValidation } from '@/lib/validations/phone-number';
 
 const formSchema = z.object({
   name: z.string().min(1, {
     message: 'Name is required',
   }),
-  phoneNumber: z
-    .string({
-      required_error: 'Phone number is required',
-    })
-    .regex(new RegExp('0.{9,}'), {
-      message: 'Phone number is invalid',
-    }),
+  phoneNumber: PhoneNumberValidation,
   address: z.string().min(1, {
     message: 'Address is required',
   }),
@@ -141,6 +136,8 @@ const InstructorPersonalInfoForm = ({
     setActive(0);
   };
 
+  const lastEducationOptions: LastEducation[] = ['SMA', 'S1', 'S2', 'S3'];
+
   return (
     <Form {...form}>
       <form
@@ -193,7 +190,12 @@ const InstructorPersonalInfoForm = ({
             <FormItem>
               <FormLabel>Last Education</FormLabel>
               <FormControl>
-                <Input disabled={isSubmitting} {...field} />
+                <Select
+                  data={lastEducationOptions}
+                  checkIconPosition='right'
+                  disabled={isSubmitting}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -217,7 +219,7 @@ const InstructorPersonalInfoForm = ({
           name='address'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Education Institution</FormLabel>
+              <FormLabel>Address</FormLabel>
               <FormControl>
                 <Textarea disabled={isSubmitting} {...field} />
               </FormControl>

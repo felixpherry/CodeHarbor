@@ -407,8 +407,8 @@ model Class {
   instructorSchedule   InstructorSchedule? @relation(fields: [instructorScheduleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   instructorScheduleId String?             @unique
 
-  students  Student[]
-  schedules Schedule[]
+  studentCourses StudentCourse[]
+  schedules      Schedule[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -471,10 +471,12 @@ model OtherAttachment {
 }
 
 model Schedule {
-  id            String  @id @default(cuid())
+  id            String   @id @default(cuid())
   sessionNumber Int
-  meetingUrl    String? @db.LongText
-  recordingUrl  String? @db.LongText
+  scheduleDate  DateTime
+  scheduleTime  String
+  meetingUrl    String?  @db.LongText
+  recordingUrl  String?  @db.LongText
 
   class            Class             @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   classId          String
@@ -504,7 +506,6 @@ model Student {
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   accountId String  @unique
 
-  classes        Class[]
   studentCourses StudentCourse[]
 
   createdAt DateTime @default(now())
@@ -526,6 +527,9 @@ model StudentCourse {
   period   Period? @relation(fields: [periodId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   periodId String?
 
+  class   Class?  @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  classId String?
+
   status RegistrationStatus @default(PENDING)
 
   createdAt DateTime @default(now())
@@ -535,6 +539,7 @@ model StudentCourse {
   @@index([courseId])
   @@index([studentId])
   @@index([periodId])
+  @@index([classId])
 }
 
 // Python

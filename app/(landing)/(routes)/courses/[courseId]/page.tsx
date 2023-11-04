@@ -54,7 +54,7 @@ const Page = async ({ params: { courseId } }: PageProps) => {
         select: {
           _count: {
             select: {
-              students: true,
+              studentCourses: true,
             },
           },
         },
@@ -79,9 +79,11 @@ const Page = async ({ params: { courseId } }: PageProps) => {
 
   const students = await db.student.count({
     where: {
-      classes: {
+      studentCourses: {
         some: {
-          id,
+          courses: {
+            id,
+          },
         },
       },
     },

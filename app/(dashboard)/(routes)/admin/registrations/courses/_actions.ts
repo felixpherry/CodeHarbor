@@ -5,6 +5,7 @@ import { CourseRegistration, RegistrationStatus } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcrypt';
 import moment from 'moment';
+import { getCurrentPeriod } from '@/lib/actions/period.actions';
 
 export const updateCourseRegistrationStatus = async ({
   id,
@@ -70,19 +71,9 @@ export const createAccountForStudent = async (payload: CourseRegistration) => {
       date.getMonth() < 9 ? '0' + `${date.getMonth() + 1}` : date.getMonth() + 1
     }${Date.now() % 1000000}`;
 
-    const period = await db.period.findFirst({
-      where: {
-        startDate: {
-          gt: new Date(),
-        },
-      },
-      orderBy: {
-        startDate: 'asc',
-      },
-      select: {
-        id: true,
-      },
-    });
+    const period = await getCurrentPeriod();
+
+    if (!period) throw new Error("There's no period");
 
     const account = await db.account.create({
       data: {
@@ -117,7 +108,7 @@ export const createAccountForStudent = async (payload: CourseRegistration) => {
               create: {
                 status: 'APPROVED',
                 courseId,
-                periodId: period!.id,
+                periodId: period.id,
               },
             },
           },

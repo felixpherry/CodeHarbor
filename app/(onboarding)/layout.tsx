@@ -2,11 +2,11 @@ import { getCurrentUser } from '@/lib/session';
 import { SessionInterface } from '@/types';
 import { redirect } from 'next/navigation';
 
-interface DashboardLayoutProps {
+interface OnboardingLayoutProps {
   children: React.ReactNode;
 }
 
-const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
+const OnboardingLayout = async ({ children }: OnboardingLayoutProps) => {
   const session = (await getCurrentUser()) as SessionInterface;
 
   if (!session) return redirect('/login');
@@ -14,4 +14,4 @@ const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
   return <>{children}</>;
 };
 
-export default DashboardLayout;
+export default OnboardingLayout;
