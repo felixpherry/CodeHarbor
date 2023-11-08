@@ -10,6 +10,13 @@ import { ModalsProvider } from '@mantine/modals';
 import { cn } from '@/lib/utils';
 import ToasterProvider from '@/providers/ToasterProvider';
 import { Metadata } from 'next';
+import {
+  generateCourseRegistrationData,
+  generateInstructorRegistrationData,
+  generateInstructors,
+  generateStudents,
+  generateTrialClassData,
+} from '@/lib/actions/generate.actions';
 
 const fabada = localFont({
   src: '../fonts/Fabada-Regular.ttf',

@@ -23,7 +23,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import StatusSelect from '../../_components/StatusSelect';
 import CoursesFilterSelect from '../../../_components/CoursesFilterSelect';
 
 interface DataTableProps<TData, TValue> {
@@ -65,15 +64,12 @@ export function DataTable<TData, TValue>({
       <div className='flex items-center py-4 gap-x-5 gap-y-2 flex-col md:flex-row'>
         <Input
           placeholder='Search name...'
-          value={
-            (table.getColumn('childName')?.getFilterValue() as string) ?? ''
-          }
+          value={(table.getColumn('student')?.getFilterValue() as string) ?? ''}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            table.getColumn('childName')?.setFilterValue(event.target.value)
+            table.getColumn('student')?.setFilterValue(event.target.value)
           }
           className='w-full md:w-1/3'
         />
-        <StatusSelect />
         <CoursesFilterSelect courseOptions={courseOptions} />
       </div>
       <div className='rounded-md border'>

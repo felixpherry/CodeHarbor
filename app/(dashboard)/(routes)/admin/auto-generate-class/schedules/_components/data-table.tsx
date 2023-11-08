@@ -23,13 +23,22 @@ import {
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import StatusSelect from '../../_components/StatusSelect';
 import CoursesFilterSelect from '../../../_components/CoursesFilterSelect';
+import DaysFilterSelect from './DaysFilterSelect';
+import ShiftsFilterSelect from './ShiftsFilterSelect';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   courseOptions: {
+    text: string;
+    value: string;
+  }[];
+  dayOptions: {
+    text: string;
+    value: string;
+  }[];
+  shiftOptions: {
     text: string;
     value: string;
   }[];
@@ -39,6 +48,8 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   courseOptions,
+  dayOptions,
+  shiftOptions,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -64,17 +75,18 @@ export function DataTable<TData, TValue>({
     <div>
       <div className='flex items-center py-4 gap-x-5 gap-y-2 flex-col md:flex-row'>
         <Input
-          placeholder='Search name...'
+          placeholder='Search instructor...'
           value={
-            (table.getColumn('childName')?.getFilterValue() as string) ?? ''
+            (table.getColumn('instructor')?.getFilterValue() as string) ?? ''
           }
           onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            table.getColumn('childName')?.setFilterValue(event.target.value)
+            table.getColumn('instructor')?.setFilterValue(event.target.value)
           }
           className='w-full md:w-1/3'
         />
-        <StatusSelect />
         <CoursesFilterSelect courseOptions={courseOptions} />
+        <DaysFilterSelect dayOptions={dayOptions} />
+        <ShiftsFilterSelect shiftOptions={shiftOptions} />
       </div>
       <div className='rounded-md border'>
         <Table className='text-muted-foreground font-semibold'>

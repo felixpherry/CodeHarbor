@@ -10,3 +10,13 @@ export interface SessionInterface extends Session {
     status: 'BANNED' | 'ACTIVE';
   };
 }
+
+export interface MantineSelectOption {
+  label: string;
+  value: string;
+}
+
+export interface ShadCNOption {
+  text: string;
+  value: string;
+}

@@ -52,6 +52,8 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const page = table.getState().pagination.pageIndex + 1;
+
   return (
     <div>
       <div className='flex items-center py-4 gap-x-5 gap-y-2 flex-col md:flex-row'>
@@ -94,7 +96,10 @@ export function DataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell, cellIdx) => {
                     if (cellIdx === 0)
-                      return <TableCell>{rowIdx + 1}</TableCell>;
+                      return (
+                        <TableCell>{(page - 1) * 10 + rowIdx + 1}</TableCell>
+                      );
+
                     return (
                       <TableCell key={cell.id}>
                         {flexRender(
@@ -119,23 +124,30 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className='flex items-center justify-end space-x-2 py-4'>
-        <Button
-          variant='outline'
-          size='sm'
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant='outline'
-          size='sm'
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
+      <div className='flex items-center justify-between space-x-2 py-4'>
+        <div className='flex justify-between items-center'>
+          <p className='text-muted-foreground'>
+            Page {page} of {table.getPageCount()}
+          </p>
+        </div>
+        <div>
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div>
       </div>
     </div>
   );

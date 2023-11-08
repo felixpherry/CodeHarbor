@@ -13,8 +13,6 @@ import {
   updateCourseRegistrationStatus,
 } from '../_actions';
 import CourseRegistrationDetail from './CourseRegistrationDetail';
-import CourseRegistrationSuccess from './CourseRegistrationSuccess';
-import moment from 'moment';
 
 export const columns: ColumnDef<CourseRegistration>[] = [
   {

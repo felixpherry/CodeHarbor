@@ -2,11 +2,62 @@
 
 import { faker } from '@faker-js/faker';
 import { db } from '../db';
-import { Gender, Period, Prisma } from '@prisma/client';
+import { Gender, Prisma, Program } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import { getRandElement } from '../utils';
+import { getNextPeriod } from './period.actions';
+
+export const generateSkills = async () => {
+  try {
+    const skills = db.skill.createMany({
+      data: [
+        {
+          name: 'Kotlin',
+        },
+        {
+          name: 'React',
+        },
+        {
+          name: 'TypeScript',
+        },
+        {
+          name: 'Next.js',
+        },
+        {
+          name: 'React Native',
+        },
+      ],
+      skipDuplicates: true,
+    });
+    return skills;
+  } catch (error: any) {
+    throw new Error(`Failed to generate skills: ${error.message}`);
+  }
+};
+
+export const generateCoupons = async () => {
+  try {
+    const coupons = await db.coupon.createMany({
+      data: [
+        {
+          name: faker.company.name(),
+          email: faker.internet.email(),
+          phoneNumber: faker.phone.number(),
+          code: `${Date.now()}`,
+          expiredAt: faker.date.future(),
+        },
+      ],
+      skipDuplicates: true,
+    });
+    return coupons;
+  } catch (error: any) {
+    throw new Error(`Failed to generate coupons: ${error.message}`);
+  }
+};
 
 export const generateCategories = async () => {
   try {
+    await db.category.deleteMany();
     return await db.category.createMany({
       data: [
         {
@@ -51,6 +102,7 @@ export const generateHero = async () => {
 
 export const generateFaq = async () => {
   try {
+    await db.faq.deleteMany();
     return await db.faq.createMany({
       data: [
         {
@@ -97,115 +149,38 @@ export const generateLogo = async () => {
   }
 };
 
-export const generateUser = async () => {
-  try {
-    const adminPassword = await bcrypt.hash('admin', 10);
-    const instructorPassword = await bcrypt.hash('instructor', 10);
-    const parentPassword = await bcrypt.hash('parent', 10);
-    const studentPassword = await bcrypt.hash('student', 10);
-
-    const admin = await db.account.create({
-      data: {
-        email: 'admin@gmail.com',
-        password: adminPassword,
-        name: 'admin',
-        phoneNumber: '123123',
-        role: 'ADMIN',
-        address: 'address123',
-        username: 'admin',
-        admin: {
-          create: {},
-        },
-      },
-    });
-
-    const instructor = await db.account.create({
-      data: {
-        email: 'instructor@gmail.com',
-        password: instructorPassword,
-        name: 'instructor',
-        phoneNumber: '123456',
-        role: 'INSTRUCTOR',
-        address: 'address123',
-        username: 'instructor',
-        instructor: {
-          create: {
-            dateOfBirth: new Date('04-04-1990'),
-            lastEducation: 'S1',
-            educationInstitution: 'Binus',
-            skills: {
-              create: {
-                name: 'Programming',
-              },
-            },
-          },
-        },
-      },
-    });
-
-    const parent = await db.account.create({
-      data: {
-        email: 'parent@gmail.com',
-        password: parentPassword,
-        name: 'parent',
-        phoneNumber: '123321',
-        role: 'PARENT',
-        address: 'address123',
-        username: 'parent',
-        parent: {
-          create: {},
-        },
-      },
-    });
-
-    const student = await db.account.create({
-      data: {
-        email: 'student@gmail.com',
-        password: studentPassword,
-        name: 'student',
-        phoneNumber: '0901221',
-        role: 'STUDENT',
-        address: 'address123',
-        username: 'student',
-      },
-    });
-
-    return {
-      admin,
-      parent,
-      instructor,
-      student,
-    };
-  } catch (error: any) {
-    console.log(error.message);
-    throw new Error(`Failed to generate user: ${error.message}`);
-  }
-};
-
 export const generateMasterDay = async () => {
   try {
+    await db.masterDay.deleteMany();
     return await db.masterDay.createMany({
       data: [
         {
           day: 'MONDAY',
+          position: 0,
         },
         {
           day: 'TUESDAY',
+          position: 1,
         },
         {
           day: 'WEDNESDAY',
+          position: 2,
         },
         {
           day: 'THURSDAY',
+          position: 3,
         },
         {
           day: 'FRIDAY',
+          position: 4,
         },
         {
           day: 'SATURDAY',
+          position: 5,
         },
         {
           day: 'SUNDAY',
+          position: 6,
         },
       ],
     });
@@ -214,41 +189,9 @@ export const generateMasterDay = async () => {
   }
 };
 
-export const generatePeriod = async () => {
-  try {
-    const periods: Prisma.PeriodUncheckedCreateInput[] = [];
-    for (let year = 2025; year <= 2100; year++) {
-      periods.push({
-        name: `Q1-${year}`,
-        startDate: new Date(`${year}-01-01`),
-        endDate: new Date(`${year}-03-31`),
-      });
-      periods.push({
-        name: `Q2-${year}`,
-        startDate: new Date(`${year}-01-04`),
-        endDate: new Date(`${year}-06-30`),
-      });
-      periods.push({
-        name: `Q3-${year}`,
-        startDate: new Date(`${year}-07-01`),
-        endDate: new Date(`${year}-09-30`),
-      });
-      periods.push({
-        name: `Q4-${year}`,
-        startDate: new Date(`${year}-10-01`),
-        endDate: new Date(`${year}-12-31`),
-      });
-    }
-    return await db.period.createMany({
-      data: periods,
-    });
-  } catch (error: any) {
-    throw new Error(`Failed to generate period: ${error.message}`);
-  }
-};
-
 export const generateShift = async () => {
   try {
+    await db.masterShift.deleteMany();
     const shifts = await db.masterShift.createMany({
       data: [
         {
@@ -303,65 +246,398 @@ export const generateShift = async () => {
   }
 };
 
-export const seedData = async () => {
+export const generatePeriod = async () => {
   try {
-    await generateCategories();
-    await generateHero();
-    await generateFaq();
-    await generateLogo();
-    await generateUser();
+    await db.period.deleteMany();
+    const periods: Prisma.PeriodUncheckedCreateInput[] = [];
+    for (let year = 2023; year <= 2100; year++) {
+      periods.push({
+        name: `Q1-${year}`,
+        startDate: new Date(`${year}-01-01`),
+        endDate: new Date(`${year}-03-31`),
+      });
+      periods.push({
+        name: `Q2-${year}`,
+        startDate: new Date(`${year}-01-04`),
+        endDate: new Date(`${year}-06-30`),
+      });
+      periods.push({
+        name: `Q3-${year}`,
+        startDate: new Date(`${year}-07-01`),
+        endDate: new Date(`${year}-09-30`),
+      });
+      periods.push({
+        name: `Q4-${year}`,
+        startDate: new Date(`${year}-10-01`),
+        endDate: new Date(`${year}-12-31`),
+      });
+    }
+    return await db.period.createMany({
+      data: periods,
+    });
   } catch (error: any) {
-    throw new Error(`Failed to seed data: ${error.message}`);
+    throw new Error(`Failed to generate period: ${error.message}`);
   }
 };
-//   try {
-//     await db.program.createMany({
-//       data: [
-//         {
-//           name: 'Web Programming',
-//           subtitle: 'Web (Beginner, Intermediate, Advanced)',
-//           description:
-//             'Terjunlah ke dunia menarik pengembangan web dengan program Pemrograman Web yang komprehensif kami. Baik Anda pemula, menengah, maupun mahir, program ini menawarkan kurikulum progresif yang memperlengkapi Anda dengan keterampilan untuk merancang dan mengembangkan situs web yang menakjubkan. Mulai dari HTML dan CSS hingga JavaScript dan kerangka kerja backend, temukan rahasia dari lanskap digital dan ungkapkan kreativitas Anda dalam dunia web yang terus berkembang. Daftar Sekarang.',
-//           image:
-//             'https://res.cloudinary.com/dgtch1ffs/image/upload/v1689776273/eezfvctdcefxczrikpzd.jpg',
-//           userId: '79f208bf-dbcf-40d7-9873-bab3258031ae',
-//         },
-//         {
-//           name: 'Mobile Programming',
-//           subtitle: 'MiT Inventor App',
-//           description:
-//             'Mulailah perjalanan seru ke dunia pengembangan aplikasi seluler dengan program Pemrograman Mobile kami. Dengan menggunakan aplikasi MiT Inventor yang terkenal, Anda akan menemukan seni menciptakan aplikasi seluler yang inovatif dan menarik. Mulai dari merancang antarmuka pengguna hingga membuat fitur interaktif, program ini memberdayakan Anda untuk mewujudkan ide-ide Anda di dalam genggaman tangan. Temukan potensi teknologi seluler dan menjadi pendorong perubahan di era digital.',
-//           image:
-//             'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.qulix.com%2Fwp-content%2Fuploads%2F2020%2F05%2FArtboard-612101101.jpg&f=1&nofb=1&ipt=cbeae9b094030b03ec4511604b1114ca63283d8339c30010fa6ecccfb5e6b396&ipo=images',
-//           userId: '79f208bf-dbcf-40d7-9873-bab3258031ae',
-//         },
-//         {
-//           name: 'Text Programming',
-//           subtitle: 'Text Programming (Roblox)',
-//           description:
-//             'Masuki dunia pemrograman berbasis teks dengan program menarik kami, yang berpusat pada platform populer Roblox. Lepaskan imajinasi Anda dan bangun dunia maya yang mendalam, permainan interaktif, dan pengalaman menarik. Mulai dari mengkodekan mekanika dan menciptakan lingkungan yang dinamis hingga membuat skrip permainan yang rumit, program ini memberikan pondasi yang kokoh bagi para pengembang game dan para pencerita digital yang berbakat.',
-//           image:
-//             'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgamelevate.com%2Fwp-content%2Fuploads%2F2023%2F07%2FRoblox_-_Featured_Image.jpg&f=1&nofb=1&ipt=699128b6ef34850411f056aada4b5cbd91f48496049df6c49d611321ede955b0&ipo=images',
-//           userId: '79f208bf-dbcf-40d7-9873-bab3258031ae',
-//         },
-//         {
-//           name: 'Visual Programming',
-//           subtitle: 'Visual Programming (Scratch)',
-//           description:
-//             'Kenalkan anak-anak pada keajaiban pemrograman dengan program Pemrograman Visual kami, yang menampilkan platform terkenal bernama Scratch. Melalui antarmuka yang ramah pengguna dan intuitif, anak-anak akan belajar dasar-dasar pemrograman sambil membuat cerita interaktif, animasi, dan permainan. Mulai dari menarik dan menjatuhkan blok-blok kode hingga berpikir logis, program ini membangun keterampilan berpikir komputasional dan menyalakan semangat mereka dalam teknologi seumur hidup.',
-//           image:
-//             'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmlyj654c2n0p.i.optimole.com%2Fr3qBotM-nKTTY9HB%2Fw%3Aauto%2Fh%3Aauto%2Fq%3Aauto%2Fhttp%3A%2F%2Fwww.drcodie.com%2Fwp-content%2Fuploads%2F2020%2F06%2Fscratch.jpg&f=1&nofb=1&ipt=413461b6757500f09b0601c3ee72dbaee58d35688032048f76560d9fc9ea4484&ipo=images',
-//           userId: '79f208bf-dbcf-40d7-9873-bab3258031ae',
-//         },
-//       ],
-//     });
-//   } catch (error: any) {
-//     throw new Error(`Failed to generate program data: ${error.message}`);
-//   }
-// };
+
+export const generateAdmin = async () => {
+  try {
+    const adminPassword = await bcrypt.hash('admin', 10);
+    const admin = await db.account.create({
+      data: {
+        email: 'admin@gmail.com',
+        password: adminPassword,
+        name: 'admin',
+        phoneNumber: '123123',
+        role: 'ADMIN',
+        address: 'address123',
+        username: 'admin',
+        onboarded: true,
+        admin: {
+          create: {},
+        },
+      },
+    });
+
+    return admin;
+  } catch (error: any) {
+    throw new Error(`Failed to generate admin: ${error.message}`);
+  }
+};
+
+export const generatePrograms = async () => {
+  try {
+    const admin = await db.admin.findFirst();
+    const categories = await db.category.findMany();
+    const categoryIds = categories.map(({ id }) => id);
+
+    const programs: Program[] = [];
+    for (let i = 0; i < 5; i++) {
+      const program = await db.program.create({
+        data: {
+          userId: admin?.id!,
+          name: faker.company.name(),
+          description: faker.lorem.sentences({
+            min: 4,
+            max: 5,
+          }),
+          image: faker.image.url(),
+          isPublished: true,
+          subtitle: faker.lorem.sentence(),
+          courses: {
+            createMany: {
+              data: [
+                {
+                  name: faker.company.name(),
+                  categoryId: getRandElement(categoryIds),
+                  code: faker.company.buzzNoun(),
+                  description: faker.lorem.sentences({
+                    min: 4,
+                    max: 5,
+                  }),
+                  image: faker.image.url(),
+                  isPublished: true,
+                  programmingTools: faker.company.buzzPhrase(),
+                  level: getRandElement([
+                    'BEGINNER',
+                    'INTERMEDIATE',
+                    'ADVANCED',
+                  ]),
+                },
+                {
+                  name: faker.company.name(),
+                  categoryId: getRandElement(categoryIds),
+                  code: faker.company.buzzNoun(),
+                  description: faker.lorem.sentences({
+                    min: 4,
+                    max: 5,
+                  }),
+                  image: faker.image.url(),
+                  isPublished: true,
+                  programmingTools: faker.company.buzzPhrase(),
+                  level: getRandElement([
+                    'BEGINNER',
+                    'INTERMEDIATE',
+                    'ADVANCED',
+                  ]),
+                },
+                {
+                  name: faker.company.name(),
+                  categoryId: getRandElement(categoryIds),
+                  code: faker.company.buzzNoun(),
+                  description: faker.lorem.sentences({
+                    min: 4,
+                    max: 5,
+                  }),
+                  image: faker.image.url(),
+                  isPublished: true,
+                  programmingTools: faker.company.buzzPhrase(),
+                  level: getRandElement([
+                    'BEGINNER',
+                    'INTERMEDIATE',
+                    'ADVANCED',
+                  ]),
+                },
+                {
+                  name: faker.company.name(),
+                  categoryId: getRandElement(categoryIds),
+                  code: faker.company.buzzNoun(),
+                  description: faker.lorem.sentences({
+                    min: 4,
+                    max: 5,
+                  }),
+                  image: faker.image.url(),
+                  isPublished: true,
+                  programmingTools: faker.company.buzzPhrase(),
+                  level: getRandElement([
+                    'BEGINNER',
+                    'INTERMEDIATE',
+                    'ADVANCED',
+                  ]),
+                },
+                {
+                  name: faker.company.name(),
+                  categoryId: getRandElement(categoryIds),
+                  code: faker.company.buzzNoun(),
+                  description: faker.lorem.sentences({
+                    min: 4,
+                    max: 5,
+                  }),
+                  image: faker.image.url(),
+                  isPublished: true,
+                  programmingTools: faker.company.buzzPhrase(),
+                  level: getRandElement([
+                    'BEGINNER',
+                    'INTERMEDIATE',
+                    'ADVANCED',
+                  ]),
+                },
+              ],
+              skipDuplicates: true,
+            },
+          },
+        },
+      });
+      programs.push(program);
+    }
+
+    return programs;
+  } catch (error: any) {
+    throw new Error(`Failed to generate program: ${error.message}`);
+  }
+};
+
+export const generateInstructors = async () => {
+  try {
+    const hashedPassword = await bcrypt.hash('instructor', 10);
+    const courses = await db.course.findMany({
+      where: {
+        isPublished: true,
+        program: {
+          isPublished: true,
+        },
+      },
+    });
+
+    const courseIds = courses.map(({ id }) => id);
+
+    const nextPeriod = await getNextPeriod();
+
+    const days = await db.masterDay.findMany({
+      where: {
+        isActive: true,
+      },
+    });
+
+    const dayIds = days.map(({ id }) => id);
+
+    const shifts = await db.masterShift.findMany({
+      where: {
+        isActive: true,
+      },
+    });
+
+    const shiftIds = shifts.map(({ id }) => id);
+
+    const skills = await db.skill.findMany();
+    const skillIds = skills.map(({ id }) => id);
+
+    for (let i = 0; i < 10; i++) {
+      const instructor = await db.account.create({
+        data: {
+          email: faker.internet.email(),
+          name: faker.person.fullName(),
+          role: 'INSTRUCTOR',
+          address: faker.location.streetAddress(),
+          image: faker.image.avatar(),
+          onboarded: true,
+          password: hashedPassword,
+          instructor: {
+            create: {
+              dateOfBirth: faker.date.birthdate(),
+              lastEducation: getRandElement(['S1', 'S2', 'S3']),
+              educationInstitution: faker.company.name(),
+              instructorCourses: {
+                createMany: {
+                  data: [
+                    {
+                      courseId: getRandElement(courseIds),
+                      periodId: nextPeriod?.id!,
+                    },
+                    {
+                      courseId: getRandElement(courseIds),
+                      periodId: nextPeriod?.id!,
+                    },
+                    {
+                      courseId: getRandElement(courseIds),
+                      periodId: nextPeriod?.id!,
+                    },
+                    {
+                      courseId: getRandElement(courseIds),
+                      periodId: nextPeriod?.id!,
+                    },
+                  ],
+                  skipDuplicates: true,
+                },
+              },
+              instructorSchedules: {
+                createMany: {
+                  data: [
+                    {
+                      dayId: getRandElement(dayIds),
+                      periodId: nextPeriod?.id!,
+                      shiftId: getRandElement(shiftIds),
+                    },
+                    {
+                      dayId: getRandElement(dayIds),
+                      periodId: nextPeriod?.id!,
+                      shiftId: getRandElement(shiftIds),
+                    },
+                    {
+                      dayId: getRandElement(dayIds),
+                      periodId: nextPeriod?.id!,
+                      shiftId: getRandElement(shiftIds),
+                    },
+                    {
+                      dayId: getRandElement(dayIds),
+                      periodId: nextPeriod?.id!,
+                      shiftId: getRandElement(shiftIds),
+                    },
+                    {
+                      dayId: getRandElement(dayIds),
+                      periodId: nextPeriod?.id!,
+                      shiftId: getRandElement(shiftIds),
+                    },
+                    {
+                      dayId: getRandElement(dayIds),
+                      periodId: nextPeriod?.id!,
+                      shiftId: getRandElement(shiftIds),
+                    },
+                    {
+                      dayId: getRandElement(dayIds),
+                      periodId: nextPeriod?.id!,
+                      shiftId: getRandElement(shiftIds),
+                    },
+                  ],
+                  skipDuplicates: true,
+                },
+              },
+              skills: {
+                connect: {
+                  id: getRandElement(skillIds),
+                },
+              },
+            },
+          },
+        },
+      });
+    }
+  } catch (error: any) {
+    throw new Error(`Failed to generate instructor: ${error.message}`);
+  }
+};
+
+export const generateStudents = async () => {
+  const date = new Date();
+  try {
+    const hashedStudentPassword = await bcrypt.hash('student', 10);
+    const hashedParentPassword = await bcrypt.hash('parent', 10);
+
+    const courses = await db.course.findMany({
+      where: {
+        isPublished: true,
+        program: {
+          isPublished: true,
+        },
+      },
+    });
+
+    const courseIds = courses.map(({ id }) => id);
+    const nextPeriod = await getNextPeriod();
+    for (let i = 0; i < 1000; i++) {
+      await db.account.create({
+        data: {
+          email: faker.internet.email(),
+          name: faker.person.fullName(),
+          role: 'STUDENT',
+          address: faker.location.streetAddress(),
+          image: faker.image.avatar(),
+          onboarded: true,
+          password: hashedStudentPassword,
+          student: {
+            create: {
+              birthPlace: faker.location.city(),
+              dateOfBirth: faker.date.birthdate(),
+              educationInstitution: faker.company.name(),
+              gender: getRandElement(['MALE', 'FEMALE']) as Gender,
+              gradeClass: getRandElement(['7', '8', '9', '10', '11', '12']),
+              studentId: `${date.getFullYear() % 100}${
+                date.getMonth() < 9
+                  ? '0' + `${date.getMonth() + 1}`
+                  : date.getMonth() + 1
+              }${Date.now() % 1000000}`,
+              studentCourses: {
+                create: {
+                  courseId: getRandElement(courseIds),
+                  periodId: nextPeriod?.id!,
+                  status: 'APPROVED',
+                },
+              },
+              parent: {
+                create: {
+                  account: {
+                    create: {
+                      email: faker.internet.email(),
+                      name: faker.person.fullName(),
+                      role: 'PARENT',
+                      onboarded: true,
+                      password: hashedParentPassword,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+    }
+  } catch (error: any) {
+    throw new Error(`Failed to generate students: ${error.message}`);
+  }
+};
 
 export const generateTrialClassData = async () => {
   try {
+    const courses = await db.course.findMany({
+      where: {
+        isPublished: true,
+        program: {
+          isPublished: true,
+        },
+      },
+    });
+
+    const courseIds = courses.map(({ id }) => id);
     const data: Prisma.TrialClassRegistrationCreateManyInput[] = [];
     for (let i = 0; i < 100; i++) {
       data.push({
@@ -373,13 +649,14 @@ export const generateTrialClassData = async () => {
         dateOfBirth: faker.date.birthdate(),
 
         email: faker.internet.email(),
-        courseId: 'clnzn0kja0002ui0oub4l8y2t',
+        courseId: getRandElement(courseIds),
         phoneNumber: faker.phone.number(),
         trialClassDate: faker.date.future(),
       });
     }
     await db.trialClassRegistration.createMany({
       data,
+      skipDuplicates: true,
     });
   } catch (error: any) {
     throw new Error(`Failed to generate trial class data: ${error.message}`);
@@ -388,7 +665,25 @@ export const generateTrialClassData = async () => {
 
 export const generateCourseRegistrationData = async () => {
   try {
+    const coupons = await db.coupon.findMany({
+      where: {
+        expiredAt: {
+          gt: new Date(),
+        },
+      },
+    });
+    const couponIds = coupons.map(({ id }) => id);
     const data: Prisma.CourseRegistrationCreateManyInput[] = [];
+    const courses = await db.course.findMany({
+      where: {
+        isPublished: true,
+        program: {
+          isPublished: true,
+        },
+      },
+    });
+
+    const courseIds = courses.map(({ id }) => id);
     for (let i = 0; i < 100; i++) {
       const registrationData = {
         parentName: faker.person.fullName(),
@@ -400,13 +695,13 @@ export const generateCourseRegistrationData = async () => {
 
         childEmail: faker.internet.email(),
         parentEmail: faker.internet.email(),
-        courseId: 'clnzn0kja0002ui0oub4l8y2t',
+        courseId: getRandElement(courseIds),
         phoneNumber: faker.phone.number(),
         address: faker.location.streetAddress(),
-        childGender: 'FEMALE' as Gender,
+        childGender: getRandElement(['FEMALE', 'MALE']) as Gender,
         educationInstitution: faker.company.name(),
-        gradeClass: '12',
-        couponId: 'clnzol8ul0000uijk5a1hs7p0',
+        gradeClass: getRandElement(['7', '8', '9', '10', '11', '12']),
+        couponId: getRandElement(couponIds),
       };
       if (registrationData.childEmail === registrationData.parentEmail) {
         i--;
@@ -426,7 +721,8 @@ export const generateCourseRegistrationData = async () => {
 
 export const generateInstructorRegistrationData = async () => {
   try {
-    // const data: Prisma.InstructorRegistrationCreateInput[] = [];
+    const skills = await db.skill.findMany();
+    const skillIds = skills.map(({ id }) => id);
     for (let i = 0; i < 100; i++) {
       const data: Prisma.InstructorRegistrationCreateInput = {
         name: faker.person.fullName(),
@@ -438,7 +734,7 @@ export const generateInstructorRegistrationData = async () => {
         educationInstitution: faker.company.name(),
         skills: {
           connect: {
-            id: 'clnxak8ow000euil4y3d7brg2',
+            id: getRandElement(skillIds),
           },
         },
       };
@@ -450,5 +746,30 @@ export const generateInstructorRegistrationData = async () => {
     throw new Error(
       `Failed to generate course registration data: ${error.message}`
     );
+  }
+};
+
+export const seedData = async () => {
+  try {
+    await generateSkills();
+    await generateCategories();
+    await generateHero();
+    await generateFaq();
+    await generateLogo();
+    await generateAdmin();
+    await generateMasterDay();
+    await generateShift();
+    await generatePeriod();
+    await generateCoupons();
+
+    await generatePrograms();
+    await generateInstructors();
+    await generateStudents();
+
+    await generateTrialClassData();
+    await generateCourseRegistrationData();
+    await generateInstructorRegistrationData();
+  } catch (error: any) {
+    throw new Error(`Failed to seed data: ${error.message}`);
   }
 };

@@ -1,41 +1,41 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { GraduationCap, List, Presentation } from 'lucide-react';
+import { BookUser, CalendarSearch, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useCreateClassStore } from '../_stores/use-create-class-store';
 
-interface RegistrationTabsProps {
-  trialClassCount: number;
-  courseRegistrationCount: number;
-  instructorRegistrationCount: number;
+interface CreateClassTabsProps {
+  studentsCount: number;
+  schedulesCount: number;
 }
 
-const RegistrationTabs = ({
-  courseRegistrationCount,
-  instructorRegistrationCount,
-  trialClassCount,
-}: RegistrationTabsProps) => {
+const CreateClassTabs = ({
+  studentsCount,
+  schedulesCount,
+}: CreateClassTabsProps) => {
   const pathname = usePathname();
+  const mappedClasses = useCreateClassStore((state) => state.mappedClasses);
 
   const tabs = [
     {
-      icon: List,
-      name: 'Trial Class',
-      href: '/admin/registrations/trial-class',
-      count: trialClassCount,
-    },
-    {
       icon: GraduationCap,
-      name: 'Courses',
-      href: '/admin/registrations/courses',
-      count: courseRegistrationCount,
+      name: 'Students',
+      href: '/admin/auto-generate-class/students',
+      count: studentsCount,
     },
     {
-      icon: Presentation,
-      name: 'Instructors',
-      href: '/admin/registrations/instructors',
-      count: instructorRegistrationCount,
+      icon: CalendarSearch,
+      name: 'Schedules',
+      href: '/admin/auto-generate-class/schedules',
+      count: schedulesCount,
+    },
+    {
+      icon: BookUser,
+      name: 'Results',
+      href: '/admin/auto-generate-class/results',
+      count: mappedClasses.length,
     },
   ];
 
@@ -76,4 +76,4 @@ const RegistrationTabs = ({
   );
 };
 
-export default RegistrationTabs;
+export default CreateClassTabs;

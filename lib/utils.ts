@@ -14,3 +14,8 @@ export const isBase64DataURL = (value: string) => {
 export const convertToTitleCase = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
+
+export const getRandElement = (arr: any[]) => {
+  const idx = Math.floor(Math.random() * arr.length);
+  return arr[idx];
+};

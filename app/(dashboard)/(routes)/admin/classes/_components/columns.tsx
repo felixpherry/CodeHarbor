@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Program } from '@prisma/client';
+import { Class, Course, Period, Program } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal, Pencil } from 'lucide-react';
 import {
@@ -12,9 +12,16 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
 
-export const columns: ColumnDef<Program>[] = [
+type ClassTableInterface = {
+  _count: {
+    studentCourses: number;
+  };
+  course: Course;
+  period: Period;
+} & Class;
+
+export const columns: ColumnDef<ClassTableInterface>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => {
@@ -30,40 +37,51 @@ export const columns: ColumnDef<Program>[] = [
     },
   },
   {
-    accessorKey: 'subtitle',
+    accessorKey: 'course.name',
     header: ({ column }) => {
       return (
         <Button
           variant='ghost'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          Subtitle
+          Course
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
     },
   },
   {
-    accessorKey: 'isPublished',
+    accessorKey: 'period.name',
     header: ({ column }) => {
       return (
         <Button
           variant='ghost'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          Published
+          Period
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const isPublished = row.getValue('isPublished') || false;
-
+      return <Badge>{row.original.period.name}</Badge>;
+    },
+  },
+  {
+    accessorKey: '_count.studentCourses',
+    header: ({ column }) => {
       return (
-        <Badge className={cn('bg-slate-500', isPublished && 'bg-sky-700')}>
-          {isPublished ? 'Published' : 'Draft'}
-        </Badge>
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Students
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
       );
+    },
+    cell: ({ row }) => {
+      return <Badge>{row.original._count.studentCourses}</Badge>;
     },
   },
   {
@@ -86,10 +104,6 @@ export const columns: ColumnDef<Program>[] = [
                 Edit
               </DropdownMenuItem>
             </Link>
-            {/* <DropdownMenuItem onClick={() => deleteProgram(id)}>
-              <Trash className='h-4 w-4 mr-2' />
-              Delete
-            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       );

@@ -56,7 +56,9 @@ const Hero = ({ title, subtitle, image, session }: HeroProps) => {
               asChild
             >
               <Link
-                href={`/${session?.user.role.toLocaleLowerCase()}/dashboard`}
+                href={`/${
+                  session?.user.role.toLocaleLowerCase() || ''
+                }/dashboard`}
               >
                 Lihat Dashboard
               </Link>

@@ -273,6 +273,7 @@ enum DayOfWeek {
 model MasterDay {
   id       String    @id @default(cuid())
   day      DayOfWeek
+  position Int
   isActive Boolean   @default(true)
 
   schedules InstructorSchedule[]
@@ -518,7 +519,7 @@ model Student {
 model StudentCourse {
   id String @id @default(cuid())
 
-  courses  Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   courseId String
 
   student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: Cascade)

@@ -2,7 +2,15 @@
 
 import { IconTableOptions } from '@tabler/icons-react';
 import SidebarItem from './SidebarItem';
-import { Code2, Layout, ScrollText, Users, Users2, Wrench } from 'lucide-react';
+import {
+  Code2,
+  Layout,
+  ScrollText,
+  UserPlus,
+  Users,
+  Users2,
+  Wrench,
+} from 'lucide-react';
 
 const adminRoutes = [
   { label: 'Dashboard', icon: Layout, href: '/admin/dashboard' },
@@ -40,6 +48,20 @@ const adminRoutes = [
     label: 'Classes',
     icon: Users2,
     href: '/admin/classes',
+  },
+  {
+    label: 'Create Classes',
+    icon: UserPlus,
+    links: [
+      {
+        label: 'Auto-Generated Classes',
+        href: '/admin/auto-generate-class/students',
+      },
+      {
+        label: 'Manual Class Setup',
+        href: '/admin/create-class/students',
+      },
+    ],
   },
   {
     label: 'Customization',

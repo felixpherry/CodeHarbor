@@ -7,6 +7,9 @@ export const getCurrentPeriod = async () => {
     return await db.period.findFirst({
       where: {
         startDate: {
+          lte: new Date(),
+        },
+        endDate: {
           gt: new Date(),
         },
       },
@@ -15,6 +18,23 @@ export const getCurrentPeriod = async () => {
       },
     });
   } catch (error: any) {
-    throw new Error(`Failed to get current period: ${error.message}`);
+    throw new Error(`Failed to fetch the current period: ${error.message}`);
+  }
+};
+
+export const getNextPeriod = async () => {
+  try {
+    return await db.period.findFirst({
+      where: {
+        startDate: {
+          gt: new Date(),
+        },
+      },
+      orderBy: {
+        startDate: 'asc',
+      },
+    });
+  } catch (error: any) {
+    throw new Error(`Failed to fetch the next period: ${error.message}`);
   }
 };

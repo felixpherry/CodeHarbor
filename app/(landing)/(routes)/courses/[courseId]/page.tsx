@@ -81,7 +81,7 @@ const Page = async ({ params: { courseId } }: PageProps) => {
     where: {
       studentCourses: {
         some: {
-          courses: {
+          course: {
             id,
           },
         },

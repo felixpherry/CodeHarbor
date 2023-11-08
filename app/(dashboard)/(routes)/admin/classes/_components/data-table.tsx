@@ -2,14 +2,14 @@
 
 import {
   ColumnDef,
+  ColumnFiltersState,
   SortingState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  ColumnFiltersState,
-  getFilteredRowModel,
 } from '@tanstack/react-table';
 
 import {
@@ -23,26 +23,27 @@ import {
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import StatusSelect from '../../_components/StatusSelect';
-import CoursesFilterSelect from '../../../_components/CoursesFilterSelect';
+import CoursesFilterSelect from '../../_components/CoursesFilterSelect';
+import PeriodFilterSelect from './PeriodFilterSelect';
+import { MantineSelectOption, ShadCNOption } from '@/types';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  courseOptions: {
-    text: string;
-    value: string;
-  }[];
+  courseOptions: ShadCNOption[];
+  periodOptions: MantineSelectOption[];
+  currentPeriodId: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  periodOptions,
   courseOptions,
+  currentPeriodId,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
   const table = useReactTable({
     data,
     columns,
@@ -64,20 +65,22 @@ export function DataTable<TData, TValue>({
     <div>
       <div className='flex items-center py-4 gap-x-5 gap-y-2 flex-col md:flex-row'>
         <Input
-          placeholder='Search name...'
-          value={
-            (table.getColumn('childName')?.getFilterValue() as string) ?? ''
-          }
+          placeholder='Search classes...'
+          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            table.getColumn('childName')?.setFilterValue(event.target.value)
+            table.getColumn('name')?.setFilterValue(event.target.value)
           }
           className='w-full md:w-1/3'
         />
-        <StatusSelect />
         <CoursesFilterSelect courseOptions={courseOptions} />
+        <PeriodFilterSelect
+          periodOptions={periodOptions}
+          currentPeriodId={currentPeriodId}
+        />
       </div>
+
       <div className='rounded-md border'>
-        <Table className='text-muted-foreground font-semibold'>
+        <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

@@ -7,7 +7,7 @@ import { InstructorPersonalInfo } from './_components/InstructorPersonalInfoForm
 import bcrypt from 'bcrypt';
 import { getCurrentUser } from '@/lib/session';
 import { SessionInterface } from '@/types';
-import { getCurrentPeriod } from '@/lib/actions/period.actions';
+import { getNextPeriod } from '@/lib/actions/period.actions';
 
 interface InstructorOnboardingParams {
   accountDetail: AccountDetail;
@@ -38,7 +38,7 @@ export const handleInstructorOnboarding = async ({
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const period = await getCurrentPeriod();
+    const period = await getNextPeriod();
 
     if (!period) throw new Error("There's no period");
 
