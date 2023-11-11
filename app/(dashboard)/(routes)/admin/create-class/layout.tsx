@@ -7,6 +7,7 @@ import { StoreInitializer } from './_components/StoreInitializer';
 import moment from 'moment';
 import GenerateClassButton from './_components/GenerateClassButton';
 import { getMappedClassesCount } from './_actions';
+import CreateClassButton from './_components/CreateClassButton';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -88,15 +89,17 @@ const Layout = async ({ children }: LayoutProps) => {
         mappedClassesCount={mappedClassesCount}
       />
       <div className='container max-w-7xl px-0'>
-        <div className='flex mb-3 items-center justify-between'>
+        <div className='flex mb-5 flex-col md:flex-row items-center md:justify-between gap-5 w-full'>
           <h3 className='text-muted-foreground text-xl font-semibold'>
-            Auto Generate Classes for{' '}
-            {moment(nextPeriod.startDate).format('MMM')}
+            Create Classes for {moment(nextPeriod.startDate).format('MMM')}
             {' - '}
             {moment(nextPeriod.endDate).format('MMM')}{' '}
             {moment(nextPeriod.startDate).format('YYYY')}
           </h3>
-          <GenerateClassButton />
+          <div className='flex items-center gap-2'>
+            <GenerateClassButton />
+            <CreateClassButton />
+          </div>
         </div>
         <CreateClassTabs
           schedulesCount={schedulesCount}

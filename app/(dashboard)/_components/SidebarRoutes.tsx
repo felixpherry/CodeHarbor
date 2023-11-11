@@ -52,19 +52,10 @@ const adminRoutes = [
   {
     label: 'Create Classes',
     icon: UserPlus,
-    links: [
-      {
-        label: 'Auto-Generated Classes',
-        href: '/admin/auto-generate-class/students',
-      },
-      {
-        label: 'Manual Class Setup',
-        href: '/admin/create-class/students',
-      },
-    ],
+    href: '/admin/create-class/students',
   },
   {
-    label: 'Customization',
+    label: 'Layout',
     icon: IconTableOptions,
     initiallyOpened: false,
     links: [

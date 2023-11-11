@@ -36,12 +36,11 @@ export type InstructorSchedules = Array<
 >;
 
 export type MappedClass = {
+  id: string;
   name: string;
   courseId: string;
-  course: Course;
-  studentCourses: StudentCourses;
+  studentCourseIds: string[];
   instructorScheduleId: string;
-  instructorSchedule: InstructorSchedules[number];
 };
 
 interface CreateClassStore {

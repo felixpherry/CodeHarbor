@@ -23,20 +23,23 @@ import {
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import CoursesFilterSelect from '../../../_components/CoursesFilterSelect';
-import { useCreateClassStore } from '../../_stores/use-create-class-store';
+import FilterSelect from '@/components/shared/FilterSelect';
+import { MantineSelectOption } from '@/types';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  courseOptions: MantineSelectOption[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
+  data,
+  courseOptions,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-  const data = useCreateClassStore((state) => state.mappedClasses) as TData[];
   const table = useReactTable({
     data,
     columns,
@@ -58,12 +61,17 @@ export function DataTable<TData, TValue>({
     <div>
       <div className='flex items-center py-4 gap-x-5 gap-y-2 flex-col md:flex-row'>
         <Input
-          placeholder='Search class...'
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+          placeholder='Search name...'
+          value={(table.getColumn('student')?.getFilterValue() as string) ?? ''}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            table.getColumn('name')?.setFilterValue(event.target.value)
+            table.getColumn('student')?.setFilterValue(event.target.value)
           }
           className='w-full md:w-1/3'
+        />
+        <FilterSelect
+          options={courseOptions}
+          withSearchParams={true}
+          searchParamsKey='course'
         />
       </div>
       <div className='rounded-md border'>

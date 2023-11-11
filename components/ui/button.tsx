@@ -25,12 +25,15 @@ const buttonVariants = cva(
         light:
           'border border-input bg-background border-light-white-200 text-slate-900 hover:bg-light-white-100 hover:text-accent-foreground',
         success: 'bg-green-500 hover:bg-green-600 text-white',
+        'generate-class': 'bg-[#DCE3F1] hover:bg-slate-300 text-primary shadow',
+        edit: 'bg-sky-200/40 hover:bg-sky-200/60 text-primary-blue',
       },
       size: {
         default: 'px-5 py-3',
         sm: 'h-9 rounded-md px-3 py-2',
         lg: 'h-11 rounded-md px-8',
         icon: 'h-10 w-10',
+        xs: 'h-8 rounded-md text-xs p-2',
       },
     },
     defaultVariants: {

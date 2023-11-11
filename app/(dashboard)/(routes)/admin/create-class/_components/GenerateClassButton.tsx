@@ -1,7 +1,13 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Loader2, MinusCircle, PlusCircle } from 'lucide-react';
+import {
+  ArrowRight,
+  Loader2,
+  MinusCircle,
+  PlusCircle,
+  Sparkles,
+} from 'lucide-react';
 import {
   InstructorSchedules,
   MappedClass,
@@ -12,6 +18,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { modals } from '@mantine/modals';
 import { useRouter } from 'next/navigation';
+import { nanoid } from 'nanoid';
 
 const GenerateClassForm = () => {
   const [classSize, setClassSize] = useState(5);
@@ -61,10 +68,14 @@ const GenerateClassForm = () => {
       }, {} as Record<string, string[]>);
 
       const classes: {
+        id: string;
+        name: string;
         instructorScheduleId: string;
         studentCourseIds: string[];
         courseId: string;
       }[] = [];
+
+      const cloneMappedClassesCount = structuredClone(mappedClassesCount);
 
       for (const [instructorScheduleId, courses] of Object.entries(
         mappedInstructorSchedules
@@ -78,51 +89,29 @@ const GenerateClassForm = () => {
               classSize,
               mappedStudentCourses[courseId].length
             );
+            if (!cloneMappedClassesCount.hasOwnProperty(courseId))
+              cloneMappedClassesCount[courseId] = 0;
             classes.push({
+              id: nanoid(),
+              name:
+                coursesToCode[courseId] +
+                `${cloneMappedClassesCount[courseId] + 1}`.padStart(3, '0'),
               instructorScheduleId,
               studentCourseIds: mappedStudentCourses[courseId].slice(0, count),
               courseId,
             });
+            cloneMappedClassesCount[courseId]++;
             mappedStudentCourses[courseId] =
               mappedStudentCourses[courseId].slice(count);
-
             break;
           }
         }
       }
-
-      const mappedClasses = classes.reduce(
-        (curr, { instructorScheduleId, studentCourseIds, courseId }) => {
-          if (!mappedClassesCount.hasOwnProperty(courseId))
-            mappedClassesCount[courseId] = 0;
-
-          const course = courses.find(({ id }) => courseId === id);
-          curr.push({
-            name:
-              coursesToCode[courseId] +
-              `${mappedClassesCount[courseId] + 1}`.padStart(3, '0'),
-            courseId,
-            course: course!,
-            studentCourses: studentCourseIds.map((studentCourseId) =>
-              structuredClone(studentCourses).find(
-                ({ id }) => id === studentCourseId
-              )
-            ) as StudentCourses,
-            instructorScheduleId,
-            instructorSchedule: structuredClone(instructorSchedules).find(
-              ({ id }) => instructorScheduleId === id
-            ) as InstructorSchedules[number],
-          });
-          mappedClassesCount[courseId]++;
-          return curr;
-        },
-        [] as MappedClass[]
-      );
-
-      setMappedClasses(mappedClasses);
+      console.log({ classes });
+      setMappedClasses(classes);
 
       modals.closeAll();
-      router.push('/admin/auto-generate-class/results');
+      router.push('/admin/create-class/results');
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -176,11 +165,12 @@ const GenerateClassButton = () => {
   return (
     <Button
       onClick={openGenerateClassModal}
-      size='sm'
-      className='flex items-center mb-3'
+      variant='generate-class'
+      size='xs'
+      className='flex items-center'
     >
-      <PlusCircle className='h-4 w-4' />
-      Generate
+      <Sparkles className='h-4 w-4' />
+      Autogenerate
     </Button>
   );
 };

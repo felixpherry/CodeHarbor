@@ -24,15 +24,13 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import StatusSelect from '../../_components/StatusSelect';
-import CoursesFilterSelect from '../../../_components/CoursesFilterSelect';
+import { MantineSelectOption } from '@/types';
+import FilterSelect from '@/components/shared/FilterSelect';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  courseOptions: {
-    text: string;
-    value: string;
-  }[];
+  courseOptions: MantineSelectOption[];
 }
 
 export function DataTable<TData, TValue>({
@@ -74,7 +72,11 @@ export function DataTable<TData, TValue>({
           className='w-full md:w-1/3'
         />
         <StatusSelect />
-        <CoursesFilterSelect courseOptions={courseOptions} />
+        <FilterSelect
+          options={courseOptions}
+          withSearchParams={true}
+          searchParamsKey='course'
+        />
       </div>
       <div className='rounded-md border'>
         <Table className='text-muted-foreground font-semibold'>

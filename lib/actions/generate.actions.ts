@@ -155,31 +155,31 @@ export const generateMasterDay = async () => {
     return await db.masterDay.createMany({
       data: [
         {
-          day: 'MONDAY',
+          day: 'SUNDAY',
           position: 0,
         },
         {
-          day: 'TUESDAY',
+          day: 'MONDAY',
           position: 1,
         },
         {
-          day: 'WEDNESDAY',
+          day: 'TUESDAY',
           position: 2,
         },
         {
-          day: 'THURSDAY',
+          day: 'WEDNESDAY',
           position: 3,
         },
         {
-          day: 'FRIDAY',
+          day: 'THURSDAY',
           position: 4,
         },
         {
-          day: 'SATURDAY',
+          day: 'FRIDAY',
           position: 5,
         },
         {
-          day: 'SUNDAY',
+          day: 'SATURDAY',
           position: 6,
         },
       ],

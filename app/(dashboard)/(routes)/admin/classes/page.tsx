@@ -1,7 +1,7 @@
 import { getCurrentPeriod } from '@/lib/actions/period.actions';
 import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/session';
-import { SessionInterface } from '@/types';
+import { MantineSelectOption, SessionInterface } from '@/types';
 import { redirect } from 'next/navigation';
 import { DataTable } from './_components/data-table';
 import { columns } from './_components/columns';
@@ -49,12 +49,12 @@ const Page = async ({ searchParams }: ClassPageParams) => {
     },
   });
 
-  const courseOptions = courses.map(({ id, name }) => ({
-    text: name,
+  const courseOptions: MantineSelectOption[] = courses.map(({ id, name }) => ({
+    label: name,
     value: id,
   }));
 
-  const periodOptions = periods.map(({ id, name }) => ({
+  const periodOptions: MantineSelectOption[] = periods.map(({ id, name }) => ({
     label: name,
     value: id,
   }));

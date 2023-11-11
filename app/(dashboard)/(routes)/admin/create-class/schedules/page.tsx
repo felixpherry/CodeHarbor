@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { DataTable } from './_components/data-table';
 import { columns } from './_components/columns';
 import { convertToTitleCase } from '@/lib/utils';
+import { MantineSelectOption } from '@/types';
 
 interface PageProps {
   searchParams: {
@@ -60,8 +61,8 @@ const Page = async ({ searchParams }: PageProps) => {
     },
   });
 
-  const courseOptions = courses.map(({ id, name }) => ({
-    text: name,
+  const courseOptions: MantineSelectOption[] = courses.map(({ id, name }) => ({
+    label: name,
     value: id,
   }));
 
@@ -71,8 +72,8 @@ const Page = async ({ searchParams }: PageProps) => {
     },
   });
 
-  const dayOptions = days.map(({ id, day }) => ({
-    text: convertToTitleCase(day),
+  const dayOptions: MantineSelectOption[] = days.map(({ id, day }) => ({
+    label: convertToTitleCase(day),
     value: id,
   }));
 
@@ -82,10 +83,12 @@ const Page = async ({ searchParams }: PageProps) => {
     },
   });
 
-  const shiftOptions = shifts.map(({ id, startTime, endTime }) => ({
-    text: `${startTime} - ${endTime}`,
-    value: id,
-  }));
+  const shiftOptions: MantineSelectOption[] = shifts.map(
+    ({ id, startTime, endTime }) => ({
+      label: `${startTime} - ${endTime}`,
+      value: id,
+    })
+  );
 
   return (
     <div className='container mx-auto py-10'>

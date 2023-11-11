@@ -23,25 +23,15 @@ import {
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import CoursesFilterSelect from '../../../_components/CoursesFilterSelect';
-import DaysFilterSelect from './DaysFilterSelect';
-import ShiftsFilterSelect from './ShiftsFilterSelect';
+import { MantineSelectOption } from '@/types';
+import FilterSelect from '@/components/shared/FilterSelect';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  courseOptions: {
-    text: string;
-    value: string;
-  }[];
-  dayOptions: {
-    text: string;
-    value: string;
-  }[];
-  shiftOptions: {
-    text: string;
-    value: string;
-  }[];
+  courseOptions: MantineSelectOption[];
+  dayOptions: MantineSelectOption[];
+  shiftOptions: MantineSelectOption[];
 }
 
 export function DataTable<TData, TValue>({
@@ -84,9 +74,21 @@ export function DataTable<TData, TValue>({
           }
           className='w-full md:w-1/3'
         />
-        <CoursesFilterSelect courseOptions={courseOptions} />
-        <DaysFilterSelect dayOptions={dayOptions} />
-        <ShiftsFilterSelect shiftOptions={shiftOptions} />
+        <FilterSelect
+          options={courseOptions}
+          withSearchParams={true}
+          searchParamsKey='course'
+        />
+        <FilterSelect
+          options={dayOptions}
+          withSearchParams={true}
+          searchParamsKey='day'
+        />
+        <FilterSelect
+          options={shiftOptions}
+          withSearchParams={true}
+          searchParamsKey='shift'
+        />
       </div>
       <div className='rounded-md border'>
         <Table className='text-muted-foreground font-semibold'>

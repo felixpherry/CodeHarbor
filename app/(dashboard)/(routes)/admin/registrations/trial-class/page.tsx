@@ -2,6 +2,7 @@ import { db } from '@/lib/db';
 import { columns } from './_components/columns';
 import { DataTable } from './_components/data-table';
 import { RegistrationStatus } from '@prisma/client';
+import { MantineSelectOption } from '@/types';
 
 interface PageProps {
   searchParams: {
@@ -45,8 +46,8 @@ const Page = async ({ searchParams }: PageProps) => {
     },
   });
 
-  const courseOptions = courses.map(({ id, name }) => ({
-    text: name,
+  const courseOptions: MantineSelectOption[] = courses.map(({ id, name }) => ({
+    label: name,
     value: id,
   }));
 

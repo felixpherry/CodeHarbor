@@ -22,19 +22,19 @@ const CreateClassTabs = ({
     {
       icon: GraduationCap,
       name: 'Students',
-      href: '/admin/auto-generate-class/students',
+      href: '/admin/create-class/students',
       count: studentsCount,
     },
     {
       icon: CalendarSearch,
       name: 'Schedules',
-      href: '/admin/auto-generate-class/schedules',
+      href: '/admin/create-class/schedules',
       count: schedulesCount,
     },
     {
       icon: BookUser,
       name: 'Results',
-      href: '/admin/auto-generate-class/results',
+      href: '/admin/create-class/results',
       count: mappedClasses.length,
     },
   ];

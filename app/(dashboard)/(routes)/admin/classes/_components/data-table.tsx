@@ -23,14 +23,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import CoursesFilterSelect from '../../_components/CoursesFilterSelect';
-import PeriodFilterSelect from './PeriodFilterSelect';
-import { MantineSelectOption, ShadCNOption } from '@/types';
+import { MantineSelectOption } from '@/types';
+import FilterSelect from '@/components/shared/FilterSelect';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  courseOptions: ShadCNOption[];
+  courseOptions: MantineSelectOption[];
   periodOptions: MantineSelectOption[];
   currentPeriodId: string;
 }
@@ -72,10 +71,15 @@ export function DataTable<TData, TValue>({
           }
           className='w-full md:w-1/3'
         />
-        <CoursesFilterSelect courseOptions={courseOptions} />
-        <PeriodFilterSelect
-          periodOptions={periodOptions}
-          currentPeriodId={currentPeriodId}
+        <FilterSelect
+          options={courseOptions}
+          withSearchParams={true}
+          searchParamsKey='course'
+        />
+        <FilterSelect
+          options={periodOptions}
+          withSearchParams={true}
+          searchParamsKey='period'
         />
       </div>
 
