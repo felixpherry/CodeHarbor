@@ -2,7 +2,7 @@
 
 import { MasterShift } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, PencilIcon, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { changeShiftStatus, deleteShift } from '../_actions';
 import ShiftForm from './ShiftForm';
 import { useOptimistic } from 'react';
+import { ConfirmModal } from '@/components/modals/ConfirmModal';
 
 export const columns: ColumnDef<MasterShift>[] = [
   {
@@ -102,51 +103,41 @@ export const columns: ColumnDef<MasterShift>[] = [
       };
 
       return (
-        <div className='flex items-center gap-6'>
+        <div className='flex items-center gap-4'>
           <Switch
             checked={optimisticStatus}
             onChange={changeStatus}
             color='teal'
-            size='md'
+            size='sm'
             thumbIcon={
               optimisticStatus ? (
                 <IconCheck
-                  style={{ width: rem(12), height: rem(12) }}
+                  style={{ width: rem(8), height: rem(8) }}
                   color={theme.colors.teal[6]}
                   stroke={3}
                 />
               ) : (
                 <IconX
-                  style={{ width: rem(12), height: rem(12) }}
+                  style={{ width: rem(8), height: rem(8) }}
                   color={theme.colors.red[6]}
                   stroke={3}
                 />
               )
             }
           />
-          <IconTrash
-            onClick={() => {
-              modals.openConfirmModal({
-                title: <strong>Delete Shift?</strong>,
-                centered: true,
-                children: (
-                  <Text size='sm'>
-                    Are you sure you want to delete this shift? This action can
-                    not be undone
-                  </Text>
-                ),
-                labels: {
-                  confirm: 'Delete',
-                  cancel: 'Cancel',
-                },
-                confirmProps: { color: 'red' },
-                onConfirm: confirmDelete,
-              });
+          <ConfirmModal
+            title='Delete Shift'
+            description='Are you sure you want to delete this shift? This action can
+            not be undone'
+            onConfirm={confirmDelete}
+            variant={{
+              confirm: 'destructive',
             }}
-            className='text-red-500 cursor-pointer'
-          />
+          >
+            <Trash2 className='text-red-500 cursor-pointer h-5 w-5' />
+          </ConfirmModal>
 
-          <IconEdit
+          <PencilIcon
             onClick={() => {
               modals.open({
                 title: 'Edit Shift',
@@ -154,7 +145,7 @@ export const columns: ColumnDef<MasterShift>[] = [
                 centered: true,
               });
             }}
-            className='text-primary-blue cursor-pointer'
+            className='text-primary-blue cursor-pointer h-5 w-5'
           />
         </div>
       );

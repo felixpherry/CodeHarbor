@@ -9,6 +9,7 @@ import { Switch, rem, useMantineTheme } from '@mantine/core';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { changeDayStatus } from '../_actions';
 import { useOptimistic } from 'react';
+import { convertToTitleCase } from '@/lib/utils';
 
 export const columns: ColumnDef<MasterDay>[] = [
   {
@@ -19,7 +20,9 @@ export const columns: ColumnDef<MasterDay>[] = [
     header: 'Day',
     cell: ({ row }) => {
       return (
-        <span className='font-bold text-primary'>{row.getValue('day')}</span>
+        <span className='font-bold text-primary'>
+          {convertToTitleCase(row.getValue('day'))}
+        </span>
       );
     },
   },

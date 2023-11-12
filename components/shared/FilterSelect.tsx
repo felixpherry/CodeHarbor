@@ -10,18 +10,22 @@ interface FilterSelectProps {
   options: MantineSelectOption[];
   withSearchParams: boolean;
   searchParamsKey?: string;
+  defaultValue?: string;
 }
 
 const FilterSelect = ({
   options,
   withSearchParams,
   searchParamsKey,
+  defaultValue,
 }: FilterSelectProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [selected, setSelected] = useState(
-    withSearchParams ? searchParams.get('') || null : null
+    withSearchParams
+      ? searchParams.get('') || defaultValue || null
+      : defaultValue || null
   );
 
   const handleFilter = (newSelected: string | null) => {
@@ -40,11 +44,11 @@ const FilterSelect = ({
 
   return (
     <Select
+      checkIconPosition='right'
       placeholder={convertToTitleCase(searchParamsKey || 'choose')}
       data={options}
       value={selected}
       onChange={handleFilter}
-      searchable
     />
   );
 };

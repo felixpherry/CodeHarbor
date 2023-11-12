@@ -2,16 +2,16 @@
 
 import { Period } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, PencilIcon, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
 import moment from 'moment';
-import { IconEdit, IconTrash } from '@tabler/icons-react';
 import PeriodForm from './PeriodForm';
 import { modals } from '@mantine/modals';
 import { Text } from '@mantine/core';
 import { deletePeriod } from '../_actions';
+import { ConfirmModal } from '@/components/modals/ConfirmModal';
 
 export const columns: ColumnDef<Period>[] = [
   {
@@ -96,39 +96,30 @@ export const columns: ColumnDef<Period>[] = [
       };
 
       return (
-        <div className='flex items-center gap-6'>
-          <IconTrash
-            onClick={() => {
-              modals.openConfirmModal({
-                title: `Delete ${name}?`,
-                centered: true,
-                children: (
-                  <Text size='sm'>
-                    Are you sure you want to delete this period? This action can
-                    not be undone
-                  </Text>
-                ),
-                labels: {
-                  confirm: 'Delete',
-                  cancel: 'Cancel',
-                },
-                confirmProps: { color: 'red' },
-                onConfirm: confirmDelete,
-              });
-            }}
-            className='text-red-500 cursor-pointer'
-          />
-
-          <IconEdit
+        <div className='flex items-center gap-4'>
+          <PencilIcon
             onClick={() => {
               modals.open({
-                title: 'Edit Period',
+                title: (
+                  <p className='text-primary font-semibold'>Edit Period</p>
+                ),
                 children: <PeriodForm type='EDIT' initialData={row.original} />,
                 centered: true,
               });
             }}
-            className='text-primary-blue cursor-pointer'
+            className='text-primary-blue cursor-pointer w-5 h-5'
           />
+          <ConfirmModal
+            title={`Delete ${name}?`}
+            description='Are you sure you want to delete this period? This action can
+          not be undone'
+            onConfirm={confirmDelete}
+            variant={{
+              confirm: 'destructive',
+            }}
+          >
+            <Trash2 className='text-red-500 cursor-pointer w-5 h-5' />
+          </ConfirmModal>
         </div>
       );
     },

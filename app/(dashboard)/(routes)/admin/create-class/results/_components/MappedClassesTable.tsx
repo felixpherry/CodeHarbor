@@ -30,6 +30,9 @@ import Image from 'next/image';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { createClassesForNextPeriod } from '@/lib/actions/class.actions';
+import Pagination from '@/components/shared/Pagination';
+import { getNextPeriod } from '@/lib/actions/period.actions';
+import { ConfirmModal } from '@/components/modals/ConfirmModal';
 
 const MappedClassesTable = () => {
   const [page, setPage] = useState(1);
@@ -48,10 +51,6 @@ const MappedClassesTable = () => {
     (page - 1) * 10,
     (page - 1) * 10 + 10
   );
-
-  const hasNextPage =
-    (page - 1) * 10 + currMappedClasses.length < filteredMappedClasses.length;
-  const hasPrevPage = page !== 1;
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -118,9 +117,10 @@ const MappedClassesTable = () => {
     setIsLoading(true);
     try {
       await createClassesForNextPeriod({ mappedClasses });
+      const nextPeriod = await getNextPeriod();
       setMappedClasses([]);
       toast.success('Successfully saved classes');
-      router.push('/admin/classes');
+      router.push(`/admin/classes?period=${nextPeriod?.id}`);
     } catch (error: any) {
       toast.error(error);
     } finally {
@@ -131,16 +131,10 @@ const MappedClassesTable = () => {
   const handleReset = () => {
     if (!mappedClasses.length) return;
 
-    modals.openConfirmModal({
-      title: <p className='text-primary font-semibold'>Are you sure?</p>,
-      children: <Text size='sm'>Do you want to reset the results?</Text>,
-      labels: { confirm: 'Confirm', cancel: 'Cancel' },
-      onConfirm: () => {
-        setMappedClasses([]);
-      },
-      confirmProps: { color: 'red' },
-    });
+    setMappedClasses([]);
   };
+
+  const headers = ['No.', 'Name', 'Course', 'Schedule', 'Actions', ''];
 
   return (
     <div className='flex flex-col gap-3 p-5 border rounded-md'>
@@ -149,19 +143,25 @@ const MappedClassesTable = () => {
           placeholder='Search class...'
           value={search}
           onChange={handleSearch}
-          className='md:w-1/2'
+          className='md:w-1/3'
         />
         <div className='flex items-center gap-3'>
-          <Button
-            onClick={handleReset}
-            disabled={!mappedClasses.length}
-            variant='destructive'
-            className='flex items-center'
-            size='sm'
+          <ConfirmModal
+            title='Are you sure?'
+            description='Do you want to reset the results?'
+            variant={{ confirm: 'destructive' }}
+            onConfirm={handleReset}
           >
-            <Undo2 className='h-4 w-4' />
-            Reset
-          </Button>
+            <Button
+              disabled={!mappedClasses.length}
+              variant='destructive'
+              className='flex items-center'
+              size='sm'
+            >
+              <Undo2 className='h-4 w-4' />
+              Reset
+            </Button>
+          </ConfirmModal>
           <Button
             onClick={handleSave}
             disabled={!mappedClasses.length}
@@ -181,12 +181,14 @@ const MappedClassesTable = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className='text-primary'>No.</TableHead>
-              <TableHead className='text-primary'>Name</TableHead>
-              <TableHead className='text-primary'>Course</TableHead>
-              <TableHead className='text-primary'>Schedule</TableHead>
-              <TableHead className='text-primary'>Actions</TableHead>
-              <TableHead className='text-primary'></TableHead>
+              {headers.map((header) => (
+                <TableHead
+                  key={header}
+                  className='text-muted-foreground font-semibold text-base'
+                >
+                  {header}
+                </TableHead>
+              ))}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -202,15 +204,17 @@ const MappedClassesTable = () => {
                     className='cursor-pointer'
                   >
                     <TableCell>{(page - 1) * 10 + idx + 1}</TableCell>
-                    <TableCell className='text-primary font-semibold'>
+                    <TableCell className='text-primary font-bold'>
                       {name}
                     </TableCell>
-                    <TableCell>{getCourse(courseId)?.name}</TableCell>
-                    <TableCell>
+                    <TableCell className='text-muted-foreground font-semibold'>
+                      {getCourse(courseId)?.name}
+                    </TableCell>
+                    <TableCell className='text-muted-foreground font-semibold'>
                       {getFormattedSchedule(instructorScheduleId)}
                     </TableCell>
-                    <TableCell>
-                      <div className='flex items-center gap-3'>
+                    <TableCell className='text-muted-foreground font-semibold'>
+                      <div className='flex items-center gap-4'>
                         <PencilIcon
                           onClick={(e) => {
                             e.stopPropagation();
@@ -222,14 +226,14 @@ const MappedClassesTable = () => {
                               studentCourseIds,
                             });
                           }}
-                          className='h-4 w-4 cursor-pointer text-primary-blue'
+                          className='h-5 w-5 cursor-pointer text-primary-blue'
                         />
                         <Trash2
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDelete(id);
                           }}
-                          className='h-4 w-4 cursor-pointer text-red-500'
+                          className='h-5 w-5 cursor-pointer text-red-500'
                         />
                       </div>
                     </TableCell>
@@ -391,42 +395,14 @@ const MappedClassesTable = () => {
           No Classes
         </p>
       )}
-      <div className='flex justify-between items-center my-2'>
-        <p className='text-xs text-muted-foreground'>
-          Showing {(page - 1) * 10 + 1} to{' '}
-          {(page - 1) * 10 + currMappedClasses.length} of{' '}
-          {filteredMappedClasses.length} entries
-        </p>
-        <div className='flex items-center gap-1'>
-          <Button
-            type='button'
-            onClick={() => setPage(page - 1)}
-            disabled={!hasPrevPage}
-            variant='outline'
-            size='sm'
-          >
-            Prev
-          </Button>
-          <Button
-            type='button'
-            size='sm'
-            variant='primary-blue'
-            className='w-8'
-            disabled
-          >
-            {page}
-          </Button>
-          <Button
-            type='button'
-            onClick={() => setPage(page + 1)}
-            disabled={!hasNextPage}
-            variant='outline'
-            size='sm'
-          >
-            Next
-          </Button>
-        </div>
-      </div>
+      <Pagination
+        getNextPage={() => setPage(page + 1)}
+        getPrevPage={() => setPage(page - 1)}
+        limit={10}
+        withSearchParams={false}
+        page={page}
+        count={filteredMappedClasses.length}
+      />
     </div>
   );
 };

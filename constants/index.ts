@@ -12,6 +12,7 @@
 //   LucideIcon,
 // } from 'lucide-react';
 
+import { MantineSelectOption } from '@/types';
 import { LucideProps } from 'lucide-react';
 import dynamicIconImports from 'lucide-react/dynamicIconImports';
 
@@ -333,5 +334,54 @@ export const adminSideBarLinks: SidebarLink[] = [
         label: 'Categories',
       },
     ],
+  },
+];
+
+export const statusOptions: MantineSelectOption[] = [
+  {
+    label: 'Approved',
+    value: 'approved',
+  },
+  {
+    label: 'Pending',
+    value: 'pending',
+  },
+  {
+    label: 'Rejected',
+    value: 'rejected',
+  },
+];
+
+export const accountStatusOptions: MantineSelectOption[] = [
+  {
+    label: 'Active',
+    value: 'active',
+  },
+  {
+    label: 'Banned',
+    value: 'banned',
+  },
+];
+
+export const accountRoleOptions: MantineSelectOption[] = [
+  {
+    label: 'All Roles',
+    value: '',
+  },
+  {
+    label: 'Admin',
+    value: 'admin',
+  },
+  {
+    label: 'Instructor',
+    value: 'instructor',
+  },
+  {
+    label: 'Parent',
+    value: 'parent',
+  },
+  {
+    label: 'Student',
+    value: 'student',
   },
 ];
