@@ -10,13 +10,7 @@ import { ModalsProvider } from '@mantine/modals';
 import { cn } from '@/lib/utils';
 import ToasterProvider from '@/providers/ToasterProvider';
 import { Metadata } from 'next';
-import {
-  generateCourseRegistrationData,
-  generateInstructorRegistrationData,
-  generateInstructors,
-  generateStudents,
-  generateTrialClassData,
-} from '@/lib/actions/generate.actions';
+import TanstackProvider from '@/providers/TanstackProvider';
 
 const fabada = localFont({
   src: '../fonts/Fabada-Regular.ttf',
@@ -53,27 +47,29 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider
-          theme={{
-            primaryColor: 'primary-blue',
-            colors: {
-              'primary-blue': [
-                '#e9f0ff',
-                '#d2dcff',
-                '#a2b5f8',
-                '#708cf4',
-                '#466af0',
-                '#2c54ee',
-                '#1d49ee',
-                '#0f3bd4',
-                '#0434be',
-                '#002ca8',
-              ],
-            },
-          }}
-        >
-          <ModalsProvider>{children}</ModalsProvider>
-        </MantineProvider>
+        <TanstackProvider>
+          <MantineProvider
+            theme={{
+              primaryColor: 'primary-blue',
+              colors: {
+                'primary-blue': [
+                  '#e9f0ff',
+                  '#d2dcff',
+                  '#a2b5f8',
+                  '#708cf4',
+                  '#466af0',
+                  '#2c54ee',
+                  '#1d49ee',
+                  '#0f3bd4',
+                  '#0434be',
+                  '#002ca8',
+                ],
+              },
+            }}
+          >
+            <ModalsProvider>{children}</ModalsProvider>
+          </MantineProvider>
+        </TanstackProvider>
         <ToasterProvider />
       </body>
     </html>

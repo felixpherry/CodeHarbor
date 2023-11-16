@@ -4,7 +4,7 @@ import { MappedClass } from '@/app/(dashboard)/(routes)/admin/create-class/_stor
 import { db } from '../db';
 import { getNextPeriod } from './period.actions';
 import { revalidatePath } from 'next/cache';
-import { DateTime } from 'luxon';
+import moment from 'moment';
 
 export const createClass = async ({
   name,
@@ -80,21 +80,22 @@ export const createClassesForNextPeriod = async ({
         const sessions = allSessions.filter(
           (session) => courseId === session.courseId
         );
-        const startPeriod = DateTime.fromISO(
-          nextPeriod.startDate.toISOString()
-        );
+        const startPeriod = moment(nextPeriod.startDate);
 
         let startDate = startPeriod;
         for (let i = 0; i < 7; i++) {
-          const temp = startPeriod.plus({ day: i });
-          if (temp.weekday === day.position) {
+          const temp = startPeriod.clone().add(i, 'day');
+          if (temp.day() === day.position) {
             startDate = temp;
             break;
           }
         }
 
         const schedules = sessions.map(({ sessionNumber }, idx) => ({
-          scheduleDate: startDate.plus({ day: idx * 7 }).toJSDate(),
+          scheduleDate: startDate
+            .clone()
+            .add(idx * 7, 'day')
+            .toDate(),
           scheduleTime: `${shift.startTime} - ${shift.endTime}`,
           sessionNumber,
         }));
@@ -119,10 +120,10 @@ export const createClassesForNextPeriod = async ({
     );
 
     const classes = await db.$transaction(transactions);
-    console.log(classes);
     revalidatePath('/admin/classes');
     return classes;
   } catch (error: any) {
+    console.log('Create Classes for Next Period', error.message);
     throw new Error(
       `Failed to create classes for the next period: ${error.message}`
     );

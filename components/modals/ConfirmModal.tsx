@@ -1,12 +1,11 @@
 'use client';
 
 import { modals } from '@mantine/modals';
-import { ButtonProps } from '../ui/button';
-import { Button } from '../ui/button';
+import { ButtonProps, Button } from '../ui/button';
 
 interface ConfirmModalProps {
   children: React.ReactNode;
-  onConfirm: () => Promise<unknown> | void;
+  onConfirm: (...args: any[]) => Promise<unknown> | void;
   title: string;
   description: string;
   label?: {

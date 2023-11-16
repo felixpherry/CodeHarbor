@@ -4,17 +4,21 @@ import { Button } from '@/components/ui/button';
 import { modals } from '@mantine/modals';
 import MappedClassForm from '../results/_components/MappedClassForm';
 import { Plus } from 'lucide-react';
+import { useMappedClassForm } from '../_stores/use-mapped-class-form';
 
 const CreateClassButton = () => {
+  const setFormType = useMappedClassForm((state) => state.setFormType);
+
   return (
     <Button
-      onClick={() =>
+      onClick={() => {
+        setFormType('ADD');
         modals.open({
           title: <h1 className='text-primary text-lg font-bold'>Add Class</h1>,
-          children: <MappedClassForm type='ADD' />,
+          children: <MappedClassForm />,
           size: 'xl',
-        })
-      }
+        });
+      }}
       variant='primary-blue'
       size='xs'
       className='flex items-center gap-2'

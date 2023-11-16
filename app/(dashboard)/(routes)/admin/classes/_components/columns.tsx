@@ -1,30 +1,45 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Class, Course, Period, Program } from '@prisma/client';
+import {
+  Account,
+  Class,
+  Course,
+  Instructor,
+  InstructorSchedule,
+  MasterDay,
+  MasterShift,
+  Period,
+  Schedule,
+  Student,
+  StudentCourse,
+} from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
-import {
-  ArrowUpDown,
-  MoreHorizontal,
-  Pencil,
-  PencilIcon,
-  Trash2,
-} from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import Link from 'next/link';
+import { ArrowUpDown } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { convertToTitleCase } from '@/lib/utils';
+import ClassTableActions from './ClassTableActions';
 
-type ClassTableInterface = {
-  _count: {
-    studentCourses: number;
-  };
+export type ClassTableInterface = {
   course: Course;
   period: Period;
+  instructorSchedule:
+    | ({
+        day: MasterDay;
+        instructor: {
+          account: Account;
+        } & Instructor;
+        shift: MasterShift;
+      } & InstructorSchedule)
+    | null;
+  schedules: Schedule[];
+  studentCourses: Array<
+    {
+      student: {
+        account: Account;
+      } & Student;
+    } & StudentCourse
+  >;
 } & Class;
 
 export const columns: ColumnDef<ClassTableInterface>[] = [
@@ -44,6 +59,11 @@ export const columns: ColumnDef<ClassTableInterface>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      return (
+        <span className='font-bold text-primary'>{row.original.name}</span>
+      );
+    },
   },
   {
     accessorKey: 'course.name',
@@ -57,6 +77,53 @@ export const columns: ColumnDef<ClassTableInterface>[] = [
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
+    },
+    cell: ({ row }) => {
+      return row.original.course.name;
+    },
+  },
+  {
+    accessorKey: 'instructorSchedule',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Instructor
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <span className='font-bold text-primary'>
+          {row.original.instructorSchedule?.instructor.account.name}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: 'instructorSchedule',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Schedule
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const { instructorSchedule } = row.original;
+      const formattedSchedule = `${convertToTitleCase(
+        instructorSchedule?.day.day || '-'
+      )}, ${instructorSchedule?.shift.startTime} - ${
+        instructorSchedule?.shift.endTime
+      }`;
+      return formattedSchedule;
     },
   },
   {
@@ -77,68 +144,12 @@ export const columns: ColumnDef<ClassTableInterface>[] = [
     },
   },
   {
-    accessorKey: '_count.studentCourses',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Students
-          <ArrowUpDown className='ml-2 h-4 w-4' />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      return <Badge>{row.original._count.studentCourses}</Badge>;
-    },
-  },
-  {
     id: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
       const { id, name } = row.original;
 
-      // const confirmDelete = async () => {
-      //   try {
-      //     await deletePeriod({
-      //       id,
-      //       pathname,
-      //     });
-      //     toast.success('Successfully deleted period');
-      //   } catch (error: any) {
-      //     toast.error('Failed to delete period');
-      //   }
-      // };
-
-      return (
-        <div className='flex items-center gap-4'>
-          <Link href={`/admin/programs/${id}`}>
-            <PencilIcon className='text-primary-blue cursor-pointer w-5 h-5' />
-          </Link>
-          <Trash2
-            onClick={() => {
-              // modals.openConfirmModal({
-              //   title: `Delete ${name}?`,
-              //   centered: true,
-              //   children: (
-              //     <Text size='sm'>
-              //       Are you sure you want to delete this period? This action can
-              //       not be undone
-              //     </Text>
-              //   ),
-              //   labels: {
-              //     confirm: 'Delete',
-              //     cancel: 'Cancel',
-              //   },
-              //   confirmProps: { color: 'red' },
-              //   onConfirm: confirmDelete,
-              // });
-            }}
-            className='text-red-500 cursor-pointer w-5 h-5'
-          />
-        </div>
-      );
+      return <ClassTableActions classData={row.original} />;
     },
   },
 ];

@@ -28,10 +28,12 @@ import { Input, Select } from '@mantine/core';
 import { MantineSelectOption } from '@/types';
 import SelectedInstructorTable from './SelectedInstructorTable';
 import { getClassesForNextPeriod } from '@/lib/actions/class.actions';
+import { useMappedClassForm } from '../../_stores/use-mapped-class-form';
+import { Pencil, Save } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface MappedClassFormProps {
   initialMappedClass?: MappedClass;
-  type: 'ADD' | 'EDIT';
 }
 
 const formSchema = z.object({
@@ -50,14 +52,13 @@ const formSchema = z.object({
   }),
 });
 
-const MappedClassForm = ({
-  initialMappedClass,
-  type,
-}: MappedClassFormProps) => {
+const MappedClassForm = ({ initialMappedClass }: MappedClassFormProps) => {
   const mappedClasses = useCreateClassStore((state) => state.mappedClasses);
   const setMappedClasses = useCreateClassStore(
     (state) => state.setMappedClasses
   );
+  const formType = useMappedClassForm((state) => state.formType);
+  const setFormType = useMappedClassForm((state) => state.setFormType);
 
   const studentCourses = useCreateClassStore((state) => state.studentCourses);
 
@@ -131,8 +132,6 @@ const MappedClassForm = ({
   };
 
   const handleSelectInstructor = (id: string) => {
-    const currInstructorScheduleId = form.getValues('instructorScheduleId');
-
     form.setValue('instructorScheduleId', id);
 
     setIsEditingInstructor(false);
@@ -146,6 +145,9 @@ const MappedClassForm = ({
     form.setValue('instructorScheduleId', '');
     fieldChange(courseId);
   };
+
+  const router = useRouter();
+  const pathname = usePathname();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -162,7 +164,7 @@ const MappedClassForm = ({
         });
       }
 
-      if (type === 'EDIT') {
+      if (formType === 'EDIT') {
         setMappedClasses(
           mappedClasses.map((mappedClass) => {
             if (mappedClass.id === initialMappedClass?.id) return { ...values };
@@ -170,9 +172,11 @@ const MappedClassForm = ({
           })
         );
         toast.success('Successfully updated class');
-      } else {
+      } else if (formType === 'ADD') {
         setMappedClasses([{ ...values }, ...mappedClasses]);
         toast.success('Successfully added class');
+        if (pathname !== '/admin/create-class/results')
+          router.push('/admin/create-class/results');
       }
       modals.closeAll();
     } catch (error: any) {
@@ -193,9 +197,15 @@ const MappedClassForm = ({
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder='COL001' {...field} />
+                <Input
+                  placeholder='COL001'
+                  {...field}
+                  disabled={formType === 'VIEW'}
+                />
               </FormControl>
-              <FormDescription>Class name must be unique</FormDescription>
+              {formType !== 'VIEW' && (
+                <FormDescription>Class name must be unique</FormDescription>
+              )}
               <FormMessage />
             </FormItem>
           )}
@@ -211,6 +221,7 @@ const MappedClassForm = ({
                   placeholder='Choose course'
                   checkIconPosition='right'
                   data={courseOptions}
+                  disabled={formType === 'VIEW'}
                   maxDropdownHeight={200}
                   searchable
                   clearable
@@ -232,7 +243,8 @@ const MappedClassForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    {isEditingInstructor || !field.value ? (
+                    {(isEditingInstructor || !field.value) &&
+                    formType !== 'VIEW' ? (
                       <AvailableInstructorsTable
                         instructorScheduleIds={instructorsWithoutClasses}
                         handleSelectInstructor={handleSelectInstructor}
@@ -261,10 +273,12 @@ const MappedClassForm = ({
                         studentCourseIds={field.value}
                         handleDeleteStudents={handleDeleteStudents}
                       />
-                      <AvailableStudentsTable
-                        studentCourseIds={studentsWithoutClasses}
-                        handleAddStudents={handleAddStudents}
-                      />
+                      {formType !== 'VIEW' && (
+                        <AvailableStudentsTable
+                          studentCourseIds={studentsWithoutClasses}
+                          handleAddStudents={handleAddStudents}
+                        />
+                      )}
                     </>
                   </FormControl>
                   <FormMessage />
@@ -283,9 +297,23 @@ const MappedClassForm = ({
           >
             Close
           </Button>
-          <Button type='submit' size='sm'>
-            Save
-          </Button>
+          {formType === 'VIEW' && (
+            <Button
+              type='button'
+              variant='edit'
+              size='sm'
+              onClick={() => setFormType('EDIT')}
+            >
+              <Pencil className='w-4 h-4' />
+              Edit
+            </Button>
+          )}
+          {formType !== 'VIEW' && (
+            <Button type='submit' size='sm'>
+              <Save className='w-4 h-4' />
+              Save
+            </Button>
+          )}
         </div>
       </form>
     </Form>

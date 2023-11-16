@@ -128,7 +128,7 @@ const GenerateClassForm = () => {
 
         <div className='flex items-center gap-5'>
           <MinusCircle
-            onClick={() => setClassSize(classSize - 1)}
+            onClick={() => setClassSize(Math.max(classSize - 1, 1))}
             className='cursor-pointer text-muted-foreground hover:text-primary h-6 w-6'
           />
           <span className='text-primary text-lg'>{classSize}</span>

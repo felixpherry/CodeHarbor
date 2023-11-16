@@ -10,29 +10,36 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { convertToTitleCase } from '@/lib/utils';
+import {
+  Account,
+  Instructor,
+  InstructorSchedule,
+  MasterDay,
+  MasterShift,
+} from '@prisma/client';
 import { IconCircleCheck } from '@tabler/icons-react';
 import { Pencil } from 'lucide-react';
 import Image from 'next/image';
-import { useCreateClassStore } from '../../_stores/use-create-class-store';
-import { useMappedClassForm } from '../../_stores/use-mapped-class-form';
+import { useClassFormStore } from '../_stores/use-class-form-store';
+
+export type InstructorScheduleTableInterface = {
+  shift: MasterShift;
+  day: MasterDay;
+  instructor: {
+    account: Account;
+  } & Instructor;
+} & InstructorSchedule;
 
 interface SelectedInstructorTableProps {
   setIsEditingInstructor: (isEditingInstructor: boolean) => void;
-  instructorScheduleId: string;
+  instructorSchedule: InstructorScheduleTableInterface;
 }
 
 const SelectedInstructorTable = ({
-  instructorScheduleId,
+  instructorSchedule,
   setIsEditingInstructor,
 }: SelectedInstructorTableProps) => {
-  const instructorSchedule = useCreateClassStore((state) =>
-    state.instructorSchedules.find(({ id }) => instructorScheduleId === id)
-  );
-
-  const formType = useMappedClassForm((state) => state.formType);
-
-  if (!instructorSchedule) return null;
-
+  const formType = useClassFormStore((state) => state.formType);
   return (
     <div className='flex flex-col gap-3 p-5 border rounded-md'>
       <div className='flex justify-between items-center'>

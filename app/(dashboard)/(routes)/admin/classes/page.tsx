@@ -1,10 +1,15 @@
-import { getCurrentPeriod } from '@/lib/actions/period.actions';
+import {
+  getAllPeriods,
+  getCurrentPeriod,
+  getNextPeriod,
+} from '@/lib/actions/period.actions';
 import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/session';
 import { MantineSelectOption, SessionInterface } from '@/types';
 import { redirect } from 'next/navigation';
 import { DataTable } from './_components/data-table';
 import { columns } from './_components/columns';
+import { getPublishedCourses } from '@/lib/actions/course.actions';
 
 interface ClassPageParams {
   searchParams: {
@@ -19,35 +24,45 @@ const Page = async ({ searchParams }: ClassPageParams) => {
   if (!session || session.user.role !== 'ADMIN') return redirect('/');
 
   const currentPeriod = await getCurrentPeriod();
+  const nextPeriod = await getNextPeriod();
 
   const classes = await db.class.findMany({
     include: {
-      _count: {
-        select: {
-          studentCourses: true,
-        },
-      },
       course: true,
       period: true,
+      instructorSchedule: {
+        include: {
+          day: true,
+          instructor: {
+            include: {
+              account: true,
+            },
+          },
+          shift: true,
+        },
+      },
+      schedules: true,
+      studentCourses: {
+        include: {
+          student: {
+            include: {
+              account: true,
+            },
+          },
+        },
+      },
     },
     orderBy: {
       name: 'asc',
     },
     where: {
-      periodId: searchParams.period || currentPeriod?.id || undefined,
+      periodId: searchParams.period || undefined,
       courseId: searchParams.course,
     },
   });
 
-  const periods = await db.period.findMany();
-  const courses = await db.course.findMany({
-    where: {
-      isPublished: true,
-      program: {
-        isPublished: true,
-      },
-    },
-  });
+  const periods = await getAllPeriods();
+  const courses = await getPublishedCourses();
 
   const courseOptions: MantineSelectOption[] = courses.map(({ id, name }) => ({
     label: name,

@@ -9,30 +9,33 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Input, Text } from '@mantine/core';
+import { Input } from '@mantine/core';
 import { useState } from 'react';
 import {
   MappedClass,
   useCreateClassStore,
 } from '../../_stores/use-create-class-store';
 import {
-  ChevronDown,
+  EyeIcon,
   Loader2,
   PencilIcon,
   SaveAll,
   Trash2,
   Undo2,
 } from 'lucide-react';
-import { cn, convertToTitleCase } from '@/lib/utils';
+import { convertToTitleCase } from '@/lib/utils';
 import MappedClassForm from './MappedClassForm';
 import { modals } from '@mantine/modals';
-import Image from 'next/image';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { createClassesForNextPeriod } from '@/lib/actions/class.actions';
 import Pagination from '@/components/shared/Pagination';
 import { getNextPeriod } from '@/lib/actions/period.actions';
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
+import {
+  MappedClassFormType,
+  useMappedClassForm,
+} from '../../_stores/use-mapped-class-form';
 
 const MappedClassesTable = () => {
   const [page, setPage] = useState(1);
@@ -52,6 +55,8 @@ const MappedClassesTable = () => {
     (page - 1) * 10 + 10
   );
 
+  const setFormType = useMappedClassForm((state) => state.setFormType);
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     setPage(1);
@@ -61,14 +66,19 @@ const MappedClassesTable = () => {
     setMappedClasses(
       mappedClasses.filter((mappedClass) => mappedClass.id !== id)
     );
+
+    toast.success('Successfully deleted class');
   };
 
-  const handleShowDetail = (mappedClass: MappedClass) => {
+  const openModalForm = (
+    mappedClass: MappedClass,
+    type: MappedClassFormType
+  ) => {
+    const title = type === 'EDIT' ? 'Edit Class' : 'Class Details';
+    setFormType(type);
     modals.open({
-      title: <h1 className='text-primary text-lg font-bold'>Edit Class</h1>,
-      children: (
-        <MappedClassForm type='EDIT' initialMappedClass={mappedClass} />
-      ),
+      title: <h1 className='text-primary text-lg font-bold'>{title}</h1>,
+      children: <MappedClassForm initialMappedClass={mappedClass} />,
       size: 'xl',
     });
   };
@@ -96,20 +106,6 @@ const MappedClassesTable = () => {
     } - ${instructorSchedule.shift.endTime}`;
   };
 
-  const [openedRows, setOpenedRows] = useState(new Set<string>());
-
-  const handleToggle = (id: string) => {
-    const cloneOpenedRows = new Set(openedRows);
-    if (cloneOpenedRows.has(id)) cloneOpenedRows.delete(id);
-    else cloneOpenedRows.add(id);
-    setOpenedRows(cloneOpenedRows);
-  };
-
-  const studentCourses = useCreateClassStore((state) => state.studentCourses);
-  const getStudentCourse = (id: string) => {
-    return studentCourses.find((studentCourse) => studentCourse.id === id);
-  };
-
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -132,9 +128,10 @@ const MappedClassesTable = () => {
     if (!mappedClasses.length) return;
 
     setMappedClasses([]);
+    toast.success('Successfully reset results');
   };
 
-  const headers = ['No.', 'Name', 'Course', 'Schedule', 'Actions', ''];
+  const headers = ['No.', 'Name', 'Course', 'Schedule', 'Actions'];
 
   return (
     <div className='flex flex-col gap-3 p-5 border rounded-md'>
@@ -162,19 +159,24 @@ const MappedClassesTable = () => {
               Reset
             </Button>
           </ConfirmModal>
-          <Button
-            onClick={handleSave}
-            disabled={!mappedClasses.length}
-            className='flex items-center'
-            size='sm'
+          <ConfirmModal
+            title='Are you sure?'
+            description='Do you want to save the results?'
+            onConfirm={handleSave}
           >
-            {isLoading ? (
-              <Loader2 className='h-4 w-4 animate-spin' />
-            ) : (
-              <SaveAll className='h-4 w-4' />
-            )}
-            Save
-          </Button>
+            <Button
+              disabled={!mappedClasses.length}
+              className='flex items-center'
+              size='sm'
+            >
+              {isLoading ? (
+                <Loader2 className='h-4 w-4 animate-spin' />
+              ) : (
+                <SaveAll className='h-4 w-4' />
+              )}
+              Save
+            </Button>
+          </ConfirmModal>
         </div>
       </div>
       <div className='rounded-md border'>
@@ -197,194 +199,59 @@ const MappedClassesTable = () => {
                 { id, name, courseId, instructorScheduleId, studentCourseIds },
                 idx
               ) => (
-                <>
-                  <TableRow
-                    key={id}
-                    onClick={() => handleToggle(id)}
-                    className='cursor-pointer'
-                  >
-                    <TableCell>{(page - 1) * 10 + idx + 1}</TableCell>
-                    <TableCell className='text-primary font-bold'>
-                      {name}
-                    </TableCell>
-                    <TableCell className='text-muted-foreground font-semibold'>
-                      {getCourse(courseId)?.name}
-                    </TableCell>
-                    <TableCell className='text-muted-foreground font-semibold'>
-                      {getFormattedSchedule(instructorScheduleId)}
-                    </TableCell>
-                    <TableCell className='text-muted-foreground font-semibold'>
-                      <div className='flex items-center gap-4'>
-                        <PencilIcon
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleShowDetail({
+                <TableRow key={id}>
+                  <TableCell>{(page - 1) * 10 + idx + 1}</TableCell>
+                  <TableCell className='text-primary font-bold'>
+                    {name}
+                  </TableCell>
+                  <TableCell className='text-muted-foreground font-semibold'>
+                    {getCourse(courseId)?.name}
+                  </TableCell>
+                  <TableCell className='text-muted-foreground font-semibold'>
+                    {getFormattedSchedule(instructorScheduleId)}
+                  </TableCell>
+                  <TableCell className='text-muted-foreground font-semibold'>
+                    <div className='flex items-center gap-4'>
+                      <EyeIcon
+                        onClick={() =>
+                          openModalForm(
+                            {
                               id,
                               name,
                               courseId,
                               instructorScheduleId,
                               studentCourseIds,
-                            });
-                          }}
-                          className='h-5 w-5 cursor-pointer text-primary-blue'
-                        />
-                        <Trash2
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(id);
-                          }}
-                          className='h-5 w-5 cursor-pointer text-red-500'
-                        />
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <ChevronDown
-                        className={cn(
-                          'transition-all duration-500',
-                          openedRows.has(id) && 'rotate-180'
-                        )}
+                            },
+                            'VIEW'
+                          )
+                        }
+                        className='h-5 w-5 cursor-pointer text-muted-foreground hover:text-primary'
                       />
-                    </TableCell>
-                  </TableRow>
-                  <TableRow
-                    className={cn(
-                      'hover:!bg-white',
-                      !openedRows.has(id) && 'hidden'
-                    )}
-                  >
-                    <TableCell colSpan={6}>
-                      <div className='flex flex-col gap-5'>
-                        <div className='flex flex-col gap-3 p-5 border rounded-md'>
-                          <h2 className='text-muted-foreground font-medium text-lg'>
-                            Instructor
-                          </h2>
-                          <hr />
-                          <div className='rounded-md border'>
-                            <Table>
-                              <TableHeader className='border-b'>
-                                <TableRow>
-                                  <TableHead className='text-primary'>
-                                    Name
-                                  </TableHead>
-                                  <TableHead className='text-primary'>
-                                    Schedule
-                                  </TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                <TableRow>
-                                  <TableCell>
-                                    <div className='flex gap-5 items-center'>
-                                      <Image
-                                        src={
-                                          getInstructorSchedule(
-                                            instructorScheduleId
-                                          )?.instructor.account.image ||
-                                          '/avatar-fallback.svg'
-                                        }
-                                        alt={
-                                          getInstructorSchedule(
-                                            instructorScheduleId
-                                          )?.instructor.account.name || ''
-                                        }
-                                        width={25}
-                                        height={25}
-                                        className='rounded-full'
-                                      />
-                                      <div className='flex flex-col'>
-                                        <h3 className='text-primary text-sm font-semibold'>
-                                          {
-                                            getInstructorSchedule(
-                                              instructorScheduleId
-                                            )?.instructor.account.name
-                                          }
-                                        </h3>
-                                        <p className='text-muted-foreground text-xs'>
-                                          {
-                                            getInstructorSchedule(
-                                              instructorScheduleId
-                                            )?.instructor.account.email
-                                          }
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </TableCell>
-                                  <TableCell>
-                                    {getFormattedSchedule(instructorScheduleId)}
-                                  </TableCell>
-                                </TableRow>
-                              </TableBody>
-                            </Table>
-                          </div>
-                        </div>
-                        <div className='flex flex-col gap-3 p-5 border rounded-md'>
-                          <h2 className='text-primary font-medium text-lg'>
-                            Students
-                          </h2>
-                          <hr />
-                          <div className='rounded-md border'>
-                            <Table>
-                              <TableHeader className='border-b'>
-                                <TableRow>
-                                  <TableHead className='text-primary'>
-                                    No.
-                                  </TableHead>
-                                  <TableHead className='text-primary'>
-                                    Name
-                                  </TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {studentCourseIds.map((id, idx) => (
-                                  <TableRow key={id} className='cursor-pointer'>
-                                    <TableCell>{idx + 1}</TableCell>
-                                    <TableCell>
-                                      <div className='flex gap-5 items-center'>
-                                        <Image
-                                          src={
-                                            getStudentCourse(id)?.student
-                                              .account.image ||
-                                            '/avatar-fallback.svg'
-                                          }
-                                          alt={
-                                            getStudentCourse(id)?.student
-                                              .account.name || ''
-                                          }
-                                          width={25}
-                                          height={25}
-                                          className='rounded-full'
-                                        />
-                                        <div className='flex flex-col'>
-                                          <h3 className='text-primary text-sm font-semibold'>
-                                            {
-                                              getStudentCourse(id)?.student
-                                                .account.name
-                                            }
-                                          </h3>
-                                          <p className='text-muted-foreground text-xs'>
-                                            {
-                                              getStudentCourse(id)?.student
-                                                .account.email
-                                            }
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                          </div>
-                          {studentCourseIds.length === 0 && (
-                            <p className='text-primary text-base font-semibold text-center'>
-                              No Students
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                </>
+                      <PencilIcon
+                        onClick={() =>
+                          openModalForm(
+                            {
+                              id,
+                              name,
+                              courseId,
+                              instructorScheduleId,
+                              studentCourseIds,
+                            },
+                            'EDIT'
+                          )
+                        }
+                        className='h-5 w-5 cursor-pointer text-primary-blue'
+                      />
+                      <ConfirmModal
+                        title='Are you sure?'
+                        description='Do you want to delete this class?'
+                        onConfirm={() => handleDelete(id)}
+                      >
+                        <Trash2 className='h-5 w-5 cursor-pointer text-red-500' />
+                      </ConfirmModal>
+                    </div>
+                  </TableCell>
+                </TableRow>
               )
             )}
           </TableBody>

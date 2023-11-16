@@ -61,7 +61,9 @@ export default function TanstackTable<TData, TValue>({
                   {row.getVisibleCells().map((cell, cellIdx) => {
                     if (cellIdx === 0)
                       return (
-                        <TableCell>{(page - 1) * 10 + rowIdx + 1}</TableCell>
+                        <TableCell key={cell.id}>
+                          {(page - 1) * 10 + rowIdx + 1}
+                        </TableCell>
                       );
                     return (
                       <TableCell key={cell.id}>
