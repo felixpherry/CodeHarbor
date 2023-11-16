@@ -48,8 +48,6 @@ const SelectedSchedules = ({
   handleEditSchedule,
 }: SelectedSchedulesProps) => {
   const formType = useClassFormStore((state) => state.formType);
-
-  if (!schedules.length) return null;
   const [selected, setSelected] = useState(schedules[0]);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -81,6 +79,8 @@ const SelectedSchedules = ({
   const handleSubmit = () => {
     form.handleSubmit(onSubmit)();
   };
+
+  if (!schedules.length) return null;
 
   return (
     <div className='flex flex-col gap-5 p-5 border rounded-md'>
