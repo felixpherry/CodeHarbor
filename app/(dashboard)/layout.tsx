@@ -3,6 +3,7 @@ import Navbar from './_components/Navbar';
 import { SessionInterface } from '@/types';
 import { redirect } from 'next/navigation';
 import Sidebar from './_components/Sidebar';
+import Footer from './_components/Footer';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -19,9 +20,12 @@ const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
         <Navbar />
       </div>
       <div className='hidden md:flex h-full w-64 flex-col fixed inset-y-0 z-50'>
-        <Sidebar />
+        <Sidebar session={session} />
       </div>
-      <main className='md:pl-64 pt-[80px] h-full'>{children}</main>
+      <main className='md:pl-64 pt-[80px] h-full'>
+        {children}
+        <Footer />
+      </main>
     </div>
   );
 };

@@ -1,18 +1,17 @@
 'use client';
 
-import { Period } from '@prisma/client';
+import { MasterEvaluation } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, PencilIcon, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
-import moment from 'moment';
-import PeriodForm from './PeriodForm';
 import { modals } from '@mantine/modals';
-import { deletePeriod } from '../_actions';
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
+import { deleteEvaluation } from '../_actions';
+import EvaluationForm from './EvaluationForm';
 
-export const columns: ColumnDef<Period>[] = [
+export const columns: ColumnDef<MasterEvaluation>[] = [
   {
     header: 'No',
   },
@@ -25,19 +24,19 @@ export const columns: ColumnDef<Period>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className='whitespace-nowrap'
         >
-          Period
+          Name
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
     },
     cell: ({ row }) => {
       return (
-        <span className='font-bold text-primary'>{row.getValue('name')}</span>
+        <span className='font-bold text-primary'>{row.original.name}</span>
       );
     },
   },
   {
-    accessorKey: 'startDate',
+    accessorKey: 'weight',
     header: ({ column }) => {
       return (
         <Button
@@ -45,33 +44,10 @@ export const columns: ColumnDef<Period>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className='whitespace-nowrap'
         >
-          Start Date
+          Weight
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
-    },
-    cell: ({ row }) => {
-      const { startDate } = row.original;
-      return <>{moment(startDate).format('DD-MM-YYYY')}</>;
-    },
-  },
-  {
-    accessorKey: 'endDate',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className='whitespace-nowrap'
-        >
-          End Date
-          <ArrowUpDown className='ml-2 h-4 w-4' />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      const { endDate } = row.original;
-      return <>{moment(endDate).format('DD-MM-YYYY')}</>;
     },
   },
   {
@@ -84,13 +60,13 @@ export const columns: ColumnDef<Period>[] = [
 
       const confirmDelete = async () => {
         try {
-          await deletePeriod({
+          await deleteEvaluation({
             id,
             pathname,
           });
-          toast.success('Successfully deleted period');
+          toast.success('Successfully deleted evaluation');
         } catch (error: any) {
-          toast.error('Failed to delete period');
+          toast.error('Failed to delete evaluation');
         }
       };
 
@@ -100,18 +76,21 @@ export const columns: ColumnDef<Period>[] = [
             onClick={() => {
               modals.open({
                 title: (
-                  <p className='text-primary font-semibold'>Edit Period</p>
+                  <p className='text-primary font-semibold'>Edit Evaluation</p>
                 ),
-                children: <PeriodForm type='EDIT' initialData={row.original} />,
+                children: (
+                  <EvaluationForm type='EDIT' initialData={row.original} />
+                ),
                 centered: true,
+                size: 'xl',
               });
             }}
             className='text-primary-blue cursor-pointer w-5 h-5'
           />
           <ConfirmModal
             title={`Delete ${name}?`}
-            description='Are you sure you want to delete this period? This action can
-          not be undone'
+            description='Are you sure you want to delete this evaluation? This action can
+            not be undone'
             onConfirm={confirmDelete}
             variant={{
               confirm: 'destructive',

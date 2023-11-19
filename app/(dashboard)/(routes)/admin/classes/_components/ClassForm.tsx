@@ -236,11 +236,12 @@ const ClassForm = ({ initialData }: ClassFormProps) => {
             </FormItem>
           )}
         />
-
-        <SelectedSchedules
-          schedules={tempClass.schedules}
-          handleEditSchedule={handleEditSchedule}
-        />
+        {tempClass.schedules.length > 0 && (
+          <SelectedSchedules
+            schedules={tempClass.schedules}
+            handleEditSchedule={handleEditSchedule}
+          />
+        )}
 
         <div className='flex w-full items-center gap-3 justify-end border-t pt-4'>
           <Button

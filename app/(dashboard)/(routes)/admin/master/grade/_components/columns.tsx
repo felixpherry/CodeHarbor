@@ -1,23 +1,22 @@
 'use client';
 
-import { Period } from '@prisma/client';
+import { MasterGrade } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, PencilIcon, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
-import moment from 'moment';
-import PeriodForm from './PeriodForm';
 import { modals } from '@mantine/modals';
-import { deletePeriod } from '../_actions';
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
+import { deleteGradeCategory } from '../_actions';
+import GradeForm from './GradeForm';
 
-export const columns: ColumnDef<Period>[] = [
+export const columns: ColumnDef<MasterGrade>[] = [
   {
     header: 'No',
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'category',
     header: ({ column }) => {
       return (
         <Button
@@ -25,19 +24,19 @@ export const columns: ColumnDef<Period>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className='whitespace-nowrap'
         >
-          Period
+          Category
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
     },
     cell: ({ row }) => {
       return (
-        <span className='font-bold text-primary'>{row.getValue('name')}</span>
+        <span className='font-bold text-primary'>{row.original.category}</span>
       );
     },
   },
   {
-    accessorKey: 'startDate',
+    accessorKey: 'minScore',
     header: ({ column }) => {
       return (
         <Button
@@ -45,18 +44,14 @@ export const columns: ColumnDef<Period>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className='whitespace-nowrap'
         >
-          Start Date
+          Min Score
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
-    },
-    cell: ({ row }) => {
-      const { startDate } = row.original;
-      return <>{moment(startDate).format('DD-MM-YYYY')}</>;
     },
   },
   {
-    accessorKey: 'endDate',
+    accessorKey: 'maxScore',
     header: ({ column }) => {
       return (
         <Button
@@ -64,33 +59,72 @@ export const columns: ColumnDef<Period>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className='whitespace-nowrap'
         >
-          End Date
+          Min Score
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: 'description',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='whitespace-nowrap'
+        >
+          Description
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: 'hexCode',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='whitespace-nowrap'
+        >
+          Hex Color
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const { endDate } = row.original;
-      return <>{moment(endDate).format('DD-MM-YYYY')}</>;
+      return (
+        <div className='flex items-center gap-3'>
+          <div
+            className='h-5 w-5 rounded-full'
+            style={{
+              backgroundColor: row.original.hexCode,
+            }}
+          />
+          <span className='text-muted-foreground'>{row.original.hexCode}</span>
+        </div>
+      );
     },
   },
   {
     id: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
-      const { id, name } = row.original;
+      const { id, category } = row.original;
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const pathname = usePathname();
 
       const confirmDelete = async () => {
         try {
-          await deletePeriod({
+          await deleteGradeCategory({
             id,
             pathname,
           });
-          toast.success('Successfully deleted period');
+          toast.success('Successfully deleted grade category');
         } catch (error: any) {
-          toast.error('Failed to delete period');
+          toast.error('Failed to delete grade category');
         }
       };
 
@@ -100,18 +134,21 @@ export const columns: ColumnDef<Period>[] = [
             onClick={() => {
               modals.open({
                 title: (
-                  <p className='text-primary font-semibold'>Edit Period</p>
+                  <p className='text-primary font-semibold'>
+                    Edit Grade Category
+                  </p>
                 ),
-                children: <PeriodForm type='EDIT' initialData={row.original} />,
+                children: <GradeForm type='EDIT' initialData={row.original} />,
                 centered: true,
+                size: 'xl',
               });
             }}
             className='text-primary-blue cursor-pointer w-5 h-5'
           />
           <ConfirmModal
-            title={`Delete ${name}?`}
-            description='Are you sure you want to delete this period? This action can
-          not be undone'
+            title={`Delete ${category}?`}
+            description='Are you sure you want to delete this grade category? This action can
+            not be undone'
             onConfirm={confirmDelete}
             variant={{
               confirm: 'destructive',

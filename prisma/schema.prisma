@@ -410,6 +410,7 @@ model Class {
 
   studentCourses StudentCourse[]
   schedules      Schedule[]
+  finalReports   FinalReport[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -482,6 +483,7 @@ model Schedule {
   class            Class             @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   classId          String
   otherAttachments OtherAttachment[]
+  sessionReports   SessionReport[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -508,6 +510,8 @@ model Student {
   accountId String  @unique
 
   studentCourses StudentCourse[]
+  finalReports   FinalReport[]
+  sessionReports SessionReport[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -543,62 +547,75 @@ model StudentCourse {
   @@index([classId])
 }
 
-// Python
-// Kotlin
+model MasterEvaluation {
+  id String @id @default(cuid())
 
-// Budi
+  name   String @unique
+  weight Int
 
-// CourseRegistration Python
+  finalReports   FinalReport[]
+  sessionReports SessionReport[]
 
-// Account
-// Student
-// Parent
-// StudentCourse:
-//   course Python
-//   status APPROVED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
-// Group By Courses
-// Python 5 5 2 ✅
-// Kotlin 5 5 3 ✅
-// Scratch 5 5 5 5 5
+model MasterGrade {
+  id String @id @default(cuid())
 
-// MasterInstructorSchedule
+  category String @unique
+  minScore Int    @unique
+  maxScore Int    @unique
 
-// Budi Kotlin Python
-// Budi Senin 11 - 12
-// Budi Selasa 12 - 13
-// Budi Minggu 9-10
+  description String
+  hexCode     String @unique
 
-// Andi Python Scratch
-// Andi Senin 8 - 9
-// Andi Selasa 9 - 10
-// Andi Minggu 7 - 8
-// Andi Jumat 13 - 14
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
-// Jokowi Kotlin Scratch
-// Jokowi Rabu 8 - 9
-// Jokowi Kamis 10 - 11
+model FinalReport {
+  id String @id @default(cuid())
 
-// Budi Senin 11 - 12 ✅ 5
-// Budi Selasa 12 - 13 ✅ 5
-// Budi Minggu 9-10 ✅ 2
-// Andi Senin 8 - 9 ✅ 6
-// Andi Selasa 9 - 10 ✅ 6
-// Andi Minggu 7 - 8 ✅ 6
-// Andi Jumat 13 - 14 ✅ 7
-// Jokowi Rabu 8 - 9 ✅ 6
-// Jokowi Kamis 10 - 11 ✅ 7
+  score Int
 
-// 1 x Sabtu 9 - 10 
+  evaluation   MasterEvaluation @relation(fields: [evaluationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  evaluationId String
 
-// Class yg MasterScheduleID = 1
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  studentId String
 
-// period 
+  class   Class  @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  classId String
 
-// pas query schedule
-// query schedule where bisa dipake
-// [10]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-// getCurrentPeriod
+  @@index([evaluationId])
+  @@index([studentId])
+  @@index([classId])
+}
 
-// getNextPeriod
+model SessionReport {
+  id String @id @default(cuid())
+
+  feedback         String
+  attendanceStatus Boolean
+  score            Int
+
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  studentId String
+
+  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  scheduleId String
+
+  evaluation   MasterEvaluation @relation(fields: [evaluationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  evaluationId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([evaluationId])
+  @@index([studentId])
+  @@index([scheduleId])
+}
