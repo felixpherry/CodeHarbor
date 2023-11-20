@@ -1,10 +1,21 @@
 import Preview from '@/components/shared/Preview';
 import { db } from '@/lib/db';
 import { cn } from '@/lib/utils';
-import { File, Presentation, Video } from 'lucide-react';
+import { modals } from '@mantine/modals';
+import {
+  CalendarPlus,
+  File,
+  Pencil,
+  PlusSquareIcon,
+  Presentation,
+  Trash2,
+  Video,
+} from 'lucide-react';
 import moment from 'moment';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import AddAttachmentModal from './_components/AddAttachmentModal';
+import AttachmentActions from './_components/AttachmentActions';
 
 interface PageProps {
   params: {
@@ -56,11 +67,11 @@ const Page = async ({ params: { classId, sessionId } }: PageProps) => {
             </div>
           </div>
           <div className='w-full'>
-            <div className='overflow-x-auto flex gap-2'>
+            <div className='overflow-x-auto flex gap-2 no-scrollbar'>
               {classData.schedules.map((schedule) => (
                 <Link
                   key={schedule.id}
-                  href={`/student/my-classes/${classId}/sessions/${schedule.id}`}
+                  href={`/instructor/my-classes/${classId}/sessions/${schedule.id}`}
                   className={cn(
                     'text-primary whitespace-nowrap cursor-pointer p-3 rounded-md',
                     sessionId === schedule.id
@@ -105,9 +116,13 @@ const Page = async ({ params: { classId, sessionId } }: PageProps) => {
             </div>
             <div className='col-span-12 md:col-span-5'>
               <div className='p-5 bg-gradient-to-t from-[#273575] to-[#004AAD] rounded-md text-white'>
-                <div className='flex flex-col gap-5'>
-                  <h4 className='text-base font-normal'>Resources</h4>
-                  <div className='flex flex-col gap-1 w-full'>
+                <div className='flex flex-col gap-1'>
+                  <span className='flex items-center gap-3 p-3 rounded-md hover:bg-sky-200/20 cursor-pointer'>
+                    <CalendarPlus className='h-4 w-4' />
+                    <span>Session Report</span>
+                  </span>
+                  <div className='flex flex-col gap-1 w-full py-3 border-y-[1px] border-white'>
+                    <h4 className='text-base font-normal px-3'>Resources</h4>
                     <a
                       href={scheduleData.meetingUrl || ''}
                       target='_blank'
@@ -126,31 +141,33 @@ const Page = async ({ params: { classId, sessionId } }: PageProps) => {
                     </a>
                     {sessionData.attachments.map(
                       ({ id, filename, fileUrl }) => (
-                        <a
+                        <div
                           key={id}
-                          href={fileUrl}
-                          target='_blank'
                           className='flex items-center gap-3 p-3 rounded-md hover:bg-sky-200/20'
                         >
                           <File className='h-4 w-4' />
-                          <span>{filename}</span>
-                        </a>
+                          <a href={fileUrl} target='_blank'>
+                            {filename}
+                          </a>
+                        </div>
                       )
                     )}
-                    {scheduleData.otherAttachments.map(
-                      ({ id, name, fileUrl }) => (
-                        <a
-                          key={id}
-                          href={fileUrl}
-                          target='_blank'
-                          className='flex items-center gap-3 p-3 rounded-md hover:bg-sky-200/20'
-                        >
+                    {scheduleData.otherAttachments.map((attachment) => (
+                      <div
+                        key={attachment.id}
+                        className='flex items-center justify-between gap-3 p-3 rounded-md hover:bg-sky-200/20'
+                      >
+                        <div className='flex items-center gap-3'>
                           <File className='h-4 w-4' />
-                          <span>{name}</span>
-                        </a>
-                      )
-                    )}
+                          <a href={attachment.fileUrl} target='_blank'>
+                            {attachment.name}
+                          </a>
+                        </div>
+                        <AttachmentActions attachment={attachment} />
+                      </div>
+                    ))}
                   </div>
+                  <AddAttachmentModal scheduleId={sessionId} />
                 </div>
               </div>
             </div>

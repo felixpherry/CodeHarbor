@@ -443,9 +443,10 @@ model Session {
 }
 
 model Attachment {
-  id       String @id @default(cuid())
+  id       String  @id @default(cuid())
   filename String
-  fileUrl  String @db.Text
+  fileKey  String?
+  fileUrl  String  @db.Text
   fileType String
 
   session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -458,8 +459,9 @@ model Attachment {
 }
 
 model OtherAttachment {
-  id      String @id @default(cuid())
+  id      String  @id @default(cuid())
   name    String
+  fileKey String? // uploadthing filekey
   type    String
   fileUrl String
 

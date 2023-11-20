@@ -95,12 +95,19 @@ const studentRoutes: SidebarItemProps[] = [
   { label: 'Grades', icon: IconFileDescription, href: '/student/grades' },
 ];
 
+const instructorRoutes: SidebarItemProps[] = [
+  { label: 'Dashboard', icon: Layout, href: '/instructor/dashboard' },
+  { label: 'My Classes', icon: GraduationCap, href: '/instructor/my-classes' },
+];
+
 const SidebarRoutes = ({ session }: { session: SessionInterface }) => {
   let routes: SidebarItemProps[] = [];
   if (session.user.role === 'ADMIN') {
     routes = adminRoutes;
   } else if (session.user.role === 'STUDENT') {
     routes = studentRoutes;
+  } else if (session.user.role === 'INSTRUCTOR') {
+    routes = instructorRoutes;
   }
 
   return (

@@ -1,6 +1,7 @@
 import { getCurrentUser } from '@/lib/session';
 import { SessionInterface } from '@/types';
 import { createUploadthing, type FileRouter } from 'uploadthing/next';
+import { UTApi } from 'uploadthing/server';
 
 const f = createUploadthing();
 
@@ -107,3 +108,5 @@ export const fileRouter = {
 } satisfies FileRouter;
 
 export type fileRouter = typeof fileRouter;
+
+export const utapi = new UTApi();

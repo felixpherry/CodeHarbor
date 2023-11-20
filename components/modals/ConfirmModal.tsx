@@ -56,5 +56,5 @@ export const ConfirmModal = ({
     });
   };
 
-  return <div onClick={openModal}>{children}</div>;
+  return <button onClick={openModal}>{children}</button>;
 };
