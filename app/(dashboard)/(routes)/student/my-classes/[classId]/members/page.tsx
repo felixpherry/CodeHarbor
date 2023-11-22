@@ -42,7 +42,7 @@ const Page = async ({ params: { classId } }: PageProps) => {
       <div className='flex flex-col gap-2'>
         <h3 className='text-xl font-semibold'>Instructor</h3>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
-          <div className='p-5 rounded-md bg-white shadow'>
+          <div className='p-8 rounded-md bg-white shadow'>
             <div className='flex items-center justify-center'>
               <div className='flex flex-col gap-1 items-center'>
                 <Image
@@ -71,7 +71,7 @@ const Page = async ({ params: { classId } }: PageProps) => {
         <h3 className='text-xl font-semibold'>Students</h3>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
           {classData.studentCourses.map(({ id, student }) => (
-            <div key={id} className='p-5 rounded-md bg-white shadow'>
+            <div key={id} className='p-8 rounded-md bg-white shadow'>
               <div className='flex items-center justify-center'>
                 <div className='flex flex-col gap-1 items-center'>
                   <Image

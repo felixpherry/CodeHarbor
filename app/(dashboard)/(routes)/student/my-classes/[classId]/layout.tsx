@@ -30,54 +30,8 @@ const Layout = async ({ children, params: { classId } }: LayoutProps) => {
     },
   });
 
-  //   if (!classData || !scheduleData) return notFound();
-
-  //   const sessionData = await db.session.findFirst({
-  //     where: {
-  //       sessionNumber: scheduleData.sessionNumber,
-  //       courseId: classData.courseId,
-  //     },
-  //   });
-
-  //   if (!sessionData) return notFound();
-  //   return (
-  //     <div className='flex flex-col gap-5'>
-  //     <div className='flex justify-between items-center'>
-  //       <h1 className='text-muted-foreground font-bold text-lg'>
-  //         {classData.course.name} - {classData.name}
-  //       </h1>
-  //       <div className='flex items-center gap-2'>
-  //         <Link
-  //           href='/student/my-classes'
-  //           className='text-xs font-normal text-primary'
-  //         >
-  //           My Classes
-  //         </Link>
-  //         <ChevronRight className='h-3 w-3 text-muted-foreground' />
-  //         <p className='text-xs font-nomal text-muted-foreground'>
-  //           Class Details
-  //         </p>
-  //       </div>
-  //     </div>
-  //     <div className='grid grid-cols-2'>
-  //       <Link
-  //         href={`/student/my-classes/${classId}/${sessionId}`}
-  //         className='px-24 py-3 bg-primary-blue text-white text-center text-sm'
-  //       >
-  //         Sessions
-  //       </Link>
-  //       <Link
-  //         href={`/student/my-classes/${classId}/members`}
-  //         className='px-24 py-3 bg-primary-blue text-white text-center text-sm'
-  //       >
-  //         Members
-  //       </Link>
-  //     </div>
-  //   </div>
-  //   )
-
   return (
-    <div className='flex flex-col gap-5'>
+    <div className='flex flex-col gap-8'>
       <div className='flex justify-between items-center'>
         <h1 className='text-muted-foreground font-bold text-lg'>
           {classData.course.name} - {classData.name}

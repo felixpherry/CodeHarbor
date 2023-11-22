@@ -13,13 +13,14 @@ const ClassDetailTabs = ({ classId, sessionId }: ClassDetailTabsProps) => {
   const pathname = usePathname();
 
   const isMembersRouteActive = pathname.endsWith('/members');
+  const isLeaderboardRouteActive = pathname.endsWith('/leaderboard');
   return (
-    <div className='grid grid-cols-2'>
+    <div className='grid grid-cols-3'>
       <Link
         href={`/instructor/my-classes/${classId}/sessions/${sessionId}`}
         className={cn(
           'p-3 text-center text-sm',
-          !isMembersRouteActive
+          !isMembersRouteActive && !isLeaderboardRouteActive
             ? 'bg-primary-blue text-white'
             : 'bg-secondary text-muted-foreground'
         )}
@@ -36,6 +37,17 @@ const ClassDetailTabs = ({ classId, sessionId }: ClassDetailTabsProps) => {
         )}
       >
         Members
+      </Link>
+      <Link
+        href={`/instructor/my-classes/${classId}/leaderboard`}
+        className={cn(
+          'p-3 bg-primary-blue text-white text-center text-sm',
+          isLeaderboardRouteActive
+            ? 'bg-primary-blue text-white'
+            : 'bg-secondary text-muted-foreground'
+        )}
+      >
+        Leaderboard
       </Link>
     </div>
   );

@@ -47,34 +47,28 @@ const Page = async ({ params: { classId, sessionId } }: PageProps) => {
   if (!sessionData) return notFound();
 
   return (
-    <>
+    <div className='flex flex-col gap-0'>
+      <div className='w-full'>
+        <div className='overflow-x-auto flex gap-1 no-scrollbar'>
+          {classData.schedules.map((schedule) => (
+            <Link
+              key={schedule.id}
+              href={`/student/my-classes/${classId}/sessions/${schedule.id}`}
+              className={cn(
+                'text-muted-foreground whitespace-nowrap cursor-pointer p-3 rounded-t-md',
+                sessionId === schedule.id
+                  ? 'border border-b-0 bg-primary-blue text-white font-semibold'
+                  : 'bg-[#E4EEFC]'
+              )}
+            >
+              Session {schedule.sessionNumber}
+            </Link>
+          ))}
+        </div>
+      </div>
       <div className='w-full bg-white shadow-lg rounded-md p-4'>
         <div className='flex flex-col gap-4'>
-          <div className='flex flex-col gap-4'>
-            <div className='w-full pb-3 border-b-2 border-b-secondary'>
-              <h3 className='text-muted-foreground text-base'>Sessions</h3>
-            </div>
-          </div>
-          <div className='w-full'>
-            <div className='overflow-x-auto flex gap-2'>
-              {classData.schedules.map((schedule) => (
-                <Link
-                  key={schedule.id}
-                  href={`/student/my-classes/${classId}/sessions/${schedule.id}`}
-                  className={cn(
-                    'text-primary whitespace-nowrap cursor-pointer p-3 rounded-md',
-                    sessionId === schedule.id
-                      ? 'bg-primary-blue text-white font-semibold'
-                      : 'hover:bg-sky-200/20'
-                  )}
-                >
-                  Session {schedule.sessionNumber}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div className='grid grid-cols-12 px-5 pb-5 gap-5'>
+          <div className='grid grid-cols-12 p-5 gap-5'>
             <div className='col-span-12 md:col-span-7'>
               <div className='flex flex-col gap-5 border-b-secondary border-b-2'>
                 <h3 className='text-xl text-primary'>{sessionData.main}</h3>
@@ -157,7 +151,7 @@ const Page = async ({ params: { classId, sessionId } }: PageProps) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

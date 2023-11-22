@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import AddAttachmentModal from './_components/AddAttachmentModal';
 import AttachmentActions from './_components/AttachmentActions';
+import SessionReportModal from './_components/SessionReportModal';
 
 interface PageProps {
   params: {
@@ -40,6 +41,22 @@ const Page = async ({ params: { classId, sessionId } }: PageProps) => {
     },
     include: {
       otherAttachments: true,
+      sessionReports: {
+        include: {
+          student: {
+            include: {
+              account: true,
+            },
+          },
+        },
+        orderBy: {
+          student: {
+            account: {
+              name: 'asc',
+            },
+          },
+        },
+      },
     },
   });
 
@@ -58,34 +75,28 @@ const Page = async ({ params: { classId, sessionId } }: PageProps) => {
   if (!sessionData) return notFound();
 
   return (
-    <>
-      <div className='w-full bg-white shadow-lg rounded-md p-4'>
+    <div className='flex flex-col gap-0'>
+      <div className='w-full'>
+        <div className='overflow-x-auto flex gap-1 no-scrollbar'>
+          {classData.schedules.map((schedule) => (
+            <Link
+              key={schedule.id}
+              href={`/instructor/my-classes/${classId}/sessions/${schedule.id}`}
+              className={cn(
+                'text-muted-foreground whitespace-nowrap cursor-pointer p-3 rounded-t-md',
+                sessionId === schedule.id
+                  ? 'border border-b-0 bg-primary-blue text-white font-semibold'
+                  : 'bg-[#E4EEFC]'
+              )}
+            >
+              Session {schedule.sessionNumber}
+            </Link>
+          ))}
+        </div>
+      </div>
+      <div className='w-full bg-white shadow-lg rounded-b-md p-4'>
         <div className='flex flex-col gap-4'>
-          <div className='flex flex-col gap-4'>
-            <div className='w-full pb-3 border-b-2 border-b-secondary'>
-              <h3 className='text-muted-foreground text-base'>Sessions</h3>
-            </div>
-          </div>
-          <div className='w-full'>
-            <div className='overflow-x-auto flex gap-2 no-scrollbar'>
-              {classData.schedules.map((schedule) => (
-                <Link
-                  key={schedule.id}
-                  href={`/instructor/my-classes/${classId}/sessions/${schedule.id}`}
-                  className={cn(
-                    'text-primary whitespace-nowrap cursor-pointer p-3 rounded-md',
-                    sessionId === schedule.id
-                      ? 'bg-primary-blue text-white font-semibold'
-                      : 'hover:bg-sky-200/20'
-                  )}
-                >
-                  Session {schedule.sessionNumber}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div className='grid grid-cols-12 px-5 pb-5 gap-5'>
+          <div className='grid grid-cols-12 p-5 gap-5'>
             <div className='col-span-12 md:col-span-7'>
               <div className='flex flex-col gap-5 border-b-secondary border-b-2'>
                 <h3 className='text-xl text-primary'>{sessionData.main}</h3>
@@ -117,10 +128,11 @@ const Page = async ({ params: { classId, sessionId } }: PageProps) => {
             <div className='col-span-12 md:col-span-5'>
               <div className='p-5 bg-gradient-to-t from-[#273575] to-[#004AAD] rounded-md text-white'>
                 <div className='flex flex-col gap-1'>
-                  <span className='flex items-center gap-3 p-3 rounded-md hover:bg-sky-200/20 cursor-pointer'>
-                    <CalendarPlus className='h-4 w-4' />
-                    <span>Session Report</span>
-                  </span>
+                  <SessionReportModal
+                    scheduleId={sessionId}
+                    classId={classId}
+                    initialData={scheduleData.sessionReports}
+                  />
                   <div className='flex flex-col gap-1 w-full py-3 border-y-[1px] border-white'>
                     <h4 className='text-base font-normal px-3'>Resources</h4>
                     <a
@@ -174,7 +186,7 @@ const Page = async ({ params: { classId, sessionId } }: PageProps) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

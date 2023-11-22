@@ -1,6 +1,7 @@
 import { db } from '@/lib/db';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import StudentReportModal from './_components/StudentReportModal';
 
 interface PageProps {
   params: {
@@ -42,7 +43,7 @@ const Page = async ({ params: { classId } }: PageProps) => {
       <div className='flex flex-col gap-2'>
         <h3 className='text-xl font-semibold'>Instructor</h3>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
-          <div className='p-5 rounded-md bg-white shadow'>
+          <div className='p-8 rounded-md bg-white shadow'>
             <div className='flex items-center justify-center'>
               <div className='flex flex-col gap-1 items-center'>
                 <Image
@@ -71,23 +72,31 @@ const Page = async ({ params: { classId } }: PageProps) => {
         <h3 className='text-xl font-semibold'>Students</h3>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
           {classData.studentCourses.map(({ id, student }) => (
-            <div key={id} className='p-5 rounded-md bg-white shadow'>
+            <div key={id} className='p-8 rounded-md bg-white shadow'>
               <div className='flex items-center justify-center'>
-                <div className='flex flex-col gap-1 items-center'>
-                  <Image
-                    src={student.account.image || ''}
-                    height={75}
-                    width={75}
-                    alt={student.account.name}
-                    className='h-24 w-fit rounded-full mb-4'
+                <div className='flex flex-col gap-5'>
+                  <div className='flex flex-col gap-1 items-center'>
+                    <Image
+                      src={student.account.image || ''}
+                      height={75}
+                      width={75}
+                      alt={student.account.name}
+                      className='h-24 w-fit rounded-full mb-4'
+                    />
+                    <h3 className='text-primary text-lg font-bold'>
+                      {student.account.name}
+                    </h3>
+                    <p className='text-primary text-base'>
+                      {student.studentId}
+                    </p>
+                    <p className='text-muted-foreground text-base'>
+                      {student.account.email}
+                    </p>
+                  </div>
+                  <StudentReportModal
+                    classId={classId}
+                    studentId={student.id}
                   />
-                  <h3 className='text-primary text-lg font-bold'>
-                    {student.account.name}
-                  </h3>
-                  <p className='text-primary text-base'>{student.studentId}</p>
-                  <p className='text-muted-foreground text-base'>
-                    {student.account.email}
-                  </p>
                 </div>
               </div>
             </div>

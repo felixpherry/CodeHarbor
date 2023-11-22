@@ -16,7 +16,7 @@ const AddAttachmentModal = ({ scheduleId }: AddAttachmentModalProps) => {
           title: (
             <h1 className='text-primary text-lg font-semibold'>Add Resource</h1>
           ),
-          size: 'lg',
+          size: 'xl',
           children: <AttachmentForm scheduleId={scheduleId} type='ADD' />,
         })
       }
