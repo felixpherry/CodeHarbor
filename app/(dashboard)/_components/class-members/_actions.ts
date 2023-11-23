@@ -24,7 +24,6 @@ export const fetchStudentReports = async (
       },
     });
 
-    console.log({ reports });
     return reports;
   } catch (error: any) {
     throw new Error(`Failed to fetch student reports: ${error.message}`);

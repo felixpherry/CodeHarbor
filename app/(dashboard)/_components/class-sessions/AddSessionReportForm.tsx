@@ -9,7 +9,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useQuery } from '@tanstack/react-query';
-import { addSessionReports, fetchStudents } from '../_actions';
+import { addSessionReports, fetchStudents } from './_actions';
 import Image from 'next/image';
 import {
   NumberInput,
@@ -18,8 +18,7 @@ import {
   rem,
   useMantineTheme,
 } from '@mantine/core';
-import { IconCheck } from '@tabler/icons-react';
-import { IconX } from '@tabler/icons-react';
+import { IconCheck, IconX } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Loader2, Save } from 'lucide-react';

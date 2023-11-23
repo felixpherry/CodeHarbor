@@ -1,10 +1,10 @@
 'use server';
 
+import { SessionReportItem } from '@/app/(dashboard)/_components/class-sessions/AddSessionReportForm';
 import { utapi } from '@/app/api/uploadthing/core';
 import { db } from '@/lib/db';
 import { OtherAttachment } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
-import { SessionReportItem } from './_components/AddSessionReportForm';
 
 export type AddNewAttachmentPayload = {
   name: string;

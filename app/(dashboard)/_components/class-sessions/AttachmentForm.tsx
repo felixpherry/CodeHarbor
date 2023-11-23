@@ -11,12 +11,11 @@ import {
 } from '@/components/ui/form';
 import { useUploadThing } from '@/lib/uploadthing';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CheckIcon, Input, Radio } from '@mantine/core';
+import { CheckIcon, Input, Radio, Group } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { File, Loader2, Pencil, Save, Trash2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { Group } from '@mantine/core';
 import { useState } from 'react';
 import ResourceFileDropzone from './AttachmentFileDropzone';
 import { isBase64DataURL } from '@/lib/utils';
@@ -26,7 +25,7 @@ import {
   AddNewAttachmentPayload,
   addNewAttachment,
   editAttachment,
-} from '../_actions';
+} from './_actions';
 import { usePathname } from 'next/navigation';
 import { OtherAttachment } from '@prisma/client';
 

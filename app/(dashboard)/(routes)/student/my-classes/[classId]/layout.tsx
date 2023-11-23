@@ -1,8 +1,10 @@
+import ClassDetailTabs from '@/app/(dashboard)/_components/ClassDetailTabs';
 import { db } from '@/lib/db';
+import { getCurrentUser } from '@/lib/session';
+import { SessionInterface } from '@/types';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import ClassDetailTabs from './_components/ClassDetailTabs';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -30,6 +32,10 @@ const Layout = async ({ children, params: { classId } }: LayoutProps) => {
     },
   });
 
+  const session = (await getCurrentUser()) as SessionInterface;
+
+  if (!session) return notFound();
+
   return (
     <div className='flex flex-col gap-8'>
       <div className='flex justify-between items-center'>
@@ -52,6 +58,7 @@ const Layout = async ({ children, params: { classId } }: LayoutProps) => {
       <ClassDetailTabs
         classId={classId}
         sessionId={classData.schedules[0]?.id || ''}
+        session={session}
       />
       {children}
     </div>

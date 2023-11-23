@@ -1,8 +1,10 @@
+import ClassDetailTabs from '@/app/(dashboard)/_components/ClassDetailTabs';
 import { db } from '@/lib/db';
+import { getCurrentUser } from '@/lib/session';
+import { SessionInterface } from '@/types';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import ClassDetailTabs from './_components/ClassDetailTabs';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,7 +14,6 @@ interface LayoutProps {
 }
 
 const Layout = async ({ children, params: { classId } }: LayoutProps) => {
-  console.log(classId);
   const classData = await db.class.findUnique({
     where: {
       id: classId,
@@ -29,6 +30,10 @@ const Layout = async ({ children, params: { classId } }: LayoutProps) => {
       id: classData.schedules[0]?.id,
     },
   });
+
+  const session = (await getCurrentUser()) as SessionInterface;
+
+  if (!session) return notFound();
 
   return (
     <div className='flex flex-col gap-8'>
@@ -52,6 +57,7 @@ const Layout = async ({ children, params: { classId } }: LayoutProps) => {
       <ClassDetailTabs
         classId={classId}
         sessionId={classData.schedules[0]?.id || ''}
+        session={session}
       />
       {children}
     </div>

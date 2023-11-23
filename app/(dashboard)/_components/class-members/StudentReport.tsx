@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { fetchStudentReports } from '../_actions';
+import { fetchStudentReports } from './_actions';
 import {
   Table,
   TableBody,
@@ -13,9 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { modals } from '@mantine/modals';
 import { Switch, rem, useMantineTheme } from '@mantine/core';
-import { IconCheck } from '@tabler/icons-react';
-import { IconX } from '@tabler/icons-react';
-import { CheckCircle } from 'lucide-react';
+import { IconCheck, IconX } from '@tabler/icons-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface StudentReportParams {
@@ -111,6 +109,11 @@ const StudentReport = ({ classId, studentId }: StudentReportParams) => {
             )}
           </TableBody>
         </Table>
+        {!studentReports!.length && (
+          <div className='w-full bg-secondary text-center text-sm text-primary p-3'>
+            No Data
+          </div>
+        )}
       </div>
       <div className='ml-auto flex gap-3'>
         <Button onClick={() => modals.closeAll()} variant='outline' size='sm'>

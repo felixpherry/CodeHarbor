@@ -1,23 +1,31 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import { SessionInterface } from '@/types';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 interface ClassDetailTabsProps {
   classId: string;
   sessionId: string;
+  session: SessionInterface;
 }
 
-const ClassDetailTabs = ({ classId, sessionId }: ClassDetailTabsProps) => {
+const ClassDetailTabs = ({
+  classId,
+  sessionId,
+  session,
+}: ClassDetailTabsProps) => {
   const pathname = usePathname();
 
   const isMembersRouteActive = pathname.endsWith('/members');
   const isLeaderboardRouteActive = pathname.endsWith('/leaderboard');
+
+  if (!session) return null;
   return (
     <div className='grid grid-cols-3'>
       <Link
-        href={`/instructor/my-classes/${classId}/sessions/${sessionId}`}
+        href={`/${session.user.role.toLocaleLowerCase()}/my-classes/${classId}/sessions/${sessionId}`}
         className={cn(
           'p-3 text-center text-sm',
           !isMembersRouteActive && !isLeaderboardRouteActive
@@ -28,7 +36,7 @@ const ClassDetailTabs = ({ classId, sessionId }: ClassDetailTabsProps) => {
         Sessions
       </Link>
       <Link
-        href={`/instructor/my-classes/${classId}/members`}
+        href={`/${session.user.role.toLocaleLowerCase()}/my-classes/${classId}/members`}
         className={cn(
           'p-3 bg-primary-blue text-white text-center text-sm',
           isMembersRouteActive
@@ -39,7 +47,7 @@ const ClassDetailTabs = ({ classId, sessionId }: ClassDetailTabsProps) => {
         Members
       </Link>
       <Link
-        href={`/instructor/my-classes/${classId}/leaderboard`}
+        href={`/${session.user.role.toLocaleLowerCase()}/my-classes/${classId}/leaderboard`}
         className={cn(
           'p-3 bg-primary-blue text-white text-center text-sm',
           isLeaderboardRouteActive
