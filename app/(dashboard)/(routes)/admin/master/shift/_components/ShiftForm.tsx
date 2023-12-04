@@ -15,7 +15,7 @@ import { TimeInput } from '@mantine/dates';
 import { toast } from 'sonner';
 import { addNewShift, updateShift } from '../_actions';
 import { usePathname } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { modals } from '@mantine/modals';
 import { IconClock } from '@tabler/icons-react';
@@ -68,7 +68,7 @@ const ShiftForm = ({ type, initialData }: ShiftFormProps) => {
 
       modals.closeAll();
     } catch (error: any) {
-      toast.error(`Failed to ${type === 'ADD' ? 'add' : 'update'} shift`);
+      toast.error(error.message);
     }
   };
 
@@ -119,8 +119,12 @@ const ShiftForm = ({ type, initialData }: ShiftFormProps) => {
         />
         <div className='pt-3 w-full flex justify-end'>
           <Button disabled={isSubmitting} type='submit' size='sm'>
-            {isSubmitting && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}{' '}
-            {type === 'ADD' ? 'Add' : 'Edit'}
+            {isSubmitting ? (
+              <Loader2 className='h-4 w-4 animate-spin' />
+            ) : (
+              <Save className='h-4 w-4' />
+            )}{' '}
+            Save
           </Button>
         </div>
       </form>

@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import ToasterProvider from '@/providers/ToasterProvider';
 import { Metadata } from 'next';
 import TanstackProvider from '@/providers/TanstackProvider';
+import Seed from '@/components/Seed';
 
 const fabada = localFont({
   src: '../fonts/Fabada-Regular.ttf',
@@ -67,7 +68,10 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
               },
             }}
           >
-            <ModalsProvider>{children}</ModalsProvider>
+            <ModalsProvider>
+              {children}
+              {/* <Seed /> */}
+            </ModalsProvider>
           </MantineProvider>
         </TanstackProvider>
         <ToasterProvider />

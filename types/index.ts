@@ -20,3 +20,5 @@ export interface ShadCNOption {
   text: string;
   value: string;
 }
+
+export type Status = 'active' | 'inactive' | undefined;

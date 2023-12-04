@@ -3,6 +3,8 @@
 import { IconFileDescription, IconTableOptions } from '@tabler/icons-react';
 import SidebarItem, { SidebarItemProps } from './SidebarItem';
 import {
+  BookCheck,
+  CalendarDays,
   Code2,
   GraduationCap,
   Layout,
@@ -33,10 +35,6 @@ const adminRoutes: SidebarItemProps[] = [
       {
         label: 'Shift',
         href: '/admin/master/shift',
-      },
-      {
-        label: 'Evaluation',
-        href: '/admin/master/evaluation',
       },
       {
         label: 'Grade',
@@ -98,6 +96,8 @@ const studentRoutes: SidebarItemProps[] = [
 const instructorRoutes: SidebarItemProps[] = [
   { label: 'Dashboard', icon: Layout, href: '/instructor/dashboard' },
   { label: 'My Classes', icon: GraduationCap, href: '/instructor/my-classes' },
+  { label: 'Scoring', icon: BookCheck, href: '/instructor/scoring' },
+  { label: 'Schedule', icon: CalendarDays, href: '/instructor/schedule' },
 ];
 
 const SidebarRoutes = ({ session }: { session: SessionInterface }) => {

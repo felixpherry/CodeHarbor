@@ -26,8 +26,11 @@ const Page = async ({ searchParams }: PageProps) => {
   });
 
   return (
-    <div className='container mx-auto py-10'>
-      <DataTable columns={columns} data={data} />
+    <div className='container mx-auto p-0'>
+      <div className='flex flex-col gap-5'>
+        <h1 className='text-muted-foreground font-bold text-lg'>Accounts</h1>
+        <DataTable columns={columns} data={data} />
+      </div>
     </div>
   );
 };

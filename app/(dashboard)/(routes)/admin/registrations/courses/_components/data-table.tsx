@@ -15,7 +15,7 @@ import { useState } from 'react';
 import FilterSelect from '@/components/shared/FilterSelect';
 import { MantineSelectOption } from '@/types';
 import TanstackTable from '@/components/shared/TanstackTable';
-import { statusOptions } from '@/constants';
+import { registrationStatusOptions } from '@/constants';
 import { Input } from '@mantine/core';
 
 interface DataTableProps<TData, TValue> {
@@ -61,7 +61,7 @@ export function DataTable<TData, TValue>({
           className='w-full md:w-1/3'
         />
         <FilterSelect
-          options={statusOptions}
+          options={registrationStatusOptions}
           withSearchParams={true}
           searchParamsKey='status'
           defaultValue='pending'

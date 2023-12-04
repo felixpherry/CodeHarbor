@@ -12,8 +12,17 @@ const Page = async () => {
 
   const programs = await fetchPrograms();
   return (
-    <div className='p-6'>
-      <DataTable columns={columns} data={programs} />
+    <div className='w-full min-h-[calc(100vh-80px)] bg-[#F7F9FD] p-5'>
+      <div className='container max-w-7xl px-0'>
+        <div className='container mx-auto p-0'>
+          <div className='flex flex-col gap-5'>
+            <h1 className='text-muted-foreground font-bold text-lg'>
+              Programs
+            </h1>
+            <DataTable columns={columns} data={programs} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

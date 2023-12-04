@@ -19,6 +19,7 @@ import { ArrowUpDown } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { convertToTitleCase } from '@/lib/utils';
 import ClassTableActions from './ClassTableActions';
+import moment from 'moment';
 
 export type ClassTableInterface = {
   course: Course;
@@ -45,6 +46,15 @@ export type ClassTableInterface = {
 export const columns: ColumnDef<ClassTableInterface>[] = [
   {
     header: 'No.',
+  },
+  {
+    id: 'actions',
+    header: 'Actions',
+    cell: ({ row }) => {
+      const { id, name } = row.original;
+
+      return <ClassTableActions classData={row.original} />;
+    },
   },
   {
     accessorKey: 'name',
@@ -80,6 +90,23 @@ export const columns: ColumnDef<ClassTableInterface>[] = [
     },
     cell: ({ row }) => {
       return row.original.course.name;
+    },
+  },
+  {
+    accessorKey: 'period.name',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Period
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return <Badge>{row.original.period.name}</Badge>;
     },
   },
   {
@@ -126,30 +153,27 @@ export const columns: ColumnDef<ClassTableInterface>[] = [
       return formattedSchedule;
     },
   },
+
   {
-    accessorKey: 'period.name',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Period
-          <ArrowUpDown className='ml-2 h-4 w-4' />
-        </Button>
-      );
-    },
+    accessorKey: 'createdAt',
+    header: 'Created At',
     cell: ({ row }) => {
-      return <Badge>{row.original.period.name}</Badge>;
+      return (
+        <span className='font-bold text-muted-foreground'>
+          {moment(row.getValue('createdAt')).format('DD/MM/YYYY')}
+        </span>
+      );
     },
   },
   {
-    id: 'actions',
-    header: 'Actions',
+    accessorKey: 'updatedAt',
+    header: 'Updated At',
     cell: ({ row }) => {
-      const { id, name } = row.original;
-
-      return <ClassTableActions classData={row.original} />;
+      return (
+        <span className='font-bold text-muted-foreground'>
+          {moment(row.getValue('updatedAt')).format('DD/MM/YYYY')}
+        </span>
+      );
     },
   },
 ];

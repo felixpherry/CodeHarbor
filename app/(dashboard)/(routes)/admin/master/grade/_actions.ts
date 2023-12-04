@@ -27,8 +27,15 @@ export const addNewGradeCategory = async ({
 
     return gradeCategory;
   } catch (error: any) {
-    console.log(error.message);
-    throw new Error(`Failed to add new grade category: ${error.message}`);
+    console.log('addNewGradeCategory', error.message);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        throw new Error(
+          'Category name, min score, and max score must be unique'
+        );
+      }
+    }
+    throw new Error('Internal Server Error');
   }
 };
 
@@ -52,8 +59,15 @@ export const updateGradeCategory = async ({
 
     return gradeCategory;
   } catch (error: any) {
-    console.log(error.message);
-    throw new Error(`Failed to add new grade category: ${error.message}`);
+    console.log('updateGradeCategory', error.message);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        throw new Error(
+          'Category name, min score, and max score must be unique'
+        );
+      }
+    }
+    throw new Error('Internal Server Error');
   }
 };
 
@@ -74,7 +88,36 @@ export const deleteGradeCategory = async ({
 
     return gradeCategory;
   } catch (error: any) {
-    console.log(error.message);
-    throw new Error(`Failed to add new grade category: ${error.message}`);
+    console.log('deleteGradeCategory', error.message);
+    throw new Error('Internal Server Error');
+  }
+};
+
+interface ChangeGradeCategoryStatusParams {
+  id: string;
+  isActive: boolean;
+  pathname: string;
+}
+
+export const changeGradeCategoryStatus = async ({
+  id,
+  isActive,
+  pathname,
+}: ChangeGradeCategoryStatusParams) => {
+  try {
+    const grade = await db.masterGrade.update({
+      where: { id },
+      data: {
+        isActive,
+        statusChangedDate: new Date(),
+      },
+    });
+
+    revalidatePath(pathname);
+
+    return grade;
+  } catch (error: any) {
+    console.log('changeGradeCategoryStatus', error.message);
+    throw new Error('Internal Server Error');
   }
 };

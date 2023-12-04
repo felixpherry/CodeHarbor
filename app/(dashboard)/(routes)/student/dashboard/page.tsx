@@ -1,5 +1,230 @@
-const Page = () => {
-  return <div>Page</div>;
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { fetchAccountDetail } from '@/lib/actions/account.actions';
+import { db } from '@/lib/db';
+import { getCurrentUser } from '@/lib/session';
+import { SessionInterface } from '@/types';
+import { Code2, Mail } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+
+const Page = async () => {
+  const session = (await getCurrentUser()) as SessionInterface;
+  const accountDetail = await db.account.findUnique({
+    where: { id: session.user.id },
+    include: {
+      student: {
+        select: {
+          _count: {
+            select: {
+              studentCourses: {
+                where: {
+                  class: {
+                    isNot: null,
+                  },
+                },
+              },
+            },
+          },
+          id: true,
+        },
+      },
+    },
+  });
+
+  if (!accountDetail) return notFound();
+
+  const classes = await db.class.findMany({
+    where: {
+      studentCourses: {
+        some: {
+          studentId: accountDetail.student?.id,
+        },
+      },
+    },
+    take: 2,
+    orderBy: {
+      period: {
+        startDate: 'desc',
+      },
+    },
+    include: {
+      instructorSchedule: {
+        include: {
+          instructor: {
+            include: {
+              account: true,
+            },
+          },
+        },
+      },
+      course: true,
+      schedules: true,
+    },
+  });
+  return (
+    <div className='flex flex-col gap-5 font-josefin container max-w-7xl p-0'>
+      <h1 className='font-extrabold text-3xl'>Dashboard</h1>
+      <div className='flex flex-col-reverse md:flex-row gap-5'>
+        <div className='w-full md:w-2/3 flex flex-col gap-5'>
+          <div className='w-full p-8 rounded-md shadow-sm bg-[#e3e5fe]'>
+            <div className='flex flex-col gap-5 relative'>
+              <h3 className='font-semibold text-xl max-w-[180px]'>
+                Learn anytime and anywhere
+              </h3>
+              <Button
+                variant='primary-blue'
+                className='w-fit text-sm rounded-full px-6'
+                size='sm'
+                asChild
+              >
+                <Link href='/student/enroll'>Enroll a new course</Link>
+              </Button>
+
+              <Image
+                src='/enroll-course-dashboard.png'
+                height={80}
+                width={100}
+                alt='Enroll Courses'
+                className='absolute right-0 bottom-0 h-24 w-28 lg:h-36 lg:w-72'
+              />
+            </div>
+          </div>
+          <div className='flex flex-col gap-5'>
+            <div className='flex justify-between items-center'>
+              <h2 className='font-extrabold text-2xl'>My Classes</h2>
+              <Link
+                href='/student/my-classes'
+                className='text-primary-blue hover:underline text-sm font-medium'
+              >
+                View All
+              </Link>
+            </div>
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-5'>
+              {classes.map(
+                ({ course, id, name, instructorSchedule, schedules }) => (
+                  <Link
+                    key={id}
+                    href={`/student/my-classes/${id}/sessions/${schedules[0].id}`}
+                  >
+                    <Card className='shadow-lg hover:shadow-2xl' key={id}>
+                      <CardContent className='overflow-visible p-0 pb-5'>
+                        <div className='relative'>
+                          <div className='card-image_shadow absolute h-full w-full top-0 left-0 rounded-tr-lg z-20' />
+                          <Image
+                            width={480}
+                            height={140}
+                            alt={course.name}
+                            className='w-full object-cover h-[160px] rounded-t-lg relative'
+                            src={course.image || ''}
+                          />
+                        </div>
+                        <div className='px-6 mt-4 flex flex-col gap-8'>
+                          <h3 className='text-xl font-semibold hover:text-primary-blue'>
+                            {course.name} - {name}
+                          </h3>
+                        </div>
+                      </CardContent>
+                      <CardFooter>
+                        <div className='flex flex-col w-full gap-3'>
+                          <div className='h-3 bg-secondary rounded-full'>
+                            <div className='h-full w-1/2 bg-primary-blue rounded-full'></div>
+                          </div>
+                          <div className='flex justify-between w-full'>
+                            <div className='flex gap-1 items-center'>
+                              <Image
+                                src={
+                                  instructorSchedule?.instructor.account
+                                    .image || ''
+                                }
+                                alt={
+                                  instructorSchedule?.instructor.account.name ||
+                                  ''
+                                }
+                                height={30}
+                                width={30}
+                                className='rounded-full h-8 w-8'
+                              />
+                              <p className='font-light'>
+                                {instructorSchedule?.instructor.account.name}
+                              </p>
+                            </div>
+                            <div className='flex flex-col items-end text-primary-blue'>
+                              <span className='font-medium'>50%</span>
+                              <span className='font-light'>Complete</span>
+                            </div>
+                          </div>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  </Link>
+                )
+              )}
+            </div>
+          </div>
+        </div>
+        <div className='w-full md:w-1/3'>
+          <div className='bg-white rounded-md shadow-sm'>
+            <Image
+              src='/dashboard-banner.jpg'
+              className='w-full h-32 rounded-t-md'
+              height={160}
+              width={320}
+              alt='Profile Banner'
+            />
+            <div className='flex flex-col gap-5 px-5 relative -top-10'>
+              <div className='rounded-md p-2 shadow-md bg-white w-fit'>
+                <Image
+                  src={accountDetail.image || ''}
+                  alt={accountDetail.name}
+                  width={64}
+                  height={64}
+                  className='h-16 w-16 rounded-md'
+                />
+              </div>
+
+              <div className='flex flex-col gap-2'>
+                <h3 className='text-base font-bold'>{accountDetail.name}</h3>
+                <div className='flex gap-2 items-center'>
+                  <Mail className='h-4 w-4 text-muted-foreground' />
+                  <p className='text-muted-foreground text-sm'>
+                    {accountDetail.email}
+                  </p>
+                </div>
+                <Button
+                  variant='primary-blue-outline'
+                  size='xs'
+                  className='rounded-full font-semibold leading-3 mt-1'
+                  asChild
+                >
+                  <Link href='/student/profile/edit'>Edit profile</Link>
+                </Button>
+
+                <div className='mt-5'>
+                  <div className='p-8 bg-[#e3e5fe] rounded-md shadow-sm'>
+                    <div className='flex flex-col gap-5'>
+                      <div className='flex justify-between items-start'>
+                        <h3 className='font-extrabold text-4xl'>
+                          {accountDetail.student?._count.studentCourses}
+                        </h3>
+                        <div className='h-8 w-8 flex justify-center items-center shadow-lg rounded-full bg-sky-200/20'>
+                          <Code2 className='text-primary-blue' />
+                        </div>
+                      </div>
+                      <p className='text-muted-foreground text-lg'>
+                        Total Classes
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Page;

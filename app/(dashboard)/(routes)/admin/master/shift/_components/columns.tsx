@@ -6,18 +6,89 @@ import { ArrowUpDown, PencilIcon, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
-import { IconCheck, IconEdit, IconTrash, IconX } from '@tabler/icons-react';
 import { modals } from '@mantine/modals';
-import { Switch, Text, rem, useMantineTheme } from '@mantine/core';
-import { Badge } from '@/components/ui/badge';
 import { changeShiftStatus, deleteShift } from '../_actions';
 import ShiftForm from './ShiftForm';
-import { useOptimistic } from 'react';
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
+import SwitchAction from '@/components/shared/SwitchAction';
+import moment from 'moment';
 
 export const columns: ColumnDef<MasterShift>[] = [
   {
     header: 'No',
+  },
+  {
+    id: 'actions',
+    header: 'Actions',
+    cell: ({ row }) => {
+      const { id, isActive } = row.original;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const pathname = usePathname();
+
+      const confirmDelete = async () => {
+        try {
+          await deleteShift({
+            id,
+            pathname,
+          });
+          toast.success('Successfully deleted shift');
+        } catch (error: any) {
+          toast.error(error.message);
+        }
+      };
+
+      return (
+        <div className='flex items-center gap-4'>
+          <PencilIcon
+            onClick={() => {
+              modals.open({
+                title: 'Edit Shift',
+                children: <ShiftForm type='EDIT' initialData={row.original} />,
+                centered: true,
+                size: 'lg',
+              });
+            }}
+            className='text-primary-blue cursor-pointer h-5 w-5'
+          />
+          <ConfirmModal
+            title='Delete Shift'
+            description='Are you sure you want to delete this shift? This action can
+            not be undone'
+            onConfirm={confirmDelete}
+            variant={{
+              confirm: 'destructive',
+            }}
+          >
+            <Trash2 className='text-red-500 cursor-pointer h-5 w-5' />
+          </ConfirmModal>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'isActive',
+    header: 'Active',
+    cell: ({ row }) => {
+      const { id, isActive } = row.original;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const pathname = usePathname();
+
+      const changeStatus = async (checked: boolean) => {
+        try {
+          await changeShiftStatus({
+            id,
+            isActive: checked,
+            pathname,
+          });
+
+          toast.success('Successfully changed status');
+        } catch (error: any) {
+          toast.error(error.message);
+        }
+      };
+
+      return <SwitchAction active={isActive} onChange={changeStatus} />;
+    },
   },
   {
     accessorKey: 'startTime',
@@ -50,104 +121,39 @@ export const columns: ColumnDef<MasterShift>[] = [
     },
   },
   {
-    accessorKey: 'isActive',
-    header: 'Active',
+    accessorKey: 'statusChangedDate',
+    header: () => {
+      return <span className='whitespace-nowrap'>Status Changed Date</span>;
+    },
     cell: ({ row }) => {
-      const isActive: boolean = row.getValue('isActive');
-
       return (
-        <Badge variant={isActive ? 'default' : 'destructive'}>
-          {isActive ? 'Active' : 'Inactive'}
-        </Badge>
+        <span className='font-bold text-muted-foreground'>
+          {row.getValue('statusChangedDate') !== null
+            ? moment(row.getValue('statusChangedDate')).format('DD/MM/YYYY')
+            : '-'}
+        </span>
       );
     },
   },
   {
-    id: 'actions',
-    header: 'Actions',
+    accessorKey: 'createdAt',
+    header: 'Created At',
     cell: ({ row }) => {
-      const { id, isActive } = row.original;
-      const [optimisticStatus, setOptimisticStatus] =
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        useOptimistic<boolean>(isActive);
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const pathname = usePathname();
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const theme = useMantineTheme();
-
-      const confirmDelete = async () => {
-        try {
-          await deleteShift({
-            id,
-            pathname,
-          });
-          toast.success('Successfully deleted shift');
-        } catch (error: any) {
-          toast.error('Failed to delete shift');
-        }
-      };
-
-      const changeStatus = async (event: any) => {
-        try {
-          setOptimisticStatus(event.currentTarget.checked);
-          await changeShiftStatus({
-            id,
-            isActive: event.currentTarget.checked,
-            pathname,
-          });
-
-          toast.success('Successfully changed status');
-        } catch (error: any) {
-          toast.error('Failed to change status');
-        }
-      };
-
       return (
-        <div className='flex items-center gap-4'>
-          <Switch
-            checked={optimisticStatus}
-            onChange={changeStatus}
-            color='teal'
-            size='sm'
-            thumbIcon={
-              optimisticStatus ? (
-                <IconCheck
-                  style={{ width: rem(8), height: rem(8) }}
-                  color={theme.colors.teal[6]}
-                  stroke={3}
-                />
-              ) : (
-                <IconX
-                  style={{ width: rem(8), height: rem(8) }}
-                  color={theme.colors.red[6]}
-                  stroke={3}
-                />
-              )
-            }
-          />
-          <ConfirmModal
-            title='Delete Shift'
-            description='Are you sure you want to delete this shift? This action can
-            not be undone'
-            onConfirm={confirmDelete}
-            variant={{
-              confirm: 'destructive',
-            }}
-          >
-            <Trash2 className='text-red-500 cursor-pointer h-5 w-5' />
-          </ConfirmModal>
-
-          <PencilIcon
-            onClick={() => {
-              modals.open({
-                title: 'Edit Shift',
-                children: <ShiftForm type='EDIT' initialData={row.original} />,
-                centered: true,
-              });
-            }}
-            className='text-primary-blue cursor-pointer h-5 w-5'
-          />
-        </div>
+        <span className='font-bold text-muted-foreground'>
+          {moment(row.getValue('createdAt')).format('DD/MM/YYYY')}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: 'Updated At',
+    cell: ({ row }) => {
+      return (
+        <span className='font-bold text-muted-foreground'>
+          {moment(row.getValue('updatedAt')).format('DD/MM/YYYY')}
+        </span>
       );
     },
   },

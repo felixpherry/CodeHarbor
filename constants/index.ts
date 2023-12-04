@@ -339,6 +339,21 @@ export const adminSideBarLinks: SidebarLink[] = [
 
 export const statusOptions: MantineSelectOption[] = [
   {
+    label: 'All',
+    value: 'all',
+  },
+  {
+    label: 'Active',
+    value: 'active',
+  },
+  {
+    label: 'Inactive',
+    value: 'inactive',
+  },
+];
+
+export const registrationStatusOptions: MantineSelectOption[] = [
+  {
     label: 'Approved',
     value: 'approved',
   },

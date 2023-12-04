@@ -24,7 +24,6 @@ const Page = async ({ searchParams }: ClassPageParams) => {
   if (!session || session.user.role !== 'ADMIN') return redirect('/');
 
   const currentPeriod = await getCurrentPeriod();
-  const nextPeriod = await getNextPeriod();
 
   const classes = await db.class.findMany({
     include: {
@@ -56,7 +55,7 @@ const Page = async ({ searchParams }: ClassPageParams) => {
       name: 'asc',
     },
     where: {
-      periodId: searchParams.period || undefined,
+      periodId: searchParams.period || currentPeriod?.id || undefined,
       courseId: searchParams.course,
     },
   });
@@ -75,14 +74,17 @@ const Page = async ({ searchParams }: ClassPageParams) => {
   }));
 
   return (
-    <div className='p-6'>
-      <DataTable
-        columns={columns}
-        data={classes}
-        courseOptions={courseOptions}
-        periodOptions={periodOptions}
-        currentPeriodId={currentPeriod?.id || ''}
-      />
+    <div className='container mx-auto p-0'>
+      <div className='flex flex-col gap-5'>
+        <h1 className='text-muted-foreground font-bold text-lg'>Classes</h1>
+        <DataTable
+          columns={columns}
+          data={classes}
+          courseOptions={courseOptions}
+          periodOptions={periodOptions}
+          currentPeriodId={currentPeriod?.id || ''}
+        />
+      </div>
     </div>
   );
 };

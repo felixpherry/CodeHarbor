@@ -195,7 +195,9 @@ const ClassSessionPage = async ({ classId, sessionId }: PageProps) => {
                             {attachment.name}
                           </a>
                         </div>
-                        <AttachmentActions attachment={attachment} />
+                        {session.user.role === 'INSTRUCTOR' && (
+                          <AttachmentActions attachment={attachment} />
+                        )}
                       </div>
                     ))}
                   </div>

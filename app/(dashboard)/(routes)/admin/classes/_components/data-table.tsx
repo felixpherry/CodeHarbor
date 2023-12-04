@@ -52,34 +52,54 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className='flex flex-col gap-3'>
-      <div className='flex items-center py-4 gap-x-5 gap-y-2 flex-col md:flex-row'>
-        <Input
-          placeholder='Search classes...'
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            table.getColumn('name')?.setFilterValue(event.target.value)
-          }
-          className='w-full md:w-1/3'
-        />
-        <FilterSelect
-          options={courseOptions}
-          withSearchParams={true}
-          searchParamsKey='course'
-        />
-        <FilterSelect
-          options={periodOptions}
-          withSearchParams={true}
-          searchParamsKey='period'
-          defaultValue={currentPeriodId}
+      <div className='p-5 flex flex-col md:flex-row items-center justify-start gap-6 bg-white rounded-sm shadow'>
+        <div className='flex w-full md:w-fit items-center gap-[10px]'>
+          <p className='text-muted-foreground font-bold text-sm min-w-[48px]'>
+            Search:
+          </p>
+
+          <Input
+            placeholder='Search classes...'
+            value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              table.getColumn('name')?.setFilterValue(event.target.value)
+            }
+            className='w-full md:w-fit'
+          />
+        </div>
+        <div className='flex w-full md:w-fit items-center gap-[10px]'>
+          <p className='text-muted-foreground font-bold text-sm min-w-[48px]'>
+            Course:
+          </p>
+          <FilterSelect
+            options={courseOptions}
+            withSearchParams
+            defaultValue=''
+            searchParamsKey='course'
+            className='w-full md:w-fit'
+          />
+        </div>
+        <div className='flex w-full md:w-fit items-center gap-[10px]'>
+          <p className='text-muted-foreground font-bold text-sm min-w-[48px]'>
+            Period:
+          </p>
+          <FilterSelect
+            options={periodOptions}
+            withSearchParams
+            defaultValue={currentPeriodId}
+            searchParamsKey='period'
+            className='w-full md:w-fit'
+          />
+        </div>
+      </div>
+      <div className='p-5 bg-white rounded-sm shadow'>
+        <TanstackTable
+          columns={columns}
+          data={data}
+          table={table}
+          withPagination={true}
         />
       </div>
-
-      <TanstackTable
-        columns={columns}
-        data={data}
-        table={table}
-        withPagination={true}
-      />
     </div>
   );
 }

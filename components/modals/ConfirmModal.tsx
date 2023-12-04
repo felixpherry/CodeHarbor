@@ -2,6 +2,7 @@
 
 import { modals } from '@mantine/modals';
 import { ButtonProps, Button } from '../ui/button';
+import ConfirmForm from './ConfirmForm';
 
 interface ConfirmModalProps {
   children: React.ReactNode;
@@ -30,28 +31,12 @@ export const ConfirmModal = ({
     modals.open({
       title: <p className='text-primary font-semibold'>{title}</p>,
       children: (
-        <div className='flex flex-col gap-5'>
-          <p>{description}</p>
-          <div className='w-full flex justify-end gap-3'>
-            <Button
-              onClick={() => modals.closeAll()}
-              variant={variant?.cancel || 'outline'}
-              size='sm'
-            >
-              {label?.cancel || 'Cancel'}
-            </Button>
-            <Button
-              onClick={async () => {
-                await onConfirm();
-                modals.closeAll();
-              }}
-              variant={variant?.confirm || 'default'}
-              size='sm'
-            >
-              {label?.confirm || 'Confirm'}
-            </Button>
-          </div>
-        </div>
+        <ConfirmForm
+          description={description}
+          onConfirm={onConfirm}
+          label={label}
+          variant={variant}
+        />
       ),
     });
   };

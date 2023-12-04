@@ -11,6 +11,7 @@ interface FilterSelectProps {
   withSearchParams: boolean;
   searchParamsKey?: string;
   defaultValue?: string;
+  className?: string;
 }
 
 const FilterSelect = ({
@@ -18,13 +19,14 @@ const FilterSelect = ({
   withSearchParams,
   searchParamsKey,
   defaultValue,
+  className,
 }: FilterSelectProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [selected, setSelected] = useState(
     withSearchParams
-      ? searchParams.get('') || defaultValue || null
+      ? searchParams.get(searchParamsKey || '') || defaultValue || null
       : defaultValue || null
   );
 
@@ -49,6 +51,7 @@ const FilterSelect = ({
       data={options}
       value={selected}
       onChange={handleFilter}
+      className={className}
     />
   );
 };

@@ -86,7 +86,7 @@ const ClassLeaderboardPage = async ({ classId }: ClassLeaderboardPageProps) => {
       name: student!.account.name,
       student: student,
       totalScore: _sum.score,
-      avgScore: _avg.score,
+      avgScore: Math.round(_avg.score || 0),
     };
   });
 

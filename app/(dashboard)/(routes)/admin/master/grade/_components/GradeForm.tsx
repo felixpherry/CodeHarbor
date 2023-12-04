@@ -68,7 +68,6 @@ const GradeForm = ({ type, initialData }: GradeFormProps) => {
   const pathname = usePathname();
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log({ values });
     try {
       if (type === 'ADD') {
         await addNewGradeCategory({
@@ -89,7 +88,7 @@ const GradeForm = ({ type, initialData }: GradeFormProps) => {
 
       modals.closeAll();
     } catch (error: any) {
-      toast.error(`Failed to ${type === 'ADD' ? 'add' : 'update'} grade`);
+      toast.error(error.message);
     }
   };
 
@@ -165,9 +164,9 @@ const GradeForm = ({ type, initialData }: GradeFormProps) => {
         <div className='pt-3 w-full flex justify-end'>
           <Button disabled={isSubmitting} type='submit' size='sm'>
             {isSubmitting ? (
-              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+              <Loader2 className='h-4 w-4 animate-spin' />
             ) : (
-              <Save className='mr-2 h-4 w-4' />
+              <Save className='h-4 w-4' />
             )}{' '}
             Save
           </Button>

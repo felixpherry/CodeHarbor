@@ -19,7 +19,8 @@ export const addNewShift = async ({
     revalidatePath(pathname);
     return shift;
   } catch (error: any) {
-    throw new Error(`Error creating shift ${pathname}: ${error.message}`);
+    console.log('addNewShift', error.message);
+    throw new Error('Internal Server Error');
   }
 };
 
@@ -42,7 +43,8 @@ export const updateShift = async ({
 
     return shift;
   } catch (error: any) {
-    throw new Error(`Error updating shift ${pathname}: ${error.message}`);
+    console.log('updateShift', error.message);
+    throw new Error('Internal Server Error');
   }
 };
 
@@ -62,7 +64,8 @@ export const deleteShift = async ({
 
     return shift;
   } catch (error: any) {
-    throw new Error(`Error deleting shift: ${pathname}: ${error.message}`);
+    console.log('deleteShift', error.message);
+    throw new Error('Internal Server Error');
   }
 };
 
@@ -78,15 +81,14 @@ export const changeShiftStatus = async ({
   try {
     const shift = await db.masterShift.update({
       where: { id },
-      data: { isActive },
+      data: { isActive, statusChangedDate: new Date() },
     });
 
     revalidatePath(pathname);
 
     return shift;
   } catch (error: any) {
-    throw new Error(
-      `Error changing shift status: ${pathname}: ${error.message}`
-    );
+    console.log('changeShiftStatus', error.message);
+    throw new Error('Internal Server Error');
   }
 };

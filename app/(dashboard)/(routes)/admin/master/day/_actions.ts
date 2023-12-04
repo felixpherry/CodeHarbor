@@ -19,6 +19,7 @@ export const changeDayStatus = async ({
       },
       data: {
         isActive,
+        statusChangedDate: new Date(),
       },
     });
 
@@ -26,6 +27,7 @@ export const changeDayStatus = async ({
 
     return day;
   } catch (error: any) {
-    throw new Error(`Failed to change day status: ${error.message}`);
+    console.log('changeDayStatus', error.message);
+    throw new Error('Internal Server Error');
   }
 };

@@ -20,8 +20,13 @@ export const addNewPeriod = async ({
 
     return period;
   } catch (error: any) {
-    console.log(error);
-    throw new Error(`Failed to add period: ${error.message}`);
+    console.log('addNewPeriod', error.message);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        throw new Error('Period name must be unique');
+      }
+    }
+    throw new Error('Internal Server Error');
   }
 };
 
@@ -44,7 +49,13 @@ export const updatePeriod = async ({
 
     return period;
   } catch (error: any) {
-    throw new Error(`Failed to update period: ${error.message}`);
+    console.log('updatePeriod', error.message);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        throw new Error('Period name must be unique');
+      }
+    }
+    throw new Error('Internal Server Error');
   }
 };
 
@@ -64,6 +75,34 @@ export const deletePeriod = async ({
 
     return period;
   } catch (error: any) {
-    throw new Error(`Failed to delete period: ${error.message}`);
+    console.log('deletePeriod', error.message);
+    throw new Error('Internal Server Error');
+  }
+};
+
+export const changePeriodStatus = async ({
+  id,
+  isActive,
+  pathname,
+}: {
+  id: string;
+  isActive: boolean;
+  pathname: string;
+}) => {
+  try {
+    const period = await db.period.update({
+      where: { id },
+      data: {
+        isActive,
+        statusChangedDate: new Date(),
+      },
+    });
+
+    revalidatePath(pathname);
+
+    return period;
+  } catch (error: any) {
+    console.log('changePeriodStatus', error.message);
+    throw new Error('Internal Server Error');
   }
 };

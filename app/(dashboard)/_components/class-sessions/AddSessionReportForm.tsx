@@ -114,7 +114,10 @@ const AddSessionReportForm = ({
     ({ attendanceStatus }) => attendanceStatus
   );
 
+  const disabled = initialData.length > 0;
+
   const handleToggle = (id: string) => {
+    if (disabled) return;
     setSessionReports((prev) =>
       prev.map((curr) => {
         if (curr.studentId === id)
@@ -130,6 +133,7 @@ const AddSessionReportForm = ({
   };
 
   const handleToggleAll = () => {
+    if (disabled) return;
     if (allStudentsAttend) {
       setSessionReports((prev) =>
         prev.map((curr) => ({
@@ -174,6 +178,7 @@ const AddSessionReportForm = ({
   };
 
   const handleSubmit = async () => {
+    if (disabled) return;
     setIsLoading(true);
     try {
       await addSessionReports({ pathname, sessionReports });
@@ -196,7 +201,8 @@ const AddSessionReportForm = ({
               <TableHead className='text-primary'>No.</TableHead>
               <TableHead className='text-primary'>Name</TableHead>
               <TableHead className='text-primary'>Student ID</TableHead>
-              <TableHead className='flex items-center gap-3'>
+              <TableHead className='flex flex-col items-center text-primary gap-1'>
+                Attend
                 <Switch
                   checked={allStudentsAttend}
                   onChange={handleToggleAll}
@@ -249,6 +255,7 @@ const AddSessionReportForm = ({
                 <TableCell className='font-semibold'>{studentId}</TableCell>
                 <TableCell>
                   <Switch
+                    className='w-fit mx-auto'
                     checked={isStudentAttend(id)}
                     onChange={() => handleToggle(id)}
                     color='teal'
@@ -268,6 +275,7 @@ const AddSessionReportForm = ({
                         />
                       )
                     }
+                    readOnly={disabled}
                   />
                 </TableCell>
                 <TableCell>
@@ -279,6 +287,7 @@ const AddSessionReportForm = ({
                     hideControls
                     value={getStudent(id)?.score}
                     onChange={(v) => handleFormChange(id, 'score', v)}
+                    readOnly={disabled}
                   />
                 </TableCell>
                 <TableCell>
@@ -288,6 +297,7 @@ const AddSessionReportForm = ({
                     onChange={(e) =>
                       handleFormChange(id, 'feedback', e.currentTarget.value)
                     }
+                    readOnly={disabled}
                   />
                 </TableCell>
               </TableRow>
@@ -297,16 +307,18 @@ const AddSessionReportForm = ({
       </div>
       <div className='ml-auto flex gap-3'>
         <Button onClick={() => modals.closeAll()} variant='outline' size='sm'>
-          Cancel
+          Close
         </Button>
-        <Button onClick={handleSubmit} size='sm'>
-          {isLoading ? (
-            <Loader2 className='h-4 w-4 animate-spin' />
-          ) : (
-            <Save className='h-4 w-4' />
-          )}
-          Save
-        </Button>
+        {!disabled && (
+          <Button onClick={handleSubmit} size='sm'>
+            {isLoading ? (
+              <Loader2 className='h-4 w-4 animate-spin' />
+            ) : (
+              <Save className='h-4 w-4' />
+            )}
+            Save
+          </Button>
+        )}
       </div>
     </div>
   );

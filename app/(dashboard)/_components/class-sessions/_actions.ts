@@ -138,25 +138,10 @@ export const addSessionReports = async ({
   if (!sessionReports.length) throw new Error('Data should not be empty');
 
   try {
-    await db.sessionReport.deleteMany({
-      where: {
-        scheduleId: sessionReports[0].scheduleId,
-      },
-    });
-    const evaluation = await db.masterEvaluation.findUnique({
-      where: {
-        name: 'Session Report',
-      },
-    });
-
-    if (!evaluation)
-      throw new Error('Could not find evaluation for this report');
-
     const res = await db.sessionReport.createMany({
       data: sessionReports.map(
         ({ attendanceStatus, feedback, scheduleId, score, studentId }) => ({
           attendanceStatus,
-          evaluationId: evaluation.id,
           feedback,
           scheduleId,
           score,

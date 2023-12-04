@@ -9,18 +9,20 @@ datasource db {
 }
 
 model Hero {
-  id       String @id @default(cuid())
+  id       String  @id @default(cuid())
   title    String
   subtitle String
-  image    String @db.Text
+  image    String  @db.Text
+  fileKey  String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Logo {
-  id    String @id @default(cuid())
-  image String @db.Text
+  id      String  @id @default(cuid())
+  image   String  @db.Text
+  fileKey String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -83,15 +85,18 @@ model Program {
   subtitle    String?
   description String? @db.LongText
   image       String? @db.Text
+  fileKey     String?
   isPublished Boolean @default(false)
+  isDeleted   Boolean @default(false)
 
   courses Course[]
 
   user   Admin  @relation(fields: [userId], references: [id], onUpdate: Cascade)
   userId String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@index([userId])
 }
@@ -110,7 +115,9 @@ model Course {
   programmingTools String? @db.Text
   level            Level?
   image            String? @db.Text
+  fileKey          String?
   isPublished      Boolean @default(false)
+  isDeleted        Boolean @default(false)
 
   program   Program @relation(fields: [programId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   programId String
@@ -121,16 +128,38 @@ model Course {
   registrations CourseRegistration[]
   classes       Class[]
   sessions      Session[]
+  evaluations   CourseEvaluation[]
 
   trialClassRegistrations TrialClassRegistration[]
   studentCourses          StudentCourse[]
   instructorCourses       InstructorCourse[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@index([programId])
   @@index([categoryId])
+}
+
+model CourseEvaluation {
+  id String @id @default(cuid())
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  name        String
+  weight      Int
+  description String @db.Text
+
+  isSessionReport Boolean @default(false)
+  isActive        Boolean @default(true)
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  statusChangedDate DateTime?
+
+  @@index([courseId])
 }
 
 model Coupon {
@@ -179,13 +208,16 @@ model CourseRegistration {
 
 model Skill {
   id   String @id @default(cuid())
-  name String
+  name String @unique
+
+  isActive Boolean @default(true)
 
   instructorRegistrations InstructorRegistration[]
   instructors             Instructor[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  statusChangedDate DateTime?
 }
 
 enum LastEducation {
@@ -233,6 +265,7 @@ model Account {
   role        Role
   phoneNumber String? @unique
   image       String? @db.Text
+  fileKey     String?
   address     String? @db.Text
   status      Status  @default(ACTIVE)
   onboarded   Boolean @default(false)
@@ -278,8 +311,9 @@ model MasterDay {
 
   schedules InstructorSchedule[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  statusChangedDate DateTime?
 }
 
 model MasterShift {
@@ -292,8 +326,9 @@ model MasterShift {
 
   schedules InstructorSchedule[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  statusChangedDate DateTime?
 }
 
 model Instructor {
@@ -302,12 +337,15 @@ model Instructor {
   lastEducation        String
   educationInstitution String
   fileIDCard           String?
+  fileIDCardKey        String?
   fileNPWP             String?
+  fileNPWPKey          String?
 
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   accountId String  @unique
 
-  skills Skill[]
+  skills   Skill[]
+  messages Message[]
 
   instructorSchedules InstructorSchedule[]
   instructorCourses   InstructorCourse[]
@@ -391,8 +429,11 @@ model Period {
   instructorSchedules InstructorSchedule[]
   instructorCourses   InstructorCourse[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isActive Boolean @default(true)
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  statusChangedDate DateTime?
 }
 
 model Class {
@@ -410,7 +451,8 @@ model Class {
 
   studentCourses StudentCourse[]
   schedules      Schedule[]
-  finalReports   FinalReport[]
+  studentScores  StudentScore[]
+  messages       Message[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -461,9 +503,9 @@ model Attachment {
 model OtherAttachment {
   id      String  @id @default(cuid())
   name    String
+  fileUrl String
   fileKey String? // uploadthing filekey
   type    String
-  fileUrl String
 
   schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   scheduleId String
@@ -512,8 +554,9 @@ model Student {
   accountId String  @unique
 
   studentCourses StudentCourse[]
-  finalReports   FinalReport[]
+  studentScores  StudentScore[]
   sessionReports SessionReport[]
+  messages       Message[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -549,19 +592,6 @@ model StudentCourse {
   @@index([classId])
 }
 
-model MasterEvaluation {
-  id String @id @default(cuid())
-
-  name   String @unique
-  weight Int
-
-  finalReports   FinalReport[]
-  sessionReports SessionReport[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model MasterGrade {
   id String @id @default(cuid())
 
@@ -570,19 +600,18 @@ model MasterGrade {
   maxScore Int    @unique
 
   description String
-  hexCode     String @unique
+  hexCode     String  @unique
+  isActive    Boolean @default(true)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  statusChangedDate DateTime?
 }
 
-model FinalReport {
+model StudentScore {
   id String @id @default(cuid())
 
   score Int
-
-  evaluation   MasterEvaluation @relation(fields: [evaluationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  evaluationId String
 
   student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   studentId String
@@ -590,10 +619,14 @@ model FinalReport {
   class   Class  @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   classId String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  evaluationName        String
+  evaluationWeight      Int
+  evaluationDescription String
 
-  @@index([evaluationId])
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  statusChangedDate DateTime?
+
   @@index([studentId])
   @@index([classId])
 }
@@ -611,13 +644,35 @@ model SessionReport {
   schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   scheduleId String
 
-  evaluation   MasterEvaluation @relation(fields: [evaluationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  evaluationId String
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([evaluationId])
   @@index([studentId])
   @@index([scheduleId])
+}
+
+model Message {
+  id      String  @id @default(cuid())
+  content String  @db.Text
+  fileUrl String?
+  fileKey String?
+
+  classId String
+  class   Class  @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  instructorId String?
+  instructor   Instructor? @relation(fields: [instructorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  studentId String?
+  student   Student? @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  isDeleted Boolean @default(false)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([classId])
+  @@index([studentId])
+  @@index([instructorId])
 }

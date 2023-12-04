@@ -47,28 +47,36 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className='flex flex-col gap-3'>
-      <div className='flex flex-col items-start md:flex-row md:items-center justify-between py-4 gap-y-3'>
-        <Input
-          placeholder='Search programs...'
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            table.getColumn('name')?.setFilterValue(event.target.value)
-          }
-          className='w-full md:w-96'
-        />
-        <Button size='sm' variant='primary-blue' asChild>
+      <div className='p-5 flex flex-col md:flex-row items-center justify-start gap-6 bg-white rounded-sm shadow'>
+        <div className='flex w-full md:w-fit items-center gap-[10px]'>
+          <p className='text-muted-foreground font-bold text-sm min-w-[48px]'>
+            Search:
+          </p>
+
+          <Input
+            placeholder='Search programs...'
+            value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              table.getColumn('name')?.setFilterValue(event.target.value)
+            }
+            className='w-full md:w-fit'
+          />
+        </div>
+        <Button size='sm' variant='primary-blue' className='ml-auto' asChild>
           <Link href='/admin/programs/create'>
             <Plus className='h-4 w-4' />
             Add
           </Link>
         </Button>
       </div>
-      <TanstackTable
-        columns={columns}
-        data={data}
-        table={table}
-        withPagination={true}
-      />
+      <div className='p-5 bg-white rounded-sm shadow'>
+        <TanstackTable
+          columns={columns}
+          data={data}
+          table={table}
+          withPagination={true}
+        />
+      </div>
     </div>
   );
 }

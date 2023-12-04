@@ -4,7 +4,7 @@ import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { Badge, BadgeProps } from '@/components/ui/badge';
 import { Account, Role, Status } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, Ban, UnlockKeyhole } from 'lucide-react';
+import { ArrowUpDown, Ban, Eye, UnlockKeyhole } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
@@ -15,6 +15,61 @@ import moment from 'moment';
 export const columns: ColumnDef<Account>[] = [
   {
     header: 'No',
+  },
+  {
+    id: 'actions',
+    header: 'Actions',
+    cell: ({ row }) => {
+      const { id } = row.original;
+
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const pathname = usePathname();
+
+      const confirmStatus = async (status: Status) => {
+        try {
+          await updateAccountStatus({
+            id,
+            status,
+            pathname,
+          });
+          toast.success(
+            `Successfully ${status === 'ACTIVE' ? 'unban' : 'ban'} this account`
+          );
+        } catch (error: any) {
+          toast.error(
+            `Failed to ${status === 'ACTIVE' ? 'unban' : 'ban'} this account`
+          );
+        }
+      };
+
+      return (
+        <div className='flex items-center gap-3'>
+          <Link
+            href={`/profile/${row.original.id}`}
+            className='text-muted-foreground hover:text-primary'
+          >
+            <Eye />
+          </Link>
+          {row.getValue('status') === 'ACTIVE' ? (
+            <ConfirmModal
+              title='Ban Account'
+              description='Do you want to ban this account?'
+              onConfirm={() => confirmStatus('BANNED')}
+            >
+              <Ban className='text-red-500 cursor-pointer' />
+            </ConfirmModal>
+          ) : (
+            <ConfirmModal
+              title='Unban Account'
+              description='Do you want to unban this account?'
+              onConfirm={() => confirmStatus('ACTIVE')}
+            >
+              <UnlockKeyhole className='text-green-600 cursor-pointer' />
+            </ConfirmModal>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'name',
@@ -137,61 +192,6 @@ export const columns: ColumnDef<Account>[] = [
     },
     cell: ({ row }) => {
       return <>{moment(row.getValue('updatedAt')).format('DD-MM-YYYY')}</>;
-    },
-  },
-  {
-    id: 'actions',
-    header: 'Actions',
-    cell: ({ row }) => {
-      const { id } = row.original;
-
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const pathname = usePathname();
-
-      const confirmStatus = async (status: Status) => {
-        try {
-          await updateAccountStatus({
-            id,
-            status,
-            pathname,
-          });
-          toast.success(
-            `Successfully ${status === 'ACTIVE' ? 'unban' : 'ban'} this account`
-          );
-        } catch (error: any) {
-          toast.error(
-            `Failed to ${status === 'ACTIVE' ? 'unban' : 'ban'} this account`
-          );
-        }
-      };
-
-      return (
-        <div className='flex items-center gap-6'>
-          {row.getValue('status') === 'ACTIVE' ? (
-            <ConfirmModal
-              title='Ban Account'
-              description='Do you want to ban this account?'
-              onConfirm={() => confirmStatus('BANNED')}
-            >
-              <Ban className='text-red-500 cursor-pointer' />
-            </ConfirmModal>
-          ) : (
-            <ConfirmModal
-              title='Unban Account'
-              description='Do you want to unban this account?'
-              onConfirm={() => confirmStatus('ACTIVE')}
-            >
-              <UnlockKeyhole className='text-green-600 cursor-pointer' />
-            </ConfirmModal>
-          )}
-          <Link
-            href={`/profile/${row.original.id}`}
-            className='hover:underline cursor-pointer text-primary-blue'
-          >
-            Details
-          </Link>
-        </div>
-      );
     },
   },
 ];
