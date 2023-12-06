@@ -7,33 +7,69 @@ export const fetchFaq = async () => {
   try {
     return await db.faq.findMany({
       orderBy: {
-        id: 'asc',
+        question: 'asc',
       },
     });
   } catch (error: any) {
-    throw new Error(`Failed to fetch FAQ: ${error.message}`);
+    console.log('fetchFaq', error);
+    throw new Error('Internal Server Error');
+  }
+};
+
+export const addNewFaq = async (
+  question: string,
+  answer: string,
+  pathname: string
+) => {
+  try {
+    const faq = await db.faq.create({
+      data: {
+        question,
+        answer,
+      },
+    });
+
+    revalidatePath(pathname);
+    return faq;
+  } catch (error: any) {
+    console.log('addNewFaq', error);
+    throw new Error('Internal Server Error');
   }
 };
 
 export const updateFaq = async (
-  faq: Array<{ answer: string; question: string }>,
+  id: string,
+  question: string,
+  answer: string,
   pathname: string
 ) => {
-  const data = faq.map(({ question, answer }, idx) => ({
-    id: (idx + 1).toString(),
-    question,
-    answer,
-  }));
   try {
-    await db.$transaction([
-      db.faq.deleteMany(),
-      db.faq.createMany({
-        data,
-      }),
-    ]);
+    const faq = await db.faq.update({
+      where: { id },
+      data: {
+        question,
+        answer,
+      },
+    });
 
     revalidatePath(pathname);
+    return faq;
   } catch (error: any) {
-    throw new Error(`Failed to update FAQ: ${error.message}`);
+    console.log('updateFaq', error);
+    throw new Error('Internal Server Error');
+  }
+};
+
+export const deleteFaq = async (id: string, pathname: string) => {
+  try {
+    const faq = await db.faq.delete({
+      where: { id },
+    });
+
+    revalidatePath(pathname);
+    return faq;
+  } catch (error: any) {
+    console.log('deleteFaq', error);
+    throw new Error('Internal Server Error');
   }
 };

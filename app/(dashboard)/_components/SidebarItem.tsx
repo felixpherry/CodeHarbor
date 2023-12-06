@@ -33,7 +33,7 @@ const SidebarItem = ({
 
   const [opened, setOpened] = useState(initiallyOpened || false);
 
-  const pathname = usePathname();
+  const pathname = usePathname()!;
 
   const isActive =
     (pathname === '/' && href === '/') ||

@@ -26,7 +26,7 @@ const CourseImageForm = ({ initialData }: CourseImageFormProps) => {
 
   const toggleEdit = () => setIsEditing((prev) => !prev);
 
-  const pathname = usePathname();
+  const pathname = usePathname()!;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {

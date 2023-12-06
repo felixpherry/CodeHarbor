@@ -16,7 +16,7 @@ const ClassDetailTabs = ({
   sessionId,
   session,
 }: ClassDetailTabsProps) => {
-  const pathname = usePathname();
+  const pathname = usePathname()!;
 
   const isMembersRouteActive = pathname.endsWith('/members');
   const isLeaderboardRouteActive = pathname.endsWith('/leaderboard');

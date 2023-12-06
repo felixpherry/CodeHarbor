@@ -27,8 +27,8 @@ const Pagination = ({
   const hasNextPage = page < totalPage;
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
+  const searchParams = useSearchParams()!;
+  const pathname = usePathname()!;
 
   useEffect(() => {
     if (withSearchParams) {

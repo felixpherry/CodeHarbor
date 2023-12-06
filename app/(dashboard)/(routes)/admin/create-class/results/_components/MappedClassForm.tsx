@@ -147,7 +147,7 @@ const MappedClassForm = ({ initialMappedClass }: MappedClassFormProps) => {
   };
 
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname()!;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {

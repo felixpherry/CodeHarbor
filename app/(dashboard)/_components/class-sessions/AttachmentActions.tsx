@@ -15,7 +15,7 @@ interface AttachmentActionsProps {
 }
 
 const AttachmentActions = ({ attachment }: AttachmentActionsProps) => {
-  const pathname = usePathname();
+  const pathname = usePathname()!;
   const [isLoading, setIsLoading] = useState(false);
   const handleDelete = async () => {
     setIsLoading(true);

@@ -50,7 +50,7 @@ const PeriodForm = ({ type, initialData }: PeriodFormProps) => {
 
   const { isSubmitting } = form.formState;
 
-  const pathname = usePathname();
+  const pathname = usePathname()!;
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {

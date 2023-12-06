@@ -82,7 +82,7 @@ const InstructorAccountDetailForm = ({
 
   const { isSubmitting } = form.formState;
 
-  const pathname = usePathname();
+  const pathname = usePathname()!;
   const router = useRouter();
 
   const handleImage = (

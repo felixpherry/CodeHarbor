@@ -64,7 +64,7 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
       skills: [],
     },
   });
-  const pathname = usePathname();
+  const pathname = usePathname()!;
   const router = useRouter();
 
   const { isSubmitting } = form.formState;

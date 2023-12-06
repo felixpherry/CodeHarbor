@@ -10,7 +10,6 @@ import { redirect } from 'next/navigation';
 import { DataTable } from './_components/data-table';
 import { columns } from './_components/columns';
 import { getPublishedCourses } from '@/lib/actions/course.actions';
-
 interface ClassPageParams {
   searchParams: {
     period?: string;

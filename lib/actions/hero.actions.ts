@@ -2,49 +2,67 @@
 
 import { revalidatePath } from 'next/cache';
 import { db } from '../db';
+import { Hero } from '@prisma/client';
+import { utapi } from '@/app/api/uploadthing/core';
 
 export const fetchHero = async () => {
   try {
-    // await db.hero.create({
-    //   data: {
-    //     title: 'Bangun Potensi Kreativitas Anak-anak Lewat Coding',
-    //     subtitle:
-    //       'Membantu mengembangkan Kreativitas, Karakter, dan Pemikiran Logis Anak-anak Melalui Kursus Coding',
-    //     image:
-    //       'https://res.cloudinary.com/dgtch1ffs/image/upload/v1694706169/jp3trbbu5jx2avsyeuvk.png',
-    //   },
-    // });
     const hero = await db.hero.findFirst();
     return hero;
   } catch (error: any) {
-    throw new Error(`Failed to fetch hero: ${error.message}`);
+    console.log('fetchHero', error);
+    throw new Error('Internal Server Error');
   }
 };
 
-interface Hero {
-  id: string;
-  title: string;
-  subtitle: string;
-  image: string;
+interface CreateOrUpdateHeroParams {
+  payload: {
+    title: string;
+    subtitle: string;
+    image: string;
+    fileKey: string | null;
+  };
+  pathname: string;
 }
 
-export const updateHero = async (
-  { id, title, subtitle, image }: Hero,
-  pathname: string
-) => {
+export const createOrUpdateHero = async ({
+  pathname,
+  payload,
+}: CreateOrUpdateHeroParams) => {
   try {
-    await db.hero.update({
-      where: {
-        id,
-      },
-      data: {
-        title,
-        subtitle,
-        image,
-      },
-    });
+    const { fileKey, image, subtitle, title } = payload;
+
+    const existingHero = await db.hero.findFirst();
+    let hero: Hero | null = null;
+    if (!existingHero) {
+      hero = await db.hero.create({
+        data: {
+          image,
+          subtitle,
+          title,
+          fileKey,
+        },
+      });
+    } else {
+      if (payload.fileKey !== existingHero.fileKey && existingHero.fileKey) {
+        await utapi.deleteFiles(existingHero.fileKey);
+      }
+      hero = await db.hero.update({
+        where: { id: existingHero.id },
+        data: {
+          fileKey,
+          image,
+          subtitle,
+          title,
+        },
+      });
+    }
+
     revalidatePath(pathname);
+
+    return hero;
   } catch (error: any) {
-    throw new Error(`Failed to update hero: ${error.message}`);
+    console.log('createOrUpdateHero', error);
+    throw new Error('Internal Server Error');
   }
 };

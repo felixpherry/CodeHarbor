@@ -10,8 +10,8 @@ interface CoursesPaginationProps {
 
 const CoursesPagination = ({ hasNextPage }: CoursesPaginationProps) => {
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const pathname = usePathname()!;
+  const searchParams = useSearchParams()!;
   const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
 
   const handlePageChange = (newPage: number) => {

@@ -2,52 +2,89 @@
 
 import { revalidatePath } from 'next/cache';
 import { db } from '../db';
-import { Category } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 export const fetchCategories = async () => {
   try {
     return await db.category.findMany({});
   } catch (error: any) {
-    throw new Error(`Failed to fetch categories: ${error.message}`);
+    console.log('fetchCategories', error);
+    throw new Error('Internal Server Error');
   }
 };
 
-export const updateCategories = async (
-  newCategories: Category[],
-  updatedCategories: Category[],
-  deletedIds: string[],
-  pathname: string
-) => {
+export const addNewCategory = async ({
+  payload,
+  pathname,
+}: {
+  payload: Prisma.CategoryUncheckedCreateInput;
+  pathname: string;
+}) => {
   try {
-    await db.$transaction([
-      db.category.deleteMany({
-        where: {
-          id: {
-            in: deletedIds,
-          },
-        },
-      }),
-      db.category.createMany({
-        data: newCategories.map(({ name, ageDescription }) => ({
-          name,
-          ageDescription,
-        })),
-      }),
-    ]);
-
-    updatedCategories.forEach(async ({ id, name }) => {
-      await db.category.update({
-        data: {
-          name,
-        },
-        where: {
-          id,
-        },
-      });
+    const category = await db.category.create({
+      data: payload,
     });
 
     revalidatePath(pathname);
+
+    return category;
   } catch (error: any) {
-    throw new Error(`Failed to update FAQ: ${error.message}`);
+    console.log('addNewCategory', error.message);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        throw new Error('Category name and age description must be unique');
+      }
+    }
+    throw new Error('Internal Server Error');
+  }
+};
+
+export const updateCategory = async ({
+  id,
+  payload,
+  pathname,
+}: {
+  id: string;
+  payload: Prisma.CategoryUncheckedUpdateInput;
+  pathname: string;
+}) => {
+  try {
+    const category = await db.category.update({
+      where: { id },
+      data: payload,
+    });
+
+    revalidatePath(pathname);
+
+    return category;
+  } catch (error: any) {
+    console.log('updateCategory', error.message);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        throw new Error('Category name and age description must be unique');
+      }
+    }
+    throw new Error('Internal Server Error');
+  }
+};
+
+export const deleteCategory = async ({
+  id,
+  pathname,
+}: {
+  id: string;
+  pathname: string;
+}) => {
+  try {
+    const category = await db.category.delete({
+      where: { id },
+    });
+
+    revalidatePath(pathname);
+
+    return category;
+  } catch (error: any) {
+    console.log('deleteCategory', error.message);
+    throw new Error('Internal Server Error');
   }
 };

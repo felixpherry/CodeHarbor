@@ -23,7 +23,7 @@ export const columns: ColumnDef<Period>[] = [
     cell: ({ row }) => {
       const { id, name } = row.original;
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const pathname = usePathname();
+      const pathname = usePathname()!;
 
       const confirmDelete = async () => {
         try {
@@ -72,7 +72,7 @@ export const columns: ColumnDef<Period>[] = [
     cell: ({ row }) => {
       const { id, isActive } = row.original;
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const pathname = usePathname();
+      const pathname = usePathname()!;
 
       const changeStatus = async (checked: boolean) => {
         try {

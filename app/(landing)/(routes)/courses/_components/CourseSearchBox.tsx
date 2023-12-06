@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react';
 
 const CourseSearchBox = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
+  const searchParams = useSearchParams()!;
+  const pathname = usePathname()!;
   const [search, setSearch] = useState(searchParams.get('search') || '');
 
   useEffect(() => {

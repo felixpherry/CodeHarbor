@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
-import { Loader2, Pencil } from 'lucide-react';
+import { Loader2, Pencil, Save } from 'lucide-react';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -57,7 +57,7 @@ const CourseLevelForm = ({ initialData }: CourseLevelFormProps) => {
 
   const { isSubmitting, isValid } = form.formState;
 
-  const pathname = usePathname();
+  const pathname = usePathname()!;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -114,9 +114,15 @@ const CourseLevelForm = ({ initialData }: CourseLevelFormProps) => {
               )}
             />
             <div className='flex items-center gap-x-2'>
-              <Button disabled={!isValid || isSubmitting} type='submit'>
-                {isSubmitting && (
-                  <Loader2 className='mr-2 w-4 h-4 animate-spin' />
+              <Button
+                size='sm'
+                disabled={!isValid || isSubmitting}
+                type='submit'
+              >
+                {isSubmitting ? (
+                  <Loader2 className='w-4 h-4 animate-spin' />
+                ) : (
+                  <Save className='w-4 h-4' />
                 )}
                 Save
               </Button>

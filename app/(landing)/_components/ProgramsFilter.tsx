@@ -11,8 +11,8 @@ interface ProgramsFilterProps {
 
 const ProgramsFilter = ({ categories }: ProgramsFilterProps) => {
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const pathname = usePathname()!;
+  const searchParams = useSearchParams()!;
 
   const [category, setCategory] = useState(
     searchParams.get('category') || null

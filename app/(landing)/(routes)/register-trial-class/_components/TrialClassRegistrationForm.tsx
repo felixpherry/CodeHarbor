@@ -45,7 +45,7 @@ const TrialClassRegistrationForm = ({ courses }: { courses: Course[] }) => {
       courseId: '',
     },
   });
-  const pathname = usePathname();
+  const pathname = usePathname()!;
   const router = useRouter();
 
   const { isSubmitting } = form.formState;

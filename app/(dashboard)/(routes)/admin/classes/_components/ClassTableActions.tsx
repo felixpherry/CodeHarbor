@@ -29,7 +29,7 @@ const ClassTableActions = ({ classData }: ClassTableActionsProps) => {
 
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const pathname = usePathname();
+  const pathname = usePathname()!;
 
   const handleDelete = async () => {
     try {

@@ -13,11 +13,11 @@ import { useUploadThing } from '@/lib/uploadthing';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckIcon, Input, Radio, Group } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { File, Loader2, Pencil, Save, Trash2 } from 'lucide-react';
+import { FileIcon, Loader2, Save, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { useState } from 'react';
-import ResourceFileDropzone from './AttachmentFileDropzone';
+import AttachmentFileDropzone from './AttachmentFileDropzone';
 import { isBase64DataURL } from '@/lib/utils';
 import FileSaver from 'file-saver';
 import { toast } from 'sonner';
@@ -82,7 +82,7 @@ const AttachmentForm = ({
 
   const { isSubmitting } = form.formState;
 
-  const pathname = usePathname();
+  const pathname = usePathname()!;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -109,12 +109,12 @@ const AttachmentForm = ({
         }
       }
       if (type === 'ADD')
-        await addNewAttachment({ scheduleId, pathname, payload });
+        await addNewAttachment({ scheduleId, pathname: pathname!, payload });
       else
         await editAttachment({
           prevData: initialData!,
           newData: payload,
-          pathname,
+          pathname: pathname!,
         });
       toast.success(
         `Successfully ${type === 'ADD' ? 'added' : 'updated'} resource`
@@ -184,7 +184,7 @@ const AttachmentForm = ({
                 <FormLabel>File</FormLabel>
                 <FormControl>
                   {isEditingFile ? (
-                    <ResourceFileDropzone
+                    <AttachmentFileDropzone
                       type={form.getValues('type') as FileType}
                       setIsEditingFile={setIsEditingFile}
                       onFileChange={field.onChange}
@@ -192,24 +192,21 @@ const AttachmentForm = ({
                       value={field.value}
                     />
                   ) : (
-                    <div className='flex items-center p-3 w-full bg-sky-100 border-sky-200 border text-sky-700 rounded-md'>
-                      <File className='h-4 w-4 mr-2 flex-shrink-0' />
+                    <div className='relative flex items-center p-2 mt-2 rounded-md bg-slate-200'>
+                      <FileIcon className='h-8 w-8 fill-sky-200/20 stroke-primary-blue' />
                       <span
                         onClick={handlePreview}
-                        className='text-xs line-clamp-1 cursor-pointer hover:underline'
+                        className='ml-2 text-sm text-primary-blue hover:underline'
                       >
                         {files.length > 0 ? files[0].name : field.value}
                       </span>
-                      <div className='ml-auto flex gap-3 items-center'>
-                        <Pencil
-                          onClick={() => setIsEditingFile(true)}
-                          className='h-4 w-4 hover:opacity-75 transition cursor-pointer'
-                        />
-                        <Trash2
-                          onClick={handleDeleteFile}
-                          className='h-4 w-4 hover:opacity-75 transition cursor-pointer'
-                        />
-                      </div>
+                      <button
+                        onClick={handleDeleteFile}
+                        className='bg-rose-500 text-white p-1 rounded-full absolute -top-2 -right-0 shadow-sm'
+                        type='button'
+                      >
+                        <X className='h-4 w-4' />
+                      </button>
                     </div>
                   )}
                 </FormControl>

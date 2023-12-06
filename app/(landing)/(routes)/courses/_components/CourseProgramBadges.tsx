@@ -11,8 +11,8 @@ interface CourseProgramBadgesProps {
 
 const CourseProgramBadges = ({ programs }: CourseProgramBadgesProps) => {
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const pathname = usePathname()!;
+  const searchParams = useSearchParams()!;
 
   const [program, setProgram] = useState(searchParams.get('program') || null);
 

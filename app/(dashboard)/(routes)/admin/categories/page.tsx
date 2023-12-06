@@ -1,13 +1,26 @@
-// import { fetchCategories } from '@/lib/actions/category.actions';
+import { db } from '@/lib/db';
+import { columns } from './_components/columns';
+import { DataTable } from './_components/data-table';
 
 const Page = async () => {
-  // const categories = await fetchCategories();
+  const categories = await db.category.findMany({
+    orderBy: {
+      name: 'asc',
+    },
+  });
+
   return (
-    <div className='w-full px-4 py-20 md:px-10 min-h-[calc(100vh-80px)]'>
-      <h1 className='mb-12 text-4xl text-center font-bold tracking-tight leading-none'>
-        Categories
-      </h1>
-      {/* <CategoriesForm categories={categories} /> */}
+    <div className='w-full min-h-[calc(100vh-80px)] bg-[#F7F9FD] p-5'>
+      <div className='container max-w-7xl px-0'>
+        <div className='container mx-auto p-0'>
+          <div className='flex flex-col gap-5'>
+            <h1 className='text-muted-foreground font-bold text-lg'>
+              Categories
+            </h1>
+            <DataTable columns={columns} data={categories} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

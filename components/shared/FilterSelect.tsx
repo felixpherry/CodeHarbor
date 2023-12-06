@@ -22,8 +22,8 @@ const FilterSelect = ({
   className,
 }: FilterSelectProps) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
+  const searchParams = useSearchParams()!;
+  const pathname = usePathname()!;
   const [selected, setSelected] = useState(
     withSearchParams
       ? searchParams.get(searchParamsKey || '') || defaultValue || null

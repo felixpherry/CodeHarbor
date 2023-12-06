@@ -17,7 +17,7 @@ interface ProgramActionsProps {
 const ProgramActions = ({ disabled, program }: ProgramActionsProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname()!;
 
   const onDelete = async () => {
     try {
@@ -78,8 +78,10 @@ const ProgramActions = ({ disabled, program }: ProgramActionsProps) => {
         title='Are you sure'
         description='This action cannot be undone'
       >
-        <Button size='sm' disabled={isLoading}>
-          <Trash className='h-4 w-4' />
+        <Button asChild size='sm' disabled={isLoading}>
+          <span>
+            <Trash className='h-4 w-4' />
+          </span>
         </Button>
       </ConfirmModal>
     </div>

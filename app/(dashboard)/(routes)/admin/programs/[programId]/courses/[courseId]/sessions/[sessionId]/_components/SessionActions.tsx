@@ -22,7 +22,7 @@ const SessionActions = ({
 }: SessionActionsProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname()!;
 
   const onDelete = async () => {
     try {

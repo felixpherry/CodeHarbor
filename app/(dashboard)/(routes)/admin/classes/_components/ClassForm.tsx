@@ -66,7 +66,7 @@ const ClassForm = ({ initialData }: ClassFormProps) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const pathname = usePathname();
+  const pathname = usePathname()!;
   const queryClient = useQueryClient();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {

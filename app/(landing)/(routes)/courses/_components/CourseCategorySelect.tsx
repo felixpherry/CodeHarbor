@@ -19,8 +19,8 @@ interface CourseCategorySelectProps {
 
 const CourseCategorySelect = ({ categories }: CourseCategorySelectProps) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
+  const searchParams = useSearchParams()!;
+  const pathname = usePathname()!;
   const [category, setCategory] = useState(
     searchParams.get('category') || undefined
   );

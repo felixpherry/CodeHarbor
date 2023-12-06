@@ -87,7 +87,7 @@ const AddSessionReportForm = ({
     }
   }, [students]);
 
-  const pathname = usePathname();
+  const pathname = usePathname()!;
 
   const skeletons: React.ReactNode[] = new Array(10).fill(
     <>

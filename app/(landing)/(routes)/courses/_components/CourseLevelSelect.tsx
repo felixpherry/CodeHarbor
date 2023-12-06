@@ -13,8 +13,8 @@ import { useState } from 'react';
 
 const CourseLevelSelect = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
+  const searchParams = useSearchParams()!;
+  const pathname = usePathname()!;
   const [level, setLevel] = useState(searchParams.get('level') || undefined);
 
   const handleFilter = (newLevel: string) => {

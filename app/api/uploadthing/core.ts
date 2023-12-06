@@ -14,6 +14,20 @@ const handleAuth = async () => {
 };
 
 export const fileRouter = {
+  heroImage: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
+    .middleware(handleAuth)
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log('Upload complete for userId:', metadata.userId);
+
+      console.log('file url', file.url);
+    }),
+  logoImage: f({ image: { maxFileSize: '1MB', maxFileCount: 1 } })
+    .middleware(handleAuth)
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log('Upload complete for userId:', metadata.userId);
+
+      console.log('file url', file.url);
+    }),
   programImage: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
     .middleware(handleAuth)
     .onUploadComplete(async ({ metadata, file }) => {

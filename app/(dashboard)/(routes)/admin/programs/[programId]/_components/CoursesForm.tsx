@@ -48,7 +48,7 @@ const CoursesForm = ({ initialData }: CoursesFormProps) => {
 
   const { isSubmitting, isValid } = form.formState;
 
-  const pathname = usePathname();
+  const pathname = usePathname()!;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {

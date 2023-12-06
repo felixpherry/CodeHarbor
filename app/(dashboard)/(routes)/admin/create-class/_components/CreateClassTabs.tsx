@@ -15,7 +15,7 @@ const CreateClassTabs = ({
   studentsCount,
   schedulesCount,
 }: CreateClassTabsProps) => {
-  const pathname = usePathname();
+  const pathname = usePathname()!;
   const mappedClasses = useCreateClassStore((state) => state.mappedClasses);
 
   const tabs = [

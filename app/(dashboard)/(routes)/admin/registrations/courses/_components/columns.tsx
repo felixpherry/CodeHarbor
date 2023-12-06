@@ -103,7 +103,7 @@ export const columns: ColumnDef<CourseRegistration>[] = [
     cell: ({ row }) => {
       const { id } = row.original;
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const pathname = usePathname();
+      const pathname = usePathname()!;
 
       const confirmStatus = async (status: RegistrationStatus) => {
         try {

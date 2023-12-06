@@ -21,7 +21,7 @@ interface NavbarProps {
 const Navbar = ({ session, logo }: NavbarProps) => {
   const [scroll, setScroll] = useState(false);
 
-  const pathname = usePathname();
+  const pathname = usePathname()!;
 
   if (typeof window !== 'undefined') {
     window.addEventListener('scroll', () => {

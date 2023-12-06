@@ -2,13 +2,16 @@
 
 import { revalidatePath, unstable_cache } from 'next/cache';
 import { db } from '../db';
+import { Logo } from '@prisma/client';
+import { utapi } from '@/app/api/uploadthing/core';
 
 export const fetchLogo = unstable_cache(
   async () => {
     try {
       return await db.logo.findFirst();
     } catch (error: any) {
-      throw new Error(`Failed to fetch logo: ${error.message}`);
+      console.log('fetchLogo', error);
+      throw new Error('Internal Server Error');
     }
   },
   ['logo'],
@@ -17,25 +20,48 @@ export const fetchLogo = unstable_cache(
   }
 );
 
-interface UpdateLogoProps {
-  id: string;
-  image: string;
+interface CreateOrUpdateLogoParams {
+  payload: {
+    image: string;
+    fileKey: string | null;
+  };
   pathname: string;
 }
 
-export const updateLogo = async ({ id, image, pathname }: UpdateLogoProps) => {
+export const createOrUpdateLogo = async ({
+  pathname,
+  payload,
+}: CreateOrUpdateLogoParams) => {
   try {
-    await db.logo.update({
-      data: {
-        image,
-      },
-      where: {
-        id,
-      },
-    });
+    const { fileKey, image } = payload;
+
+    const existingLogo = await db.logo.findFirst();
+    let logo: Logo | null = null;
+    if (!existingLogo) {
+      logo = await db.logo.create({
+        data: {
+          image,
+          fileKey,
+        },
+      });
+    } else {
+      if (payload.fileKey !== existingLogo.fileKey && existingLogo.fileKey) {
+        await utapi.deleteFiles(existingLogo.fileKey);
+      }
+      logo = await db.logo.update({
+        where: { id: existingLogo.id },
+        data: {
+          fileKey,
+          image,
+        },
+      });
+    }
 
     revalidatePath(pathname);
+
+    return logo;
   } catch (error: any) {
-    throw new Error(`Failed to update logo: ${error.message}`);
+    console.log('createOrUpdateLogo', error);
+    throw new Error('Internal Server Error');
   }
 };

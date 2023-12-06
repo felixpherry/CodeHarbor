@@ -16,7 +16,7 @@ const RegistrationTabs = ({
   instructorRegistrationCount,
   trialClassCount,
 }: RegistrationTabsProps) => {
-  const pathname = usePathname();
+  const pathname = usePathname()!;
 
   const tabs = [
     {
