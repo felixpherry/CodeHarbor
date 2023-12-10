@@ -5,6 +5,7 @@ import Link from 'next/link';
 import {
   ArrowLeft,
   BarChart,
+  BookCheck,
   LayoutDashboard,
   ListTodo,
   Shapes,
@@ -23,6 +24,8 @@ import CourseProgrammingToolsForm from './_components/CourseProgrammingToolsForm
 import CourseLevelForm from './_components/CourseLevelForm';
 import CourseImageForm from './_components/CourseImageForm';
 import CourseCodeForm from './_components/CourseCodeForm';
+import EvaluationsForm from './_components/EvaluationForm';
+import EvaluationsList from './_components/EvaluationsList';
 
 const Page = async ({
   params: { programId, courseId },
@@ -53,6 +56,7 @@ const Page = async ({
     course.level,
     course.programmingTools,
     course.sessions.some((session) => session.isPublished),
+    course.evaluations.length,
   ];
 
   const totalFields = requiredFields.length;
@@ -98,6 +102,27 @@ const Page = async ({
               <CourseNameForm initialData={course} />
               <CourseDescriptionForm initialData={course} />
               <CourseCodeForm initialData={course} />
+              <div className='mt-6'>
+                <div className='flex items-center gap-x-2'>
+                  <IconBadge icon={BarChart} />
+                  <h2 className='text-xl'>Course Level</h2>
+                </div>
+                <CourseLevelForm initialData={course} />
+              </div>
+              <div className='mt-6'>
+                <div className='flex items-center gap-x-2'>
+                  <IconBadge icon={Shapes} />
+                  <h2 className='text-xl'>Course Category</h2>
+                </div>
+                <CourseCategory initialData={course} options={options} />
+              </div>
+              <div className='mt-6'>
+                <div className='flex items-center gap-x-2'>
+                  <IconBadge icon={Wrench} />
+                  <h2 className='text-xl'>Programming Tools</h2>
+                </div>
+                <CourseProgrammingToolsForm initialData={course} />
+              </div>
             </div>
           </div>
           <div className='space-y-6'>
@@ -110,24 +135,10 @@ const Page = async ({
             </div>
             <div>
               <div className='flex items-center gap-x-2'>
-                <IconBadge icon={Wrench} />
-                <h2 className='text-xl'>Programming Tools</h2>
+                <IconBadge icon={BookCheck} />
+                <h2 className='text-xl'>Course Evaluation</h2>
               </div>
-              <CourseProgrammingToolsForm initialData={course} />
-            </div>
-            <div>
-              <div className='flex items-center gap-x-2'>
-                <IconBadge icon={BarChart} />
-                <h2 className='text-xl'>Course Level</h2>
-              </div>
-              <CourseLevelForm initialData={course} />
-            </div>
-            <div>
-              <div className='flex items-center gap-x-2'>
-                <IconBadge icon={Shapes} />
-                <h2 className='text-xl'>Course Category</h2>
-              </div>
-              <CourseCategory initialData={course} options={options} />
+              <EvaluationsList evaluations={course.evaluations} />
             </div>
           </div>
         </div>

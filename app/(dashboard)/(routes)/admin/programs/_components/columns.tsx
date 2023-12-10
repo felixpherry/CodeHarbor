@@ -7,6 +7,7 @@ import { ArrowUpDown, PencilIcon, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import moment from 'moment';
 
 export const columns: ColumnDef<Program>[] = [
   {
@@ -108,6 +109,28 @@ export const columns: ColumnDef<Program>[] = [
         <Badge className={cn('bg-slate-500', isPublished && 'bg-sky-700')}>
           {isPublished ? 'Published' : 'Draft'}
         </Badge>
+      );
+    },
+  },
+  {
+    accessorKey: 'createdAt',
+    header: 'Created At',
+    cell: ({ row }) => {
+      return (
+        <span className='font-bold text-muted-foreground'>
+          {moment(row.getValue('createdAt')).format('DD/MM/YYYY')}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: 'Updated At',
+    cell: ({ row }) => {
+      return (
+        <span className='font-bold text-muted-foreground'>
+          {moment(row.getValue('updatedAt')).format('DD/MM/YYYY')}
+        </span>
       );
     },
   },

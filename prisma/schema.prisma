@@ -171,11 +171,13 @@ model Coupon {
   code        String @unique
 
   expiredAt DateTime
+  isActive  Boolean  @default(true)
 
   registrations CourseRegistration[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  statusChangedDate DateTime?
 }
 
 model CourseRegistration {

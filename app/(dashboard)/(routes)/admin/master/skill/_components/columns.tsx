@@ -1,19 +1,19 @@
 'use client';
 
-import { MasterShift } from '@prisma/client';
+import { Skill } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, PencilIcon, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
 import { modals } from '@mantine/modals';
-import { changeShiftStatus, deleteShift } from '../_actions';
-import ShiftForm from './ShiftForm';
+import { changeSkillStatus, deleteSkill } from '../_actions';
+import SkillForm from './SkillForm';
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import SwitchAction from '@/components/shared/SwitchAction';
 import moment from 'moment';
 
-export const columns: ColumnDef<MasterShift>[] = [
+export const columns: ColumnDef<Skill>[] = [
   {
     header: 'No',
   },
@@ -27,11 +27,11 @@ export const columns: ColumnDef<MasterShift>[] = [
 
       const confirmDelete = async () => {
         try {
-          await deleteShift({
+          await deleteSkill({
             id,
             pathname,
           });
-          toast.success('Successfully deleted shift');
+          toast.success('Successfully deleted skill');
         } catch (error: any) {
           toast.error(error.message);
         }
@@ -42,8 +42,8 @@ export const columns: ColumnDef<MasterShift>[] = [
           <PencilIcon
             onClick={() => {
               modals.open({
-                title: <p className='text-primary font-semibold'>Edit Shift</p>,
-                children: <ShiftForm type='EDIT' initialData={row.original} />,
+                title: <p className='text-primary font-semibold'>Edit Skill</p>,
+                children: <SkillForm type='EDIT' initialData={row.original} />,
                 centered: true,
                 size: 'lg',
               });
@@ -51,8 +51,8 @@ export const columns: ColumnDef<MasterShift>[] = [
             className='text-primary-blue cursor-pointer h-5 w-5'
           />
           <ConfirmModal
-            title='Delete Shift'
-            description='Are you sure you want to delete this shift? This action can
+            title='Delete Skill'
+            description='Are you sure you want to delete this skill? This action can
             not be undone'
             onConfirm={confirmDelete}
             variant={{
@@ -75,7 +75,7 @@ export const columns: ColumnDef<MasterShift>[] = [
 
       const changeStatus = async (checked: boolean) => {
         try {
-          await changeShiftStatus({
+          await changeSkillStatus({
             id,
             isActive: checked,
             pathname,
@@ -91,7 +91,7 @@ export const columns: ColumnDef<MasterShift>[] = [
     },
   },
   {
-    accessorKey: 'startTime',
+    accessorKey: 'name',
     header: ({ column }) => {
       return (
         <Button
@@ -99,22 +99,7 @@ export const columns: ColumnDef<MasterShift>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className='whitespace-nowrap'
         >
-          Start Time
-          <ArrowUpDown className='ml-2 h-4 w-4' />
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: 'endTime',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className='whitespace-nowrap'
-        >
-          End Time
+          Name
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );

@@ -11,6 +11,7 @@ export const fetchCouponByCode = async (code: string) => {
         expiredAt: {
           gt: new Date(),
         },
+        isActive: true,
       },
     });
   } catch (error: any) {

@@ -40,6 +40,14 @@ const adminRoutes: SidebarItemProps[] = [
         label: 'Grade',
         href: '/admin/master/grade',
       },
+      {
+        label: 'Skill',
+        href: '/admin/master/skill',
+      },
+      {
+        label: 'Coupon',
+        href: '/admin/master/coupon',
+      },
     ],
   },
   {

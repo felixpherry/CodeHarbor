@@ -1,19 +1,19 @@
 'use client';
 
-import { MasterShift } from '@prisma/client';
+import { Coupon } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, PencilIcon, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
 import { modals } from '@mantine/modals';
-import { changeShiftStatus, deleteShift } from '../_actions';
-import ShiftForm from './ShiftForm';
+import { updateCouponStatus, deleteCoupon } from '../_actions';
+import CouponForm from './CouponForm';
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import SwitchAction from '@/components/shared/SwitchAction';
 import moment from 'moment';
 
-export const columns: ColumnDef<MasterShift>[] = [
+export const columns: ColumnDef<Coupon>[] = [
   {
     header: 'No',
   },
@@ -21,17 +21,17 @@ export const columns: ColumnDef<MasterShift>[] = [
     id: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
-      const { id, isActive } = row.original;
+      const { id } = row.original;
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const pathname = usePathname()!;
 
       const confirmDelete = async () => {
         try {
-          await deleteShift({
+          await deleteCoupon({
             id,
             pathname,
           });
-          toast.success('Successfully deleted shift');
+          toast.success('Successfully deleted coupon');
         } catch (error: any) {
           toast.error(error.message);
         }
@@ -42,8 +42,10 @@ export const columns: ColumnDef<MasterShift>[] = [
           <PencilIcon
             onClick={() => {
               modals.open({
-                title: <p className='text-primary font-semibold'>Edit Shift</p>,
-                children: <ShiftForm type='EDIT' initialData={row.original} />,
+                title: (
+                  <p className='text-primary font-semibold'>Edit Coupon</p>
+                ),
+                children: <CouponForm type='EDIT' initialData={row.original} />,
                 centered: true,
                 size: 'lg',
               });
@@ -51,8 +53,8 @@ export const columns: ColumnDef<MasterShift>[] = [
             className='text-primary-blue cursor-pointer h-5 w-5'
           />
           <ConfirmModal
-            title='Delete Shift'
-            description='Are you sure you want to delete this shift? This action can
+            title='Delete Coupon'
+            description='Are you sure you want to delete this coupon? This action can
             not be undone'
             onConfirm={confirmDelete}
             variant={{
@@ -75,7 +77,7 @@ export const columns: ColumnDef<MasterShift>[] = [
 
       const changeStatus = async (checked: boolean) => {
         try {
-          await changeShiftStatus({
+          await updateCouponStatus({
             id,
             isActive: checked,
             pathname,
@@ -91,7 +93,7 @@ export const columns: ColumnDef<MasterShift>[] = [
     },
   },
   {
-    accessorKey: 'startTime',
+    accessorKey: 'code',
     header: ({ column }) => {
       return (
         <Button
@@ -99,14 +101,50 @@ export const columns: ColumnDef<MasterShift>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className='whitespace-nowrap'
         >
-          Start Time
+          Code
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return <span className='text-primary'>{row.original.code}</span>;
+    },
+  },
+  {
+    accessorKey: 'name',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='whitespace-nowrap'
+        >
+          Name
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return <span className='whitespace-nowrap'>{row.original.name}</span>;
+    },
+  },
+  {
+    accessorKey: 'email',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='whitespace-nowrap'
+        >
+          Email
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
     },
   },
   {
-    accessorKey: 'endTime',
+    accessorKey: 'phoneNumber',
     header: ({ column }) => {
       return (
         <Button
@@ -114,10 +152,28 @@ export const columns: ColumnDef<MasterShift>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className='whitespace-nowrap'
         >
-          End Time
+          Phone Number
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
+    },
+  },
+  {
+    accessorKey: 'expiredAt',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='whitespace-nowrap'
+        >
+          Expired At
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return <span>{moment(row.original.expiredAt).format('DD/MM/YYYY')}</span>;
     },
   },
   {

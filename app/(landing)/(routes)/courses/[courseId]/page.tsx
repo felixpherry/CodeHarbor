@@ -165,17 +165,16 @@ const Page = async ({ params: { courseId } }: PageProps) => {
                       {_count.sessions} sesi
                     </span>
                   </div>
-                  {students >= 10 && (
-                    <div className='flex justify-between items-center font-semibold'>
-                      <span className='flex items-center gap-2'>
-                        <GraduationCap className='w-6 h-6 text-primary-blue' />
-                        <span>Enrolled</span>
-                      </span>
-                      <span className='text-muted-foreground'>
-                        {students} siswa
-                      </span>
-                    </div>
-                  )}
+
+                  <div className='flex justify-between items-center font-semibold'>
+                    <span className='flex items-center gap-2'>
+                      <GraduationCap className='w-6 h-6 text-primary-blue' />
+                      <span>Enrolled</span>
+                    </span>
+                    <span className='text-muted-foreground'>
+                      {students} siswa
+                    </span>
+                  </div>
 
                   <div className='flex flex-col gap-3'>
                     <Button variant='primary-blue' className='w-full' asChild>

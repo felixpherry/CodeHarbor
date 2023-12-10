@@ -117,6 +117,11 @@ export const fetchCourseById = async ({
             sessionNumber: 'asc',
           },
         },
+        evaluations: {
+          where: {
+            isActive: true,
+          },
+        },
       },
     });
   } catch (error: any) {

@@ -2,6 +2,7 @@
 
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { Button } from '@/components/ui/button';
+import { publishCourse } from '@/lib/actions/course.actions';
 import { deleteCourse, updateCourse } from '@/lib/actions/program.actions';
 import { Course } from '@prisma/client';
 import { Trash } from 'lucide-react';
@@ -48,12 +49,9 @@ const CourseActions = ({ disabled, course }: CourseActionsProps) => {
         });
         toast.success('Successfully unpublish course');
       } else {
-        await updateCourse({
-          id: course.id,
+        await publishCourse({
+          courseId: course.id,
           pathname,
-          payload: {
-            isPublished: true,
-          },
         });
         toast.success('Successfully publish course');
       }
