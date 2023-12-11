@@ -89,9 +89,12 @@ export const updateProgram = async ({
 
 export const deleteProgram = async (id: string) => {
   try {
-    const program = await db.program.delete({
+    const program = await db.program.update({
       where: {
         id,
+      },
+      data: {
+        isDeleted: true,
       },
     });
 
@@ -201,16 +204,18 @@ export const updateCourse = async ({
 
 export const deleteCourse = async (id: string) => {
   try {
-    const course = await db.course.delete({
+    const course = await db.course.update({
       where: {
         id,
       },
+      data: { isDeleted: true },
     });
 
     const publishedCourseInPrograms = await db.course.findMany({
       where: {
         programId: course.programId,
         isPublished: true,
+        isDeleted: false,
       },
     });
 

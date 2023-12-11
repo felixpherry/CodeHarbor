@@ -5,6 +5,7 @@ const CourseProgramBadgesProvider = async () => {
   const programs = await db.program.findMany({
     where: {
       isPublished: true,
+      isDeleted: false,
     },
     orderBy: {
       name: 'asc',

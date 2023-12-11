@@ -19,8 +19,10 @@ const Courses = async ({ searchParams }: CoursesProps) => {
   const courses = await db.course.findMany({
     where: {
       isPublished: true,
+      isDeleted: false,
       program: {
         isPublished: true,
+        isDeleted: false,
       },
       name: {
         contains: searchParams.search,

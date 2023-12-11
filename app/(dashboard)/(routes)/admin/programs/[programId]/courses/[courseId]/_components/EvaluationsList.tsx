@@ -23,10 +23,7 @@ type EvaluationFormState = {
 
 type EvaluationFormAction =
   | {
-      type: 'CLOSE_FORM';
-    }
-  | {
-      type: 'OPEN_ADD_FORM';
+      type: 'CLOSE_FORM' | 'OPEN_ADD_FORM';
     }
   | {
       type: 'OPEN_EDIT_FORM';
@@ -83,8 +80,6 @@ const EvaluationsList = ({ evaluations }: EvaluationListProps) => {
   const hasSessionReportEvaluation: boolean = !!evaluations.find(
     ({ id, isSessionReport }) => id !== evaluationId && isSessionReport === true
   );
-
-  console.log({ hasSessionReportEvaluation });
 
   return (
     <div className='relative mt-6 border bg-slate-100 rounded-md p-4'>

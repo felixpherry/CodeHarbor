@@ -72,8 +72,10 @@ const Layout = async ({ children }: LayoutProps) => {
   const courses = await db.course.findMany({
     where: {
       isPublished: true,
+      isDeleted: false,
       program: {
         isPublished: true,
+        isDeleted: false,
       },
     },
   });

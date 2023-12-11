@@ -2,8 +2,9 @@
 
 import { revalidatePath, unstable_cache } from 'next/cache';
 import { db } from '../db';
-import { Prisma } from '@prisma/client';
+import { Attachment, Prisma } from '@prisma/client';
 import { authorizeByRoles } from '../authorization';
+import { utapi } from '@/app/api/uploadthing/core';
 
 export const getPublishedCourses = unstable_cache(
   async () => {
@@ -11,8 +12,10 @@ export const getPublishedCourses = unstable_cache(
       return await db.course.findMany({
         where: {
           isPublished: true,
+          isDeleted: false,
           program: {
             isPublished: true,
+            isDeleted: false,
           },
         },
       });
@@ -241,6 +244,69 @@ export const publishCourse = async ({
     return newCourse;
   } catch (error: any) {
     console.log('publishCourse', error.message);
+    throw new Error(error.message);
+  }
+};
+
+export interface AddCourseAttachmentParams {
+  sessionId: string;
+  payload: Prisma.AttachmentUncheckedCreateInput;
+  pathname: string;
+}
+
+export const addCourseAttachment = async ({
+  sessionId,
+  pathname,
+  payload,
+}: AddCourseAttachmentParams) => {
+  try {
+    await authorizeByRoles(['ADMIN']);
+
+    const attachment = await db.attachment.create({
+      data: {
+        ...payload,
+        sessionId,
+      },
+    });
+
+    revalidatePath(pathname);
+    return attachment;
+  } catch (error: any) {
+    console.log('addCourseAttachment', error.message);
+    throw new Error(error.message);
+  }
+};
+
+type EditCourseAttachmentParams = {
+  prevData: Attachment;
+  newData: {
+    filename: string;
+    fileKey?: string | null;
+    fileType: string;
+    fileUrl: string;
+  };
+  pathname: string;
+};
+
+export const editCourseAttachment = async ({
+  prevData,
+  newData,
+  pathname,
+}: EditCourseAttachmentParams) => {
+  try {
+    if (prevData.fileUrl !== newData.fileUrl && prevData.fileKey) {
+      await utapi.deleteFiles(prevData.fileKey);
+    }
+
+    const attachment = await db.attachment.update({
+      where: { id: prevData.id },
+      data: newData,
+    });
+
+    revalidatePath(pathname);
+    return attachment;
+  } catch (error: any) {
+    console.log('editCourseAttachment', error.message);
     throw new Error(error.message);
   }
 };

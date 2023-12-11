@@ -66,7 +66,7 @@ const AttachmentForm = ({
   initialData,
   scheduleId,
 }: AttachmentFormProps) => {
-  const { startUpload } = useUploadThing('courseAttachment');
+  const { startUpload } = useUploadThing('otherCourseAttachment');
 
   const [files, setFiles] = useState<File[]>([]);
   const [isEditingFile, setIsEditingFile] = useState(true);
@@ -196,7 +196,7 @@ const AttachmentForm = ({
                       <FileIcon className='h-8 w-8 fill-sky-200/20 stroke-primary-blue' />
                       <span
                         onClick={handlePreview}
-                        className='ml-2 text-sm text-primary-blue hover:underline'
+                        className='ml-2 text-sm text-primary-blue hover:underline cursor-pointer'
                       >
                         {files.length > 0 ? files[0].name : field.value}
                       </span>

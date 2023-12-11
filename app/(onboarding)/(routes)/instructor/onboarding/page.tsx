@@ -49,8 +49,10 @@ const Page = async () => {
   const courses = await db.course.findMany({
     where: {
       isPublished: true,
+      isDeleted: false,
       program: {
         isPublished: true,
+        isDeleted: false,
       },
     },
   });

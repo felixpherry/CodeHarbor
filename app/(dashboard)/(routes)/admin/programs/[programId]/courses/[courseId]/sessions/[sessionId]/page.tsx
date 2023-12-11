@@ -9,9 +9,9 @@ import { fetchSessionById } from '@/lib/actions/program.actions';
 import SessionMainForm from './_components/SessionMainForm';
 import SessionDescriptionForm from './_components/SessionDescriptionForm';
 import ReferencesForm from './_components/ReferencesForm';
-import AttachmentForm from './_components/AttachmentForm';
 import Banner from '@/components/shared/Banner';
 import SessionActions from './_components/SessionActions';
+import AttachmentList from './_components/AttachmentList';
 
 const Page = async ({
   params: { programId, courseId, sessionId },
@@ -90,7 +90,7 @@ const Page = async ({
                 <IconBadge icon={File} />
                 <h2 className='text-xl'>Attachments & Resources</h2>
               </div>
-              <AttachmentForm initialData={session} />
+              <AttachmentList attachments={session.attachments} />
             </div>
           </div>
         </div>

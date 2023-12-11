@@ -23,6 +23,7 @@ export default async function Home({
   const programs = await db.program.findMany({
     where: {
       isPublished: true,
+      isDeleted: false,
       courses: {
         some: {
           categoryId: category,
@@ -35,6 +36,7 @@ export default async function Home({
           courses: {
             where: {
               isPublished: true,
+              isDeleted: false,
               categoryId: category,
             },
           },

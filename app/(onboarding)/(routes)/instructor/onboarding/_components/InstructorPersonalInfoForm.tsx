@@ -258,7 +258,6 @@ const InstructorPersonalInfoForm = ({
               <FormControl>
                 <FileInput
                   accept='image/*'
-                  placeholder='Upload ID Card'
                   onChange={(e) => handleImage(e, field.onChange, field.name)}
                   value={fileIDCard[0]}
                 />
@@ -287,7 +286,6 @@ const InstructorPersonalInfoForm = ({
               <FormControl>
                 <FileInput
                   accept='image/*'
-                  placeholder='Upload ID Card'
                   onChange={(e) => handleImage(e, field.onChange, field.name)}
                   value={fileNPWP[0]}
                 />

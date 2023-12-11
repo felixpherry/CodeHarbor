@@ -119,10 +119,7 @@ const ClassSessionPage = async ({ classId, sessionId }: PageProps) => {
                 <h3 className='text-xl text-primary'>{sessionData.main}</h3>
                 <div className='flex flex-col'>
                   <p className='font-bold'>Description</p>
-                  <Preview
-                    value={sessionData.description || ''}
-                    className='[&_.ql-editor]:px-0 [&_.ql-editor_ul]:pl-0'
-                  />
+                  <Preview value={sessionData.description || ''} />
                 </div>
               </div>
               <div className='flex flex-col gap-5 pt-5'>

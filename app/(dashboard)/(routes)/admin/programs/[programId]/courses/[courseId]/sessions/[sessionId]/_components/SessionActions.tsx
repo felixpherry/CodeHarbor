@@ -84,8 +84,10 @@ const SessionActions = ({
         title='Are you sure'
         description='This action cannot be undone'
       >
-        <Button size='sm' disabled={isLoading}>
-          <Trash className='h-4 w-4' />
+        <Button asChild size='sm' disabled={isLoading}>
+          <span>
+            <Trash className='h-4 w-4' />
+          </span>
         </Button>
       </ConfirmModal>
     </div>

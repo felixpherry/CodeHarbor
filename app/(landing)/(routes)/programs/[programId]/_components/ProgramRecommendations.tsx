@@ -15,6 +15,7 @@ const ProgramRecommendations = async ({
         not: programId,
       },
       isPublished: true,
+      isDeleted: false,
     },
     orderBy: {
       name: 'asc',
@@ -25,6 +26,7 @@ const ProgramRecommendations = async ({
           courses: {
             where: {
               isPublished: true,
+              isDeleted: false,
             },
           },
         },

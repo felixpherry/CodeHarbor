@@ -11,6 +11,18 @@ interface ClassDetailTabsProps {
   session: SessionInterface;
 }
 
+interface ClassTab {
+  label: string;
+  href: string;
+}
+
+const studentTabs: ClassTab[] = [
+  {
+    label: 'Sessions',
+    href: '',
+  },
+];
+
 const ClassDetailTabs = ({
   classId,
   sessionId,

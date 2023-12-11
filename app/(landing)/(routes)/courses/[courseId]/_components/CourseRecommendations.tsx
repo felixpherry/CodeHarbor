@@ -18,6 +18,7 @@ const CourseRecommendations = async ({
         not: courseId,
       },
       isPublished: true,
+      isDeleted: false,
     },
     orderBy: {
       name: 'asc',

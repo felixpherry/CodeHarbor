@@ -1,129 +1,239 @@
 'use client';
 
-import * as z from 'zod';
 import { Button } from '@/components/ui/button';
-import { File, Loader2, Pencil, PlusCircle, X } from 'lucide-react';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { useUploadThing } from '@/lib/uploadthing';
+import { isBase64DataURL } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CheckIcon, Group, Input, Radio } from '@mantine/core';
+import { modals } from '@mantine/modals';
+import { Attachment } from '@prisma/client';
+import FileSaver from 'file-saver';
+import { FileIcon, Loader2, Save, X } from 'lucide-react';
+import { useParams, usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
-import { Attachment, Session } from '@prisma/client';
-import FileUpload from '@/components/shared/FileUpload';
-import { addAttachment, deleteAttachment } from '@/lib/actions/program.actions';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import * as z from 'zod';
+import AttachmentFileDropzone from './AttachmentFileDropzone';
+import {
+  AddCourseAttachmentParams,
+  addCourseAttachment,
+  editCourseAttachment,
+} from '@/lib/actions/course.actions';
 
 interface AttachmentFormProps {
-  initialData: {
-    attachments: Attachment[];
-  } & Session;
+  formType: 'ADD' | 'EDIT';
+  initialData?: Attachment;
 }
 
+export type FileType = 'image' | 'pdf' | 'text' | 'audio' | 'video';
+
 const formSchema = z.object({
-  fileUrl: z.string().min(1, {
-    message: 'Attachment is required',
+  filename: z.string().min(1, {
+    message: 'Filename is required',
   }),
+  fileType: z
+    .string({
+      required_error: 'File type is required',
+    })
+    .min(1, {
+      message: 'File type is required',
+    }),
+  fileUrl: z
+    .string({
+      required_error: 'File is required',
+    })
+    .min(1, {
+      message: 'File is required',
+    }),
 });
 
-const AttachmentForm = ({ initialData }: AttachmentFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+const AttachmentForm = ({ formType, initialData }: AttachmentFormProps) => {
+  const { startUpload } = useUploadThing('courseAttachment');
 
-  const toggleEdit = () => setIsEditing((prev) => !prev);
+  const [files, setFiles] = useState<File[]>([]);
+  const [isEditingFile, setIsEditingFile] = useState(true);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      filename: initialData?.filename || '',
+      fileUrl: initialData?.fileUrl || '',
+      fileType: initialData?.fileType || '',
+    },
+  });
+
+  const { isSubmitting } = form.formState;
 
   const pathname = usePathname()!;
+  const params = useParams()!;
+
+  const sessionId: string = params.sessionId as string;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const filename = values.fileUrl.split('/').pop();
-      await addAttachment({
-        filename: filename!,
+      const fileUrl: string = values.fileUrl;
+      const payload: AddCourseAttachmentParams['payload'] = {
         fileUrl: values.fileUrl,
-        fileType: filename?.split('.').pop() || '',
-        sessionId: initialData.id,
-        pathname,
-      });
-      toast.success('Successfully added attachment');
-      setIsEditing(false);
+        filename: values.filename,
+        fileType: values.fileType,
+        sessionId,
+      };
+      if (isBase64DataURL(fileUrl)) {
+        const res = await startUpload(files);
+
+        if (!res || res.length === 0) {
+          throw new Error('No files uploaded');
+        }
+
+        const { key, url } = res[0];
+
+        payload['fileKey'] = key;
+        payload['fileUrl'] = url;
+      } else {
+        if (formType === 'EDIT' && values.fileUrl !== initialData?.fileUrl) {
+          payload['fileKey'] = null;
+        }
+      }
+      if (formType === 'ADD')
+        await addCourseAttachment({ sessionId, pathname, payload });
+      else
+        await editCourseAttachment({
+          prevData: initialData!,
+          newData: payload,
+          pathname: pathname,
+        });
+
+      toast.success(
+        `Successfully ${formType === 'ADD' ? 'added' : 'updated'} attachment`
+      );
+      modals.closeAll();
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(
+        `Failed to ${formType === 'ADD' ? 'add' : 'update'} attachment`
+      );
     }
   };
 
-  const handleDelete = async (id: string) => {
-    try {
-      setDeletingId(id);
-      await deleteAttachment(id, pathname);
-      toast.success('Successfully deleted attachment');
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setDeletingId(null);
-    }
+  const handleDeleteFile = () => {
+    setFiles([]);
+    form.setValue('fileUrl', '');
+    setIsEditingFile(true);
+  };
+
+  const handlePreview = () => {
+    const fileUrl = form.getValues('fileUrl');
+    if (!isBase64DataURL(fileUrl)) return window.open(fileUrl);
+
+    FileSaver.saveAs(files[0], files[0].name);
   };
 
   return (
-    <div className='mt-6 border bg-slate-100 rounded-md p-4'>
-      <div className='font-medium flex items-center justify-between'>
-        Course attachments
-        <Button onClick={toggleEdit} variant='ghost'>
-          {isEditing ? (
-            <>Cancel</>
-          ) : (
-            <>
-              <PlusCircle className='h-4 w-4 mr-2' />
-              Add a file
-            </>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-3'>
+        <FormField
+          control={form.control}
+          name='filename'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Filename</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
-        </Button>
-      </div>
-      {!isEditing && initialData.attachments.length > 0 && (
-        <div className='space-y-2'>
-          {initialData.attachments.map(({ id, filename, fileUrl }) => (
-            <div
-              key={id}
-              className='flex items-center p-3 w-full bg-sky-100 border-sky-200 border text-sky-700 rounded-md'
-            >
-              <File className='h-4 w-4 mr-2 flex-shrink-0' />
-              <a
-                href={fileUrl}
-                target='_blank'
-                className='text-xs line-clamp-1'
-              >
-                {filename}
-              </a>
-              {deletingId === id ? (
-                <div className='ml-auto'>
-                  <Loader2 className='h-4 w-4 animate-spin' />
-                </div>
-              ) : (
-                <button
-                  onClick={() => handleDelete(id)}
-                  className='ml-auto hover:opacity-75 transition'
-                >
-                  <X className='h-4 w-4' />
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-      {isEditing && (
-        <div>
-          <FileUpload
-            endpoint='courseAttachment'
-            onChange={(url) => {
-              if (url) {
-                onSubmit({ fileUrl: url });
-              }
-            }}
+        />
+        <FormField
+          control={form.control}
+          name='fileType'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>File Type</FormLabel>
+              <FormControl>
+                <Radio.Group {...field}>
+                  <Group mt='xs'>
+                    <Radio icon={CheckIcon} value='image' label='Image' />
+                    <Radio icon={CheckIcon} value='pdf' label='PDF' />
+                    <Radio icon={CheckIcon} value='text' label='Text' />
+                    <Radio icon={CheckIcon} value='video' label='Video' />
+                    <Radio icon={CheckIcon} value='audio' label='Audio' />
+                  </Group>
+                </Radio.Group>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {!!form.watch('fileType') && (
+          <FormField
+            control={form.control}
+            name='fileUrl'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>File</FormLabel>
+                <FormControl>
+                  {isEditingFile ? (
+                    <AttachmentFileDropzone
+                      type={form.getValues('fileType') as FileType}
+                      setIsEditingFile={setIsEditingFile}
+                      onFileChange={field.onChange}
+                      setFiles={setFiles}
+                      value={field.value}
+                    />
+                  ) : (
+                    <div className='relative flex items-center p-2 mt-2 rounded-md bg-slate-200'>
+                      <FileIcon className='h-8 w-8 fill-sky-200/20 stroke-primary-blue' />
+                      <span
+                        onClick={handlePreview}
+                        className='ml-2 text-sm text-primary-blue hover:underline cursor-pointer'
+                      >
+                        {files.length > 0 ? files[0].name : field.value}
+                      </span>
+                      <button
+                        onClick={handleDeleteFile}
+                        className='bg-rose-500 text-white p-1 rounded-full absolute -top-2 -right-0 shadow-sm'
+                        type='button'
+                      >
+                        <X className='h-4 w-4' />
+                      </button>
+                    </div>
+                  )}
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
+        )}
+
+        <div className='w-full flex justify-end gap-2'>
+          <Button
+            type='button'
+            variant='outline'
+            size='sm'
+            onClick={() => modals.closeAll()}
+          >
+            Close
+          </Button>
+          <Button type='submit' size='sm'>
+            {isSubmitting ? (
+              <Loader2 className='h-4 w-4 animate-spin' />
+            ) : (
+              <Save className='h-4 w-4' />
+            )}
+            Save
+          </Button>
         </div>
-      )}
-      {!isEditing && initialData.attachments.length === 0 && (
-        <p className={cn('text-sm mt-2 text-slate-500 italic')}>
-          No attachments yet
-        </p>
-      )}
-    </div>
+      </form>
+    </Form>
   );
 };
 
