@@ -55,11 +55,7 @@ const Layout = async ({ children, params: { classId } }: LayoutProps) => {
           </p>
         </div>
       </div>
-      <ClassDetailTabs
-        classId={classId}
-        sessionId={classData.schedules[0]?.id || ''}
-        session={session}
-      />
+      <ClassDetailTabs classId={classId} session={session} />
       {children}
     </div>
   );

@@ -3,6 +3,8 @@
 import { Program, Session, Course } from '@prisma/client';
 import { db } from '../db';
 import { revalidatePath } from 'next/cache';
+import { authorizeByRoles } from '../authorization';
+import { utapi } from '@/app/api/uploadthing/core';
 
 export const fetchPrograms = async (categoryId: string = '') => {
   try {
@@ -479,5 +481,51 @@ export const deleteAttachment = async (id: string, pathname: string) => {
     revalidatePath(pathname);
   } catch (error: any) {
     throw new Error(`Failed to delete attachment: ${error.message}`);
+  }
+};
+
+interface UpdateProgramImageParams {
+  programId: string;
+  image: string;
+  fileKey?: string | null;
+  pathname: string;
+}
+
+export const updateProgramImage = async ({
+  image,
+  pathname,
+  programId,
+  fileKey,
+}: UpdateProgramImageParams) => {
+  try {
+    await authorizeByRoles(['ADMIN']);
+
+    const program = await db.program.findUnique({
+      where: {
+        id: programId,
+      },
+    });
+
+    if (!program) {
+      throw new Error('Program not found');
+    }
+    if (program.fileKey) await utapi.deleteFiles(program.fileKey);
+
+    const newProgram = await db.program.update({
+      data: {
+        image,
+        fileKey,
+      },
+      where: {
+        id: programId,
+      },
+    });
+
+    revalidatePath(pathname);
+
+    return newProgram;
+  } catch (error: any) {
+    console.log('updateProgramImage', error.message);
+    throw new Error(error.message);
   }
 };

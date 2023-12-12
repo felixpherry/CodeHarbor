@@ -155,6 +155,8 @@ model CourseEvaluation {
   isSessionReport Boolean @default(false)
   isActive        Boolean @default(true)
 
+  studentScores StudentScore[]
+
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
   statusChangedDate DateTime?
@@ -621,9 +623,8 @@ model StudentScore {
   class   Class  @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   classId String
 
-  evaluationName        String
-  evaluationWeight      Int
-  evaluationDescription String
+  evaluation   CourseEvaluation @relation(fields: [evaluationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  evaluationId String
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -631,6 +632,7 @@ model StudentScore {
 
   @@index([studentId])
   @@index([classId])
+  @@index([evaluationId])
 }
 
 model SessionReport {

@@ -4,7 +4,7 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { ImageIcon, Pencil, PlusCircle } from 'lucide-react';
 import { useState } from 'react';
-import { updateProgram } from '@/lib/actions/program.actions';
+import { updateProgramImage } from '@/lib/actions/program.actions';
 import { usePathname } from 'next/navigation';
 import { Program } from '@prisma/client';
 import Image from 'next/image';
@@ -19,6 +19,7 @@ const formSchema = z.object({
   image: z.string().min(1, {
     message: 'Image is required',
   }),
+  fileKey: z.string(),
 });
 
 const ImageForm = ({ initialData }: ImageFormProps) => {
@@ -30,12 +31,13 @@ const ImageForm = ({ initialData }: ImageFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateProgram({
-        id: initialData.id,
-        payload: { image: values.image },
+      await updateProgramImage({
+        programId: initialData.id,
+        image: values.image,
+        fileKey: values.fileKey,
         pathname,
       });
-      toast.success('Successfully updated program');
+      toast.success('Successfully updated image');
 
       setIsEditing(false);
     } catch (error: any) {
@@ -83,9 +85,9 @@ const ImageForm = ({ initialData }: ImageFormProps) => {
         <div>
           <FileUpload
             endpoint='programImage'
-            onChange={(url) => {
-              if (url) {
-                onSubmit({ image: url });
+            onChange={(url, key) => {
+              if (url && key) {
+                onSubmit({ image: url, fileKey: key });
               }
             }}
           />

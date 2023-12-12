@@ -310,3 +310,49 @@ export const editCourseAttachment = async ({
     throw new Error(error.message);
   }
 };
+
+interface UpdateCourseImageParams {
+  courseId: string;
+  image: string;
+  fileKey?: string | null;
+  pathname: string;
+}
+
+export const updateCourseImage = async ({
+  image,
+  pathname,
+  courseId,
+  fileKey,
+}: UpdateCourseImageParams) => {
+  try {
+    await authorizeByRoles(['ADMIN']);
+
+    const course = await db.course.findUnique({
+      where: {
+        id: courseId,
+      },
+    });
+
+    if (!course) {
+      throw new Error('Course not found');
+    }
+    if (course.fileKey) await utapi.deleteFiles(course.fileKey);
+
+    const newCourse = await db.course.update({
+      data: {
+        image,
+        fileKey,
+      },
+      where: {
+        id: courseId,
+      },
+    });
+
+    revalidatePath(pathname);
+
+    return newCourse;
+  } catch (error: any) {
+    console.log('updateCourseImage', error.message);
+    throw new Error(error.message);
+  }
+};

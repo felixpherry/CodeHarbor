@@ -4,12 +4,12 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { ImageIcon, Pencil, PlusCircle } from 'lucide-react';
 import { useState } from 'react';
-import { updateCourse } from '@/lib/actions/program.actions';
 import { usePathname } from 'next/navigation';
 import { Course } from '@prisma/client';
 import Image from 'next/image';
 import FileUpload from '@/components/shared/FileUpload';
 import { toast } from 'sonner';
+import { updateCourseImage } from '@/lib/actions/course.actions';
 
 interface CourseImageFormProps {
   initialData: Course;
@@ -19,6 +19,7 @@ const formSchema = z.object({
   image: z.string().min(1, {
     message: 'Image is required',
   }),
+  fileKey: z.string(),
 });
 
 const CourseImageForm = ({ initialData }: CourseImageFormProps) => {
@@ -30,12 +31,13 @@ const CourseImageForm = ({ initialData }: CourseImageFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateCourse({
-        id: initialData.id,
-        payload: { image: values.image },
+      await updateCourseImage({
+        courseId: initialData.id,
+        image: values.image,
+        fileKey: values.fileKey,
         pathname,
       });
-      toast.success('Successfully updated course');
+      toast.success('Successfully updated image');
       setIsEditing(false);
     } catch (error: any) {
       toast.error(error.message);
@@ -45,7 +47,7 @@ const CourseImageForm = ({ initialData }: CourseImageFormProps) => {
   return (
     <div className='mt-6 border bg-slate-100 rounded-md p-4'>
       <div className='font-medium flex items-center justify-between'>
-        Program Image
+        Course Image
         <Button onClick={toggleEdit} variant='ghost'>
           {isEditing && <>Cancel</>}
           {!isEditing && !initialData.image && (
@@ -82,9 +84,9 @@ const CourseImageForm = ({ initialData }: CourseImageFormProps) => {
         <div>
           <FileUpload
             endpoint='courseImage'
-            onChange={(url) => {
-              if (url) {
-                onSubmit({ image: url });
+            onChange={(url, fileKey) => {
+              if (url && fileKey) {
+                onSubmit({ image: url, fileKey });
               }
             }}
           />

@@ -96,7 +96,7 @@ const page = async ({ searchParams }: PageProps) => {
           ({ course, id, schedules, name, instructorSchedule, _count }) => (
             <Link
               key={id}
-              href={`/student/my-classes/${id}/sessions/${schedules[0].id}`}
+              href={`/student/my-classes/${id}/sessions`}
               className='group'
             >
               <Card className='shadow-lg hover:shadow-2xl' key={id}>

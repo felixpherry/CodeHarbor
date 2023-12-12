@@ -99,12 +99,12 @@ const studentRoutes: SidebarItemProps[] = [
   { label: 'Dashboard', icon: Layout, href: '/student/dashboard' },
   { label: 'My Classes', icon: GraduationCap, href: '/student/my-classes' },
   { label: 'Grades', icon: IconFileDescription, href: '/student/grades' },
+  { label: 'Schedule', icon: CalendarDays, href: '/instructor/schedule' },
 ];
 
 const instructorRoutes: SidebarItemProps[] = [
   { label: 'Dashboard', icon: Layout, href: '/instructor/dashboard' },
   { label: 'My Classes', icon: GraduationCap, href: '/instructor/my-classes' },
-  { label: 'Scoring', icon: BookCheck, href: '/instructor/scoring' },
   { label: 'Schedule', icon: CalendarDays, href: '/instructor/schedule' },
 ];
 
