@@ -626,9 +626,8 @@ model StudentScore {
   evaluation   CourseEvaluation @relation(fields: [evaluationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   evaluationId String
 
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-  statusChangedDate DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([studentId])
   @@index([classId])

@@ -283,21 +283,19 @@ const AddSessionReportForm = ({
                     className='w-14'
                     min={0}
                     max={100}
-                    disabled={!isStudentAttend(id)}
+                    disabled={!isStudentAttend(id) || disabled}
                     hideControls
                     value={getStudent(id)?.score}
                     onChange={(v) => handleFormChange(id, 'score', v)}
-                    readOnly={disabled}
                   />
                 </TableCell>
                 <TableCell>
                   <Textarea
-                    disabled={!isStudentAttend(id)}
+                    disabled={!isStudentAttend(id) || disabled}
                     value={getStudent(id)?.feedback}
                     onChange={(e) =>
                       handleFormChange(id, 'feedback', e.currentTarget.value)
                     }
-                    readOnly={disabled}
                   />
                 </TableCell>
               </TableRow>

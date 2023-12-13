@@ -10,6 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Input } from '@mantine/core';
+import { modals } from '@mantine/modals';
 import {
   Account,
   Class,
@@ -23,6 +24,7 @@ import {
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
+import AssessmentForm from './AssessmentForm';
 
 interface AssessmentTableProps {
   classData: {
@@ -90,6 +92,11 @@ const AssessmentTable = ({
     );
   };
 
+  const remainingEvaluations = evaluations.filter(
+    ({ id }) =>
+      !classData.studentScores.find(({ evaluationId }) => id === evaluationId)
+  );
+
   return (
     <div className='flex flex-col gap-3'>
       <div className='flex gap-8 items-center bg-white shadow rounded-sm p-5'>
@@ -103,32 +110,49 @@ const AssessmentTable = ({
           />
         </div>
         <Button
+          onClick={() =>
+            modals.open({
+              title: (
+                <h1 className='text-primary text-lg font-semibold'>
+                  Assessment
+                </h1>
+              ),
+              fullScreen: true,
+              children: (
+                <AssessmentForm
+                  evaluations={remainingEvaluations}
+                  students={students}
+                />
+              ),
+            })
+          }
           className='ml-auto'
           size='sm'
-          variant='primary-blue'>
+          variant='primary-blue'
+        >
           <Plus className='h-4 w-4' />
           Add
         </Button>
       </div>
       <div className='flex gap-8 items-center bg-white shadow rounded-sm p-5'>
-        <Table>
+        <Table className='border rounded-md'>
           <TableHeader>
             <TableRow>
-              <TableHead
-                rowSpan={2}
-                className='text-primary border'>
+              <TableHead rowSpan={2} className='text-primary'>
                 No.
               </TableHead>
-              <TableHead
-                rowSpan={2}
-                className='text-primary'>
+              <TableHead rowSpan={2} className='text-primary border-l'>
                 Student
+              </TableHead>
+              <TableHead rowSpan={2} className='text-primary border-l'>
+                Student ID
               </TableHead>
               {sessionsHeader.map((session) => (
                 <TableHead
                   key={session}
                   rowSpan={1}
-                  className='text-primary whitespace-nowrap'>
+                  className='text-primary whitespace-nowrap border-l'
+                >
                   {session}
                 </TableHead>
               ))}
@@ -136,7 +160,8 @@ const AssessmentTable = ({
                 <TableHead
                   key={id}
                   rowSpan={1}
-                  className='text-primary whitespace-nowrap'>
+                  className='text-primary whitespace-nowrap border-l'
+                >
                   {name}
                 </TableHead>
               ))}
@@ -145,49 +170,44 @@ const AssessmentTable = ({
               <TableHead
                 colSpan={sessionsHeader.length}
                 rowSpan={1}
-                className='text-primary font-bold whitespace-nowrap text-center'>
+                className='text-primary font-bold whitespace-nowrap text-center border-l'
+              >
                 {sessionReportEvaluation.weight}%
               </TableHead>
               {evaluations.map(({ weight, id }) => (
                 <TableHead
                   key={id}
                   rowSpan={1}
-                  className='text-primary font-bold whitespace-nowrap text-center'>
+                  className='text-primary font-bold whitespace-nowrap text-center border-l'
+                >
                   {weight}%
                 </TableHead>
               ))}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredStudents.map(({ id, account }, idx) => (
+            {filteredStudents.map(({ id, account, studentId }, idx) => (
               <TableRow key={id}>
-                <TableCell>{idx + 1}</TableCell>
-                <TableCell>
-                  <div className='flex gap-5 items-center'>
-                    <Image
-                      src={account.image || '/avatar-fallback.svg'}
-                      alt={account.name || ''}
-                      width={25}
-                      height={25}
-                      className='rounded-full'
-                    />
-                    <div className='flex flex-col'>
-                      <h3 className='text-primary text-sm font-semibold'>
-                        {account.name}
-                      </h3>
-                      <p className='text-muted-foreground text-xs'>
-                        {account.email}
-                      </p>
-                    </div>
-                  </div>
+                <TableCell className='border'>{idx + 1}</TableCell>
+                <TableCell className='text-primary whitespace-nowrap font-semibold border'>
+                  {account.name}
+                </TableCell>
+                <TableCell className='text-primary font-semibold border'>
+                  {studentId}
                 </TableCell>
                 {sessionsHeader.map((_, idx) => (
-                  <TableCell key={idx}>
+                  <TableCell
+                    key={idx}
+                    className='border text-center text-muted-foreground font-medium'
+                  >
                     {findSessionReportScore(id, idx)}
                   </TableCell>
                 ))}
                 {evaluations.map((evaluation) => (
-                  <TableCell key={evaluation.id}>
+                  <TableCell
+                    key={evaluation.id}
+                    className='border text-center text-muted-foreground font-medium'
+                  >
                     {findOtherEvaluationScore(id, evaluation.id)}
                   </TableCell>
                 ))}
