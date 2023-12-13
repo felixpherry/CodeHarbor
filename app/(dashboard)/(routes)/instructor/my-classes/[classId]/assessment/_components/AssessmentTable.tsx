@@ -22,6 +22,7 @@ import {
 } from '@prisma/client';
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
+import { useState } from 'react';
 
 interface AssessmentTableProps {
   classData: {
@@ -43,7 +44,15 @@ const AssessmentTable = ({
   classData,
   evaluationList,
 }: AssessmentTableProps) => {
+  const [search, setSearch] = useState('');
   const students = classData.studentCourses.map(({ student }) => student);
+  const filteredStudents = students.filter(
+    ({ account: { email, name, username } }) =>
+      email.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
+      name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
+      username?.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+  );
+
   const sessionsHeader: string[] = new Array(classData._count.schedules)
     .fill(0)
     .map((_, idx) => `Session ${idx + 1}`);
@@ -86,9 +95,17 @@ const AssessmentTable = ({
       <div className='flex gap-8 items-center bg-white shadow rounded-sm p-5'>
         <div className='flex gap-[10px] items-center'>
           <p className='text-muted-foreground font-bold'>Students</p>
-          <Input placeholder='Search students...' className='w-60' />
+          <Input
+            placeholder='Search students...'
+            className='w-60'
+            value={search}
+            onChange={(e) => setSearch(e.currentTarget.value)}
+          />
         </div>
-        <Button className='ml-auto' size='sm' variant='primary-blue'>
+        <Button
+          className='ml-auto'
+          size='sm'
+          variant='primary-blue'>
           <Plus className='h-4 w-4' />
           Add
         </Button>
@@ -97,25 +114,29 @@ const AssessmentTable = ({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead rowSpan={2} className='text-primary border'>
+              <TableHead
+                rowSpan={2}
+                className='text-primary border'>
                 No.
               </TableHead>
-              <TableHead rowSpan={2} className='text-primary w-96'>
+              <TableHead
+                rowSpan={2}
+                className='text-primary'>
                 Student
               </TableHead>
               {sessionsHeader.map((session) => (
                 <TableHead
+                  key={session}
                   rowSpan={1}
-                  className='text-primary whitespace-nowrap'
-                >
+                  className='text-primary whitespace-nowrap'>
                   {session}
                 </TableHead>
               ))}
-              {evaluations.map(({ name }) => (
+              {evaluations.map(({ name, id }) => (
                 <TableHead
+                  key={id}
                   rowSpan={1}
-                  className='text-primary whitespace-nowrap'
-                >
+                  className='text-primary whitespace-nowrap'>
                   {name}
                 </TableHead>
               ))}
@@ -124,50 +145,49 @@ const AssessmentTable = ({
               <TableHead
                 colSpan={sessionsHeader.length}
                 rowSpan={1}
-                className='text-primary font-bold whitespace-nowrap text-center'
-              >
+                className='text-primary font-bold whitespace-nowrap text-center'>
                 {sessionReportEvaluation.weight}%
               </TableHead>
-              {evaluations.map(({ weight }) => (
+              {evaluations.map(({ weight, id }) => (
                 <TableHead
+                  key={id}
                   rowSpan={1}
-                  className='text-primary font-bold whitespace-nowrap text-center'
-                >
+                  className='text-primary font-bold whitespace-nowrap text-center'>
                   {weight}%
                 </TableHead>
               ))}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {students.map(({ id, account }, idx) => (
+            {filteredStudents.map(({ id, account }, idx) => (
               <TableRow key={id}>
                 <TableCell>{idx + 1}</TableCell>
-                <TableCell className='w-96'>
-                  <div className='block'>
-                    <div className='flex gap-5 items-center'>
-                      <Image
-                        src={account.image || '/avatar-fallback.svg'}
-                        alt={account.name || ''}
-                        width={25}
-                        height={25}
-                        className='rounded-full'
-                      />
-                      <div className='flex flex-col'>
-                        <h3 className='text-primary text-sm font-semibold'>
-                          {account.name}
-                        </h3>
-                        <p className='text-muted-foreground text-xs'>
-                          {account.email}
-                        </p>
-                      </div>
+                <TableCell>
+                  <div className='flex gap-5 items-center'>
+                    <Image
+                      src={account.image || '/avatar-fallback.svg'}
+                      alt={account.name || ''}
+                      width={25}
+                      height={25}
+                      className='rounded-full'
+                    />
+                    <div className='flex flex-col'>
+                      <h3 className='text-primary text-sm font-semibold'>
+                        {account.name}
+                      </h3>
+                      <p className='text-muted-foreground text-xs'>
+                        {account.email}
+                      </p>
                     </div>
                   </div>
                 </TableCell>
                 {sessionsHeader.map((_, idx) => (
-                  <TableCell>{findSessionReportScore(id, idx)}</TableCell>
+                  <TableCell key={idx}>
+                    {findSessionReportScore(id, idx)}
+                  </TableCell>
                 ))}
                 {evaluations.map((evaluation) => (
-                  <TableCell>
+                  <TableCell key={evaluation.id}>
                     {findOtherEvaluationScore(id, evaluation.id)}
                   </TableCell>
                 ))}
