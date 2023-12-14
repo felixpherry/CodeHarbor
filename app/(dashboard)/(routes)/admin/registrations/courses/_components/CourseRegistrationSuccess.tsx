@@ -17,7 +17,6 @@ const CourseRegistrationSuccess = ({
   payload,
 }: CourseRegistrationSuccessProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  console.log({ payload });
   const handleCreateAccount = async () => {
     try {
       setIsLoading(true);

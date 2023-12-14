@@ -17,6 +17,9 @@ interface ClassLeaderboardPageProps {
   classId: string;
 }
 
+type EvaluationID = string;
+type EvaluationWeight = number;
+
 const ClassLeaderboardPage = async ({ classId }: ClassLeaderboardPageProps) => {
   const session = (await getCurrentUser()) as SessionInterface;
 
@@ -42,23 +45,33 @@ const ClassLeaderboardPage = async ({ classId }: ClassLeaderboardPageProps) => {
       ],
       id: classId,
     },
+    include: {
+      studentScores: true,
+      _count: {
+        select: {
+          schedules: true,
+        },
+      },
+      course: {
+        include: {
+          evaluations: true,
+        },
+      },
+    },
   });
 
   if (!classData) return notFound();
 
-  const sessionReports = await db.sessionReport.groupBy({
-    _sum: {
-      score: true,
-    },
-    _avg: {
-      score: true,
-    },
-    by: ['studentId'],
-    orderBy: {
-      _sum: {
-        score: 'desc',
-      },
-    },
+  const evaluationsMap = classData.course.evaluations.reduce((acc, curr) => {
+    acc[curr.id] = curr.weight;
+    return acc;
+  }, {} as Record<EvaluationID, EvaluationWeight>);
+
+  const sessionReportEvaluation = classData.course.evaluations.find(
+    (evaluation) => evaluation.isSessionReport
+  );
+
+  const sessionReports = await db.sessionReport.findMany({
     where: {
       schedule: {
         classId,
@@ -79,16 +92,34 @@ const ClassLeaderboardPage = async ({ classId }: ClassLeaderboardPageProps) => {
     },
   });
 
-  const leaderboard = sessionReports.map(({ _sum, studentId, _avg }) => {
-    const student = students.find(({ id }) => id === studentId);
-
-    return {
-      name: student!.account.name,
-      student: student,
-      totalScore: _sum.score,
-      avgScore: Math.round(_avg.score || 0),
-    };
-  });
+  const leaderboard = students
+    .map((student) => {
+      const avgScore =
+        classData.studentScores.reduce(
+          (acc, curr) =>
+            acc +
+            (curr.studentId === student.id
+              ? (curr.score * (evaluationsMap[curr.evaluationId] || 0)) / 100
+              : 0),
+          0
+        ) +
+        sessionReports.reduce(
+          (acc, curr) =>
+            acc +
+            (curr.studentId === student.id
+              ? ((curr.score / classData._count.schedules) *
+                  (sessionReportEvaluation?.weight || 0)) /
+                100
+              : 0),
+          0
+        );
+      return {
+        name: student!.account.name,
+        student: student,
+        avgScore,
+      };
+    })
+    .sort((a, b) => b.avgScore - a.avgScore);
 
   return (
     <div className='p-5 rounded-md shadow bg-white'>
@@ -99,12 +130,13 @@ const ClassLeaderboardPage = async ({ classId }: ClassLeaderboardPageProps) => {
               <TableHead className='text-primary'>Rank</TableHead>
               <TableHead className='text-primary'>Name</TableHead>
               <TableHead className='text-primary'>Student ID</TableHead>
-              <TableHead className='text-primary'>Total Score</TableHead>
-              <TableHead className='text-primary'>Average</TableHead>
+              <TableHead className='text-primary text-center'>
+                Average
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {leaderboard.map(({ name, student, totalScore, avgScore }, idx) => (
+            {leaderboard.map(({ name, student, avgScore }, idx) => (
               <TableRow key={student?.studentId}>
                 <TableCell>{idx + 1}</TableCell>
                 <TableCell>
@@ -129,11 +161,8 @@ const ClassLeaderboardPage = async ({ classId }: ClassLeaderboardPageProps) => {
                 <TableCell className='font-semibold'>
                   {student?.studentId}
                 </TableCell>
-                <TableCell>
-                  <Badge variant='sky-lighten'>{totalScore}</Badge>
-                </TableCell>
-                <TableCell>
-                  <Badge variant='emerald'>{avgScore}</Badge>
+                <TableCell className='text-center'>
+                  <Badge variant='sky-lighten'>{Math.round(avgScore)}</Badge>
                 </TableCell>
               </TableRow>
             ))}

@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { SessionInterface } from '@/types';
 import {
   BookCheck,
+  BookCopy,
   CalendarDays,
   LucideIcon,
   MessageCircle,
@@ -36,6 +37,11 @@ const ClassDetailTabs = ({ classId, session }: ClassDetailTabsProps) => {
       label: 'Chat',
       href: `/student/my-classes/${classId}/chat`,
       icon: MessageCircle,
+    },
+    {
+      label: 'Score',
+      href: `/student/my-classes/${classId}/score`,
+      icon: BookCopy,
     },
     {
       label: 'Members',

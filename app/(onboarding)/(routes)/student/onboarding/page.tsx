@@ -21,8 +21,6 @@ const Page = async () => {
     student: Student;
   } & Account;
 
-  console.log({ data });
-
   if (!data || !data.student) return notFound();
 
   return (

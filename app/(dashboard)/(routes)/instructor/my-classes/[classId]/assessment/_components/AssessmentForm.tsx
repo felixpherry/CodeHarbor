@@ -21,13 +21,20 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { NumberInput, Select } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { Account, CourseEvaluation, Student } from '@prisma/client';
-import { GraduationCap, Loader2, Save } from 'lucide-react';
+import {
+  AlertTriangle,
+  FileWarning,
+  GraduationCap,
+  Loader2,
+  Save,
+} from 'lucide-react';
 import Image from 'next/image';
 import { useParams, usePathname } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 import { addStudentScores } from '../_actions';
+import { ConfirmModal } from '@/components/modals/ConfirmModal';
 
 interface AssessmentFormProps {
   evaluations: CourseEvaluation[];
@@ -101,6 +108,15 @@ const AssessmentForm = ({ evaluations, students }: AssessmentFormProps) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className='flex flex-col gap-5 py-5'
       >
+        <div className='p-3 bg-yellow-200 flex items-center gap-3'>
+          <div className='flex items-center'>
+            <AlertTriangle />
+          </div>
+          <p className='text-zinc-600'>
+            <b>Assessments</b> can only be submitted <b>ONCE</b> for each
+            evaluations. No changes allowed after submission.
+          </p>
+        </div>
         <FormField
           control={form.control}
           name='evaluationId'
@@ -110,10 +126,16 @@ const AssessmentForm = ({ evaluations, students }: AssessmentFormProps) => {
                 <div className='flex items-center gap-5'>
                   <div className='text-zinc-500 text-sm'>Evaluation</div>
                   <Select
-                    placeholder='Choose evaluation'
+                    placeholder={
+                      evaluationOptions.length
+                        ? 'Choose evaluation'
+                        : 'No evaluations'
+                    }
                     data={evaluationOptions}
                     checkIconPosition='right'
                     {...field}
+                    unselectable='on'
+                    disabled={!evaluationOptions.length}
                   />
                 </div>
               </FormControl>
@@ -187,7 +209,6 @@ const AssessmentForm = ({ evaluations, students }: AssessmentFormProps) => {
                                   field.value[id] === undefined
                                 }
                                 disabled={!form.getValues('evaluationId')}
-                                unselectable='off'
                               />
                             </FormControl>
                             {field.value[id] === undefined && <FormMessage />}
@@ -208,16 +229,18 @@ const AssessmentForm = ({ evaluations, students }: AssessmentFormProps) => {
             size='sm'
             variant='light'
           >
-            Cancel
+            Close
           </Button>
-          <Button size='sm'>
-            {isSubmitting ? (
-              <Loader2 className='h-4 w-4 animate-spin' />
-            ) : (
-              <Save className='w-4 h-4' />
-            )}
-            Save
-          </Button>
+          {evaluationOptions.length > 0 && (
+            <Button size='sm'>
+              {isSubmitting ? (
+                <Loader2 className='h-4 w-4 animate-spin' />
+              ) : (
+                <Save className='w-4 h-4' />
+              )}
+              Save
+            </Button>
+          )}
         </div>
       </form>
     </Form>

@@ -42,6 +42,11 @@ interface AssessmentTableProps {
   evaluationList: CourseEvaluation[];
 }
 
+type EvaluationID = string;
+type EvaluationWeight = number;
+type StudentID = string;
+type SessionReports = ({ schedule: Schedule } & SessionReport)[];
+
 const AssessmentTable = ({
   classData,
   evaluationList,
@@ -62,6 +67,12 @@ const AssessmentTable = ({
   const evaluations = evaluationList.filter(
     ({ isSessionReport }) => !isSessionReport
   );
+
+  const evaluationsMap = evaluations.reduce((acc, curr) => {
+    acc[curr.id] = curr.weight;
+    return acc;
+  }, {} as Record<EvaluationID, EvaluationWeight>);
+
   const sessionReportEvaluation = evaluationList.find(
     ({ isSessionReport }) => isSessionReport
   )!;
@@ -70,7 +81,7 @@ const AssessmentTable = ({
     acc[id] = sessionReports;
 
     return acc;
-  }, {} as Record<string, ({ schedule: Schedule } & SessionReport)[]>);
+  }, {} as Record<StudentID, SessionReports>);
 
   const findSessionReportScore = (studentId: string, sessionNumber: number) => {
     return (
@@ -96,6 +107,22 @@ const AssessmentTable = ({
     ({ id }) =>
       !classData.studentScores.find(({ evaluationId }) => id === evaluationId)
   );
+
+  const getAvgScore = (id: string) => {
+    return Math.round(
+      classData.studentScores
+        .filter((score) => score.studentId === id)
+        .reduce((acc, curr) => {
+          return (
+            acc + (curr.score * (evaluationsMap[curr.evaluationId] || 0)) / 100
+          );
+        }, 0) +
+        ((sessionReports[id].reduce((acc, curr) => acc + curr.score, 0) /
+          classData._count.schedules) *
+          sessionReportEvaluation.weight) /
+          100
+    );
+  };
 
   return (
     <div className='flex flex-col gap-3'>
@@ -165,6 +192,9 @@ const AssessmentTable = ({
                   {name}
                 </TableHead>
               ))}
+              <TableHead rowSpan={2} className='text-primary border-l'>
+                Average
+              </TableHead>
             </TableRow>
             <TableRow>
               <TableHead
@@ -211,6 +241,9 @@ const AssessmentTable = ({
                     {findOtherEvaluationScore(id, evaluation.id)}
                   </TableCell>
                 ))}
+                <TableCell className='text-primary font-semibold border text-center'>
+                  {getAvgScore(id)}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -37,7 +37,7 @@ const ClassMemberCard = ({
             />
             <h3 className='text-primary text-lg font-bold'>{name}</h3>
             {studentId && type === 'STUDENT' && (
-              <p className='text-primary text-base'>{studentId}</p>
+              <p className='text-primary text-base font-medium'>{studentId}</p>
             )}
             <p className='text-muted-foreground text-base'>{email}</p>
           </div>

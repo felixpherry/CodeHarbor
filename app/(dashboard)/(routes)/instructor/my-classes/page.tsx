@@ -61,8 +61,6 @@ const page = async ({ searchParams }: PageProps) => {
     },
   });
 
-  console.log({ classes });
-
   const pastPeriods = await db.period.findMany({
     where: {
       endDate: {

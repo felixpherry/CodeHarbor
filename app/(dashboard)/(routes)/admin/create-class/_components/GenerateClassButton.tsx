@@ -107,7 +107,6 @@ const GenerateClassForm = () => {
           }
         }
       }
-      console.log({ classes });
       setMappedClasses(classes);
 
       modals.closeAll();
