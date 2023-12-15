@@ -5,7 +5,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -81,9 +80,15 @@ const LogoForm = ({ initialData }: LogoFormProps) => {
     setFiles([]);
   };
 
+  const handleResetImage = () => {
+    form.setValue('image', initialData?.image || '');
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 w-full'>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className='space-y-4 w-full'>
         <FormField
           control={form.control}
           name='image'
@@ -95,6 +100,7 @@ const LogoForm = ({ initialData }: LogoFormProps) => {
                     onFileChange={field.onChange}
                     value={field.value}
                     setFiles={setFiles}
+                    handleResetImage={handleResetImage}
                   />
                 ) : (
                   <div className='rounded-full shadow h-32 w-32 relative'>
@@ -109,8 +115,7 @@ const LogoForm = ({ initialData }: LogoFormProps) => {
                       onClick={handleDeleteImage}
                       className='bg-rose-500 text-white p-1 rounded-full absolute -top-2 -right-0 shadow-sm'
                       type='button'
-                      disabled={isSubmitting}
-                    >
+                      disabled={isSubmitting}>
                       <X className='h-4 w-4' />
                     </button>
                   </div>
@@ -122,7 +127,9 @@ const LogoForm = ({ initialData }: LogoFormProps) => {
         />
 
         <div className='flex justify-start'>
-          <Button size='sm' disabled={isSubmitting}>
+          <Button
+            size='sm'
+            disabled={isSubmitting}>
             {isSubmitting ? (
               <Loader2 className='h-4 w-4 animate-spin' />
             ) : (

@@ -6,17 +6,20 @@ import { IconPhoto, IconUpload, IconX } from '@tabler/icons-react';
 import { toast } from 'sonner';
 import { convertToBase64, isBase64DataURL } from '@/lib/utils';
 import { useState } from 'react';
+import { X } from 'lucide-react';
 
 interface HeroImageDropzoneProps {
   onFileChange: (value: string) => void;
   setFiles: (files: File[]) => void;
   value: string;
+  handleResetImage: () => void;
 }
 
 const HeroImageDropzone = ({
   onFileChange,
   setFiles,
   value,
+  handleResetImage,
 }: HeroImageDropzoneProps) => {
   const [fileUrl, setFileUrl] = useState(!isBase64DataURL(value) ? value : '');
   const handleUploadFile = async (files: File[]) => {
@@ -36,26 +39,25 @@ const HeroImageDropzone = ({
     toast.error('File size exceeds limit allowed');
   };
 
-  const handleUploadLink = () => {
-    setFiles([]);
-    onFileChange(fileUrl);
-  };
-
   return (
     <div className='p-3 rounded-md border flex flex-col justify-center'>
+      <div className='ml-auto'>
+        <X
+          onClick={handleResetImage}
+          className='h-4 w-4 cursor-pointer'
+        />
+      </div>
       <Dropzone
         onDrop={handleUploadFile}
         onReject={handleRejectFile}
         maxSize={1024 ** 2}
         accept={['image/*']}
-        multiple={false}
-      >
+        multiple={false}>
         <Group
           justify='center'
           gap='xl'
           mih={220}
-          style={{ pointerEvents: 'none' }}
-        >
+          style={{ pointerEvents: 'none' }}>
           <Dropzone.Accept>
             <IconUpload
               style={{
@@ -88,10 +90,16 @@ const HeroImageDropzone = ({
           </Dropzone.Idle>
 
           <div>
-            <Text size='xl' inline>
+            <Text
+              size='xl'
+              inline>
               Drag image here or click to select file
             </Text>
-            <Text size='sm' c='dimmed' inline mt={7}>
+            <Text
+              size='sm'
+              c='dimmed'
+              inline
+              mt={7}>
               Image should not exceed 1mb
             </Text>
           </div>

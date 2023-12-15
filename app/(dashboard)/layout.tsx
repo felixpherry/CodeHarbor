@@ -26,7 +26,7 @@ const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
         </div>
         <main className='md:pl-64 pt-[80px] h-full'>
           {children}
-          <Footer />
+          {/* <Footer /> */}
         </main>
       </div>
     </SocketProvider>

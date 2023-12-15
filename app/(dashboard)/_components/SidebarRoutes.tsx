@@ -71,27 +71,9 @@ const adminRoutes: SidebarItemProps[] = [
     href: '/admin/create-class/students',
   },
   {
-    label: 'Layout',
+    label: 'Layouts',
     icon: IconTableOptions,
-    initiallyOpened: false,
-    links: [
-      {
-        label: 'Hero',
-        href: '/admin/hero',
-      },
-      {
-        label: 'FAQ',
-        href: '/admin/faq',
-      },
-      {
-        label: 'Categories',
-        href: '/admin/categories',
-      },
-      {
-        label: 'Logo',
-        href: '/admin/logo',
-      },
-    ],
+    href: '/admin/layouts/hero',
   },
 ];
 
@@ -121,7 +103,10 @@ const SidebarRoutes = ({ session }: { session: SessionInterface }) => {
   return (
     <div className='py-8'>
       {routes.map((item) => (
-        <SidebarItem {...item} key={item.label} />
+        <SidebarItem
+          {...item}
+          key={item.label}
+        />
       ))}
     </div>
   );
