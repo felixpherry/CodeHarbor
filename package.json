@@ -13,6 +13,8 @@
   "dependencies": {
     "@hello-pangea/dnd": "^16.5.0",
     "@hookform/resolvers": "^3.3.2",
+    "@livekit/components-react": "^1.5.1",
+    "@livekit/components-styles": "^1.0.8",
     "@mantine/carousel": "^7.3.1",
     "@mantine/code-highlight": "^7.3.1",
     "@mantine/core": "^7.3.1",
@@ -66,6 +68,8 @@
     "file-saver": "^2.0.5",
     "framer-motion": "^10.16.16",
     "jsonwebtoken": "^9.0.2",
+    "livekit-client": "^1.15.4",
+    "livekit-server-sdk": "^1.2.7",
     "lucide-react": "^0.292.0",
     "luxon": "^3.4.4",
     "mime-types": "^2.1.35",

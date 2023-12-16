@@ -11,6 +11,7 @@ import {
   MessageCircle,
   Trophy,
   Users,
+  Video,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -32,6 +33,11 @@ const ClassDetailTabs = ({ classId, session }: ClassDetailTabsProps) => {
       label: 'Sessions',
       href: `/student/my-classes/${classId}/sessions`,
       icon: CalendarDays,
+    },
+    {
+      label: 'Meeting',
+      href: `/student/my-classes/${classId}/meeting`,
+      icon: Video,
     },
     {
       label: 'Chat',
@@ -60,6 +66,11 @@ const ClassDetailTabs = ({ classId, session }: ClassDetailTabsProps) => {
       label: 'Sessions',
       href: `/instructor/my-classes/${classId}/sessions`,
       icon: CalendarDays,
+    },
+    {
+      label: 'Meeting',
+      href: `/instructor/my-classes/${classId}/meeting`,
+      icon: Video,
     },
     {
       label: 'Chat',

@@ -40,13 +40,15 @@ const LayoutTabs = () => {
     <div className='p-5 bg-white flex flex-col gap-0 w-full md:w-52 shadow'>
       {tabs.map(({ icon: Icon, label, url }) => (
         <Link
+          key={label}
           href={url}
           className={cn(
             'flex items-center gap-2 p-3 rounded-[5px]',
             pathname.includes(url)
               ? 'bg-primary-blue text-white'
               : 'text-zinc-600 hover:bg-sky-200/20'
-          )}>
+          )}
+        >
           <Icon className='h-4 w-4' />
           {label}
         </Link>
