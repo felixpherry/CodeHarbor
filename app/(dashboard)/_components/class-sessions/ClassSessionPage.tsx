@@ -130,7 +130,8 @@ const ClassSessionPage = async ({ classId, sessionId }: PageProps) => {
                 sessionId === schedule.id
                   ? 'border border-b-0 bg-primary-blue text-white font-semibold'
                   : 'bg-[#E4EEFC]'
-              )}>
+              )}
+            >
               Session {schedule.sessionNumber}
             </Link>
           ))}
@@ -179,7 +180,8 @@ const ClassSessionPage = async ({ classId, sessionId }: PageProps) => {
                     <CardContent className='flex justify-center items-center space-x-4'>
                       <Badge
                         className='items-center'
-                        style={{ backgroundColor: gradeCategory?.hexCode }}>
+                        style={{ backgroundColor: gradeCategory?.hexCode }}
+                      >
                         <ScaleIcon className='h-3.5 w-3.5 -translate-x-1' />
                         {gradeCategory?.category}
                       </Badge>
@@ -189,15 +191,12 @@ const ClassSessionPage = async ({ classId, sessionId }: PageProps) => {
                     </CardContent>
                     <CardContent className='mt-4 px-4 py-2 border-t border-zinc-300'>
                       <CardTitle className='text-md'>Feedback</CardTitle>
-                      <CardDescription className='text-sm text-gray-600 dark:text-gray-400'>
+                      <CardDescription className='text-sm text-gray-600'>
                         {sessionReport.feedback || '-'}
                       </CardDescription>
                     </CardContent>
                     <CardFooter className='flex justify-center py-4'>
-                      <Button
-                        size='sm'
-                        variant='outline'
-                        asChild>
+                      <Button size='sm' variant='outline' asChild>
                         <Link href={`/student/my-classes/${classId}/score`}>
                           View All
                         </Link>
@@ -221,19 +220,25 @@ const ClassSessionPage = async ({ classId, sessionId }: PageProps) => {
                         'flex flex-col gap-1 w-full py-3',
                         session.user.role === 'INSTRUCTOR' &&
                           'border-y-[1px] border-white'
-                      )}>
+                      )}
+                    >
                       <h4 className='text-base font-normal px-3'>Resources</h4>
                       <a
-                        href={scheduleData.meetingUrl || ''}
+                        href={
+                          scheduleData.meetingUrl ||
+                          `/${session.user.role.toLocaleLowerCase()}/my-classes/${classId}/meeting`
+                        }
                         target='_blank'
-                        className='flex items-center gap-3 p-3 rounded-md hover:bg-sky-200/20'>
+                        className='flex items-center gap-3 p-3 rounded-md hover:bg-sky-200/20'
+                      >
                         <Presentation className='h-4 w-4' />
                         <span>Meeting URL</span>
                       </a>
                       <a
                         href={scheduleData.recordingUrl || ''}
                         target='_blank'
-                        className='flex items-center gap-3 p-3 rounded-md hover:bg-sky-200/20'>
+                        className='flex items-center gap-3 p-3 rounded-md hover:bg-sky-200/20'
+                      >
                         <Video className='h-4 w-4' />
                         <span>Recording URL</span>
                       </a>
@@ -241,11 +246,10 @@ const ClassSessionPage = async ({ classId, sessionId }: PageProps) => {
                         ({ id, filename, fileUrl }) => (
                           <div
                             key={id}
-                            className='flex items-center gap-3 p-3 rounded-md hover:bg-sky-200/20'>
+                            className='flex items-center gap-3 p-3 rounded-md hover:bg-sky-200/20'
+                          >
                             <File className='h-4 w-4' />
-                            <a
-                              href={fileUrl}
-                              target='_blank'>
+                            <a href={fileUrl} target='_blank'>
                               {filename}
                             </a>
                           </div>
@@ -254,12 +258,11 @@ const ClassSessionPage = async ({ classId, sessionId }: PageProps) => {
                       {scheduleData.otherAttachments.map((attachment) => (
                         <div
                           key={attachment.id}
-                          className='flex items-center justify-between gap-3 p-3 rounded-md hover:bg-sky-200/20'>
+                          className='flex items-center justify-between gap-3 p-3 rounded-md hover:bg-sky-200/20'
+                        >
                           <div className='flex items-center gap-3'>
                             <File className='h-4 w-4' />
-                            <a
-                              href={attachment.fileUrl}
-                              target='_blank'>
+                            <a href={attachment.fileUrl} target='_blank'>
                               {attachment.name}
                             </a>
                           </div>

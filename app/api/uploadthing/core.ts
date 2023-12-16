@@ -119,6 +119,16 @@ export const fileRouter = {
 
       console.log('file url', file.url);
     }),
+  chatAttachment: f({
+    image: { maxFileSize: '1MB', maxFileCount: 1 },
+    pdf: { maxFileSize: '1MB', maxFileCount: 1 },
+  })
+    .middleware(handleAuth)
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log('Upload complete for userId:', metadata.userId);
+
+      console.log('file url', file.url);
+    }),
 } satisfies FileRouter;
 
 export type fileRouter = typeof fileRouter;

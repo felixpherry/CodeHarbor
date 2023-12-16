@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/session';
 import { SessionInterface } from '@/types';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 interface PageParams {
   params: { classId: string };
@@ -24,14 +24,27 @@ const Page = async ({ params: { classId } }: PageParams) => {
       },
     },
     include: {
-      schedules: true,
+      schedules: {
+        orderBy: {
+          scheduleDate: 'asc',
+        },
+      },
     },
   });
 
   if (!classData) return redirect('/student/my-classes');
-  return redirect(
-    `/student/my-classes/${classId}/sessions/${classData.schedules[0].id}`
-  );
+
+  const currSchedule =
+    classData?.schedules.find(
+      ({ scheduleDate }) =>
+        new Date(scheduleDate).getTime() > new Date().getTime()
+    ) || classData?.schedules.slice().pop();
+
+  console.log({ currSchedule });
+
+  if (!currSchedule) return notFound();
+
+  return redirect(`/student/my-classes/${classId}/sessions/${currSchedule.id}`);
 };
 
 export default Page;

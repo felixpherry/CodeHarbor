@@ -21,13 +21,25 @@ const Page = async ({ params: { classId } }: PageParams) => {
       },
     },
     include: {
-      schedules: true,
+      schedules: {
+        orderBy: {
+          scheduleDate: 'asc',
+        },
+      },
     },
   });
 
   if (!classData) return redirect('/instructor/my-classes');
+
+  const currSchedule =
+    classData?.schedules.find(
+      ({ scheduleDate }) =>
+        new Date(scheduleDate).getTime() > new Date().getTime()
+    ) || classData?.schedules.slice().pop();
+
+  if (!currSchedule) return notFound();
   return redirect(
-    `/instructor/my-classes/${classId}/sessions/${classData.schedules[0].id}`
+    `/instructor/my-classes/${classId}/sessions/${currSchedule.id}`
   );
 };
 

@@ -68,7 +68,7 @@ const SelectedSchedules = ({
     form.setValue('endTime', selected.scheduleTime.split(' - ')[1] || '');
     form.setValue('meetingUrl', selected.meetingUrl || '');
     form.setValue('recordingUrl', selected.recordingUrl || '');
-  }, [selected]);
+  }, [selected, form]);
 
   const onSubmit = (values: z.infer<typeof scheduleFormSchema>) => {
     setIsEditing(false);

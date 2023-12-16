@@ -85,7 +85,7 @@ const AddSessionReportForm = ({
         })) || []
       );
     }
-  }, [students]);
+  }, [students, scheduleId, sessionReports]);
 
   const pathname = usePathname()!;
 
