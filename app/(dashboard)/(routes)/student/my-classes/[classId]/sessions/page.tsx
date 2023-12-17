@@ -40,8 +40,6 @@ const Page = async ({ params: { classId } }: PageParams) => {
         new Date(scheduleDate).getTime() > new Date().getTime()
     ) || classData?.schedules.slice().pop();
 
-  console.log({ currSchedule });
-
   if (!currSchedule) return notFound();
 
   return redirect(`/student/my-classes/${classId}/sessions/${currSchedule.id}`);

@@ -14,7 +14,6 @@ interface LayoutProps {
 }
 
 const Layout = async ({ children, params: { classId } }: LayoutProps) => {
-  console.log(classId);
   const classData = await db.class.findUnique({
     where: {
       id: classId,

@@ -80,8 +80,8 @@ const UserAuthForm = ({ className, ...props }: UserAuthFormProps) => {
         redirect: false,
         callbackUrl: '/',
       });
-    } catch (error) {
-      console.log({ error });
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 

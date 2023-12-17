@@ -223,17 +223,24 @@ const ClassSessionPage = async ({ classId, sessionId }: PageProps) => {
                       )}
                     >
                       <h4 className='text-base font-normal px-3'>Resources</h4>
-                      <a
-                        href={
-                          scheduleData.meetingUrl ||
-                          `/${session.user.role.toLocaleLowerCase()}/my-classes/${classId}/meeting`
-                        }
-                        target='_blank'
-                        className='flex items-center gap-3 p-3 rounded-md hover:bg-sky-200/20'
-                      >
-                        <Presentation className='h-4 w-4' />
-                        <span>Meeting URL</span>
-                      </a>
+                      {scheduleData.meetingUrl ? (
+                        <a
+                          href={scheduleData.meetingUrl}
+                          target='_blank'
+                          className='flex items-center gap-3 p-3 rounded-md hover:bg-sky-200/20'
+                        >
+                          <Presentation className='h-4 w-4' />
+                          <span>Meeting URL</span>
+                        </a>
+                      ) : (
+                        <Link
+                          href={`/${session.user.role.toLocaleLowerCase()}/my-classes/${classId}/meeting`}
+                          className='flex items-center gap-3 p-3 rounded-md hover:bg-sky-200/20'
+                        >
+                          <Presentation className='h-4 w-4' />
+                          <span>Meeting URL</span>
+                        </Link>
+                      )}
                       <a
                         href={scheduleData.recordingUrl || ''}
                         target='_blank'

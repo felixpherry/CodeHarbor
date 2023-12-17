@@ -4,7 +4,15 @@ import { fetchAccountDetail } from '@/lib/actions/account.actions';
 import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/session';
 import { SessionInterface } from '@/types';
-import { Code2, Mail } from 'lucide-react';
+import {
+  Calendar,
+  CalendarX2,
+  Clock,
+  Code2,
+  Mail,
+  ServerIcon,
+} from 'lucide-react';
+import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -63,6 +71,44 @@ const Page = async () => {
       schedules: true,
     },
   });
+
+  const schedules = await db.schedule.findMany({
+    where: {
+      class: {
+        studentCourses: {
+          some: {
+            student: {
+              accountId: session.user.id,
+            },
+          },
+        },
+      },
+      scheduleDate: new Date(),
+    },
+    include: {
+      class: {
+        include: {
+          course: true,
+        },
+      },
+    },
+    orderBy: {
+      scheduleTime: 'asc',
+    },
+  });
+
+  const getProgress = (id: string) => {
+    const classData = classes.find((classData) => classData.id === id);
+    if (!classData || classData.schedules.length === 0) return 0;
+    return (
+      (classData.schedules.filter(
+        ({ scheduleDate }) => scheduleDate.getTime() < new Date().getTime()
+      ).length /
+        classData.schedules.length) *
+      100
+    );
+  };
+
   return (
     <div className='flex flex-col gap-5 font-josefin container max-w-7xl p-0'>
       <h1 className='font-extrabold text-3xl'>Dashboard</h1>
@@ -91,6 +137,104 @@ const Page = async () => {
               />
             </div>
           </div>
+          <div className='flex flex-col gap-5'>
+            <div className='flex justify-between items-center'>
+              <h2 className='font-extrabold text-2xl'>My Schedule</h2>
+              <Link
+                href='/student/schedule'
+                className='text-primary-blue hover:underline text-sm font-medium'
+              >
+                View All
+              </Link>
+            </div>
+            {schedules.length === 0 ? (
+              <div className='flex items-center justify-center flex-col gap-5 py-5 flex-1 bg-white'>
+                <CalendarX2 className='text-muted-foreground h-24 w-24' />
+                <div className='flex flex-col gap-1 justify-center items-center'>
+                  <h3 className='text-primary font-semibold text-xl'>
+                    No Schedule
+                  </h3>
+                  <p className='text-muted-foreground'>
+                    There is no schedule available for today.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className='flex flex-col w-full gap-3 bg-white'>
+                {schedules
+                  .slice(0, 2)
+                  .map(
+                    ({
+                      class: classData,
+                      id,
+                      scheduleDate,
+                      scheduleTime,
+                      sessionNumber,
+                      meetingUrl,
+                    }) => (
+                      <div
+                        key={id}
+                        className='flex flex-col gap-2 p-5 border rounded-md shadow w-full hover:shadow-lg'
+                      >
+                        <h3 className='font-bold text-primary text-xl'>
+                          {classData.course.code} - {classData.course.name}
+                        </h3>
+                        <p className='font-semibold text-base text-muted-foreground'>
+                          {classData.name}
+                        </p>
+                        <div className='flex items-center gap-1 text-primary'>
+                          <ServerIcon className='w-4 h-4' />
+                          Session {sessionNumber}
+                        </div>
+                        <div className='flex items-center gap-1 text-primary'>
+                          <Clock className='w-4 h-4' />
+                          Time: {scheduleTime}
+                        </div>
+                        <div className='flex items-center gap-1 text-primary'>
+                          <Calendar className='w-4 h-4' />
+                          Date:{' '}
+                          {moment
+                            .utc(scheduleDate, 'DD-MM-YYYY')
+                            .format('DD MMM YYYY')}
+                        </div>
+                        <div className='flex gap-3 items-center'>
+                          <Button
+                            size='sm'
+                            variant='primary-blue'
+                            className='w-fit mt-1'
+                          >
+                            {!meetingUrl ? (
+                              <Link
+                                href={`/student/my-classes/${classData.id}/meeting`}
+                              >
+                                Join Meeting
+                              </Link>
+                            ) : (
+                              <a href={meetingUrl} target='_blank'>
+                                Join Meeting
+                              </a>
+                            )}
+                          </Button>
+                          <Button
+                            size='sm'
+                            variant='primary-blue-outline'
+                            className='w-fit mt-1'
+                            asChild
+                          >
+                            <Link
+                              href={`/student/my-classes/${classData.id}/sessions/${id}`}
+                            >
+                              Details
+                            </Link>
+                          </Button>
+                        </div>
+                      </div>
+                    )
+                  )}
+              </div>
+            )}
+          </div>
+
           <div className='flex flex-col gap-5'>
             <div className='flex justify-between items-center'>
               <h2 className='font-extrabold text-2xl'>My Classes</h2>
@@ -129,7 +273,12 @@ const Page = async () => {
                       <CardFooter>
                         <div className='flex flex-col w-full gap-3'>
                           <div className='h-3 bg-secondary rounded-full'>
-                            <div className='h-full w-1/2 bg-primary-blue rounded-full'></div>
+                            <div
+                              className='h-full bg-primary-blue rounded-full'
+                              style={{
+                                width: `${getProgress(id)}%`,
+                              }}
+                            />
                           </div>
                           <div className='flex justify-between w-full'>
                             <div className='flex gap-1 items-center'>
@@ -151,7 +300,9 @@ const Page = async () => {
                               </p>
                             </div>
                             <div className='flex flex-col items-end text-primary-blue'>
-                              <span className='font-medium'>50%</span>
+                              <span className='font-medium'>
+                                {Math.round(getProgress(id))}%
+                              </span>
                               <span className='font-light'>Complete</span>
                             </div>
                           </div>

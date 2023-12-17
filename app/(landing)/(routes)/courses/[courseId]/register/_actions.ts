@@ -30,7 +30,7 @@ export const registerCourse = async ({
       data: payload,
     });
   } catch (error: any) {
-    console.log({ error });
+    console.log('registerCourse', error.message);
     throw new Error(`Error registering course: ${error.message}`);
   }
 };

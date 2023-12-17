@@ -39,14 +39,6 @@ const LoginPage = async () => {
           </p>
         </div>
         <UserAuthForm />
-        <p className='text-right text-sm text-gray-100'>
-          <Link
-            href='/forgot-password'
-            className='hover:text-brand underline underline-offset-4'
-          >
-            Lupa password?
-          </Link>
-        </p>
       </div>
     </div>
   );
