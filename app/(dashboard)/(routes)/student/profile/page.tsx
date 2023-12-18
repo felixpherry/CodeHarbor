@@ -8,6 +8,7 @@ import { SessionInterface } from '@/types';
 import { CalendarDays, Mail, MapPin, Pencil, Phone } from 'lucide-react';
 import moment from 'moment';
 import Image from 'next/image';
+import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 
 const Page = async () => {
@@ -108,24 +109,27 @@ const Page = async () => {
           <Button
             variant='edit'
             className='shadow-sm hidden md:flex'
-            size='sm'>
-            <Pencil className='h-4 w-4' />
-            Edit
+            size='sm'
+            asChild
+          >
+            <Link href='/student/profile/edit'>
+              <Pencil className='h-4 w-4' />
+              Edit
+            </Link>
           </Button>
 
           <Button
             className='block md:hidden w-full rounded-full font-sans'
             variant='primary-blue-outline'
-            size='sm'>
-            Edit Profile
+            size='sm'
+          >
+            <Link href='/student/profile/edit'>Edit Profile</Link>
           </Button>
         </div>
 
         <div className='flex items-center gap-x-6 gap-y-3 flex-wrap'>
           {accountDetailMap.map(({ icon: Icon, label, value }) => (
-            <div
-              key={label}
-              className='flex items-center gap-1'>
+            <div key={label} className='flex items-center gap-1'>
               <ActionTooltip label={label}>
                 <Icon className='w-4 h-4' />
               </ActionTooltip>
@@ -141,9 +145,7 @@ const Page = async () => {
         </h3>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
           {studentInformationMap.map(({ label, value }) => (
-            <div
-              key={label}
-              className='flex flex-col'>
+            <div key={label} className='flex flex-col'>
               <h5 className='text-primary font-semibold'>{label}</h5>
               <p className='text-muted-foreground'>{value}</p>
             </div>

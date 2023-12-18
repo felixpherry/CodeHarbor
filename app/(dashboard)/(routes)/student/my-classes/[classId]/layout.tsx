@@ -25,11 +25,6 @@ const Layout = async ({ children, params: { classId } }: LayoutProps) => {
   });
 
   if (!classData) return notFound();
-  const scheduleData = await db.schedule.findUnique({
-    where: {
-      id: classData.schedules[0]?.id,
-    },
-  });
 
   const session = (await getCurrentUser()) as SessionInterface;
 
@@ -38,7 +33,7 @@ const Layout = async ({ children, params: { classId } }: LayoutProps) => {
   return (
     <div className='flex flex-col gap-8'>
       <div className='flex justify-between items-center'>
-        <h1 className='text-muted-foreground font-bold text-lg'>
+        <h1 className='text-primary font-bold text-lg'>
           {classData.course.name} - {classData.name}
         </h1>
         <div className='flex items-center gap-2'>

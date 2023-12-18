@@ -2,6 +2,7 @@ import { User, Session } from 'next-auth';
 import { Server as NetServer, Socket } from 'net';
 import { NextApiResponse } from 'next';
 import { Server as SocketIOServer } from 'socket.io';
+import { Account, Student } from '@prisma/client';
 
 export type NextApiResponseServerIo = NextApiResponse & {
   socket: Socket & {
@@ -33,3 +34,7 @@ export interface ShadCNOption {
 }
 
 export type Status = 'active' | 'inactive' | undefined;
+
+export type AccountWithStudent = {
+  student: Student;
+} & Account;

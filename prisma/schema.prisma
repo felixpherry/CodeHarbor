@@ -267,7 +267,7 @@ model Account {
   email       String  @unique
   password    String? @db.Text
   role        Role
-  phoneNumber String? @unique
+  phoneNumber String?
   image       String? @db.Text
   fileKey     String?
   address     String? @db.Text
