@@ -10,7 +10,7 @@ type Props = {
 const StudentLayout = async ({ children }: Props) => {
   const session = (await getCurrentUser()) as SessionInterface;
 
-  if (session?.user.role !== 'STUDENT') return notFound();
+  if (!session) return notFound();
 
   const userInfo = await fetchAccountDetail(session.user.id);
 

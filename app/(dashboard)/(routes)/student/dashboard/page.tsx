@@ -123,8 +123,7 @@ const Page = async () => {
                 variant='primary-blue'
                 className='w-fit text-sm rounded-full px-6'
                 size='sm'
-                asChild
-              >
+                asChild>
                 <Link href='/student/enroll'>Enroll a new course</Link>
               </Button>
 
@@ -142,8 +141,7 @@ const Page = async () => {
               <h2 className='font-extrabold text-2xl'>My Schedule</h2>
               <Link
                 href='/student/schedule'
-                className='text-primary-blue hover:underline text-sm font-medium'
-              >
+                className='text-primary-blue hover:underline text-sm font-medium'>
                 View All
               </Link>
             </div>
@@ -174,8 +172,7 @@ const Page = async () => {
                     }) => (
                       <div
                         key={id}
-                        className='flex flex-col gap-2 p-5 border rounded-md shadow w-full hover:shadow-lg'
-                      >
+                        className='flex flex-col gap-2 p-5 border rounded-md shadow w-full hover:shadow-lg'>
                         <h3 className='font-bold text-primary text-xl'>
                           {classData.course.code} - {classData.course.name}
                         </h3>
@@ -201,16 +198,16 @@ const Page = async () => {
                           <Button
                             size='sm'
                             variant='primary-blue'
-                            className='w-fit mt-1'
-                          >
+                            className='w-fit mt-1'>
                             {!meetingUrl ? (
                               <Link
-                                href={`/student/my-classes/${classData.id}/meeting`}
-                              >
+                                href={`/student/my-classes/${classData.id}/meeting`}>
                                 Join Meeting
                               </Link>
                             ) : (
-                              <a href={meetingUrl} target='_blank'>
+                              <a
+                                href={meetingUrl}
+                                target='_blank'>
                                 Join Meeting
                               </a>
                             )}
@@ -219,11 +216,9 @@ const Page = async () => {
                             size='sm'
                             variant='primary-blue-outline'
                             className='w-fit mt-1'
-                            asChild
-                          >
+                            asChild>
                             <Link
-                              href={`/student/my-classes/${classData.id}/sessions/${id}`}
-                            >
+                              href={`/student/my-classes/${classData.id}/sessions/${id}`}>
                               Details
                             </Link>
                           </Button>
@@ -240,8 +235,7 @@ const Page = async () => {
               <h2 className='font-extrabold text-2xl'>My Classes</h2>
               <Link
                 href='/student/my-classes'
-                className='text-primary-blue hover:underline text-sm font-medium'
-              >
+                className='text-primary-blue hover:underline text-sm font-medium'>
                 View All
               </Link>
             </div>
@@ -250,9 +244,10 @@ const Page = async () => {
                 ({ course, id, name, instructorSchedule, schedules }) => (
                   <Link
                     key={id}
-                    href={`/student/my-classes/${id}/sessions/${schedules[0].id}`}
-                  >
-                    <Card className='shadow-lg hover:shadow-2xl' key={id}>
+                    href={`/student/my-classes/${id}/sessions/${schedules[0].id}`}>
+                    <Card
+                      className='shadow-lg hover:shadow-2xl'
+                      key={id}>
                       <CardContent className='overflow-visible p-0 pb-5'>
                         <div className='relative'>
                           <div className='card-image_shadow absolute h-full w-full top-0 left-0 rounded-tr-lg z-20' />
@@ -347,9 +342,10 @@ const Page = async () => {
                   variant='primary-blue-outline'
                   size='xs'
                   className='rounded-full font-semibold leading-3 mt-1'
-                  asChild
-                >
-                  <Link href='/student/profile/edit'>Edit profile</Link>
+                  asChild>
+                  <Link href={`/profile/${session.user.id}/edit`}>
+                    Edit profile
+                  </Link>
                 </Button>
 
                 <div className='mt-5'>

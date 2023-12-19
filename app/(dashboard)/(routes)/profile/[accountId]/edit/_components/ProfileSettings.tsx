@@ -1,15 +1,28 @@
 'use client';
 
-import { GraduationCap, LockKeyhole, UserCog } from 'lucide-react';
+import {
+  GraduationCap,
+  LockKeyhole,
+  LucideIcon,
+  Presentation,
+  UserCog,
+} from 'lucide-react';
 import { useState } from 'react';
 import AccountDetailsForm from './AccountDetailsForm';
 import ChangePasswordForm from './ChangePasswordForm';
 import StudentInformationForm from './StudentInformationForm';
 import { cn } from '@/lib/utils';
-import { AccountWithStudent } from '@/types';
+import { AccountWithRoleDetails } from '@/types';
+import InstructorInformationForm from './InstructorInformationForm';
 
 interface ProfileSettingsTabsProps {
-  account: AccountWithStudent;
+  account: AccountWithRoleDetails;
+}
+
+interface Tab {
+  label: string;
+  icon: LucideIcon;
+  content: JSX.Element;
 }
 
 const ProfileSettingsTabs = ({ account }: ProfileSettingsTabsProps) => {
@@ -26,12 +39,17 @@ const ProfileSettingsTabs = ({ account }: ProfileSettingsTabsProps) => {
       icon: LockKeyhole,
       content: <ChangePasswordForm accountId={account.id} />,
     },
-    {
+    account.student !== null && {
       label: 'Student Information',
       icon: GraduationCap,
       content: <StudentInformationForm initialData={account.student} />,
     },
-  ];
+    account.instructor !== null && {
+      label: 'Instructor Information',
+      icon: Presentation,
+      content: <InstructorInformationForm initialData={account.instructor} />,
+    },
+  ].filter(Boolean) as Tab[];
 
   return (
     <div className='flex flex-col md:flex-row md:items-start gap-5'>
@@ -45,8 +63,7 @@ const ProfileSettingsTabs = ({ account }: ProfileSettingsTabsProps) => {
               selectedIdx === idx
                 ? 'bg-primary-blue text-white'
                 : 'text-muted-foreground hover:bg-sky-200/20'
-            )}
-          >
+            )}>
             <Icon className='w-4 h-4' />
             {label}
           </button>

@@ -22,6 +22,7 @@ import { registerInstructor } from '../_actions';
 import { toast } from 'sonner';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { DateInput } from '@mantine/dates';
+import { lastEducations } from '@/constants';
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -87,7 +88,6 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
         pathname,
       });
 
-      console.log(values);
       form.reset();
 
       router.push('/');
@@ -99,25 +99,6 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
       toast.error('Failed to register');
     }
   };
-
-  const lastEducations = [
-    {
-      label: 'SMA',
-      value: 'SMA',
-    },
-    {
-      label: 'S1',
-      value: 'S1',
-    },
-    {
-      label: 'S2',
-      value: 'S2',
-    },
-    {
-      label: 'S3',
-      value: 'S3',
-    },
-  ];
 
   const skillOptions = skills.map(({ id, name }) => ({
     label: name,
@@ -132,7 +113,9 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
         </CardTitle>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-3'>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className='space-y-3'>
               <FormField
                 control={form.control}
                 name='name'
@@ -141,7 +124,11 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
                     <FormLabel>Nama Lengkap</FormLabel>
                     <FormDescription>Nama lengkap sesuai KTP</FormDescription>
                     <FormControl>
-                      <Input disabled={isSubmitting} autoFocus {...field} />
+                      <Input
+                        disabled={isSubmitting}
+                        autoFocus
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -154,7 +141,10 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input disabled={isSubmitting} {...field} />
+                      <Input
+                        disabled={isSubmitting}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -167,7 +157,11 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
                   <FormItem>
                     <FormLabel>No. HP</FormLabel>
                     <FormControl>
-                      <Input type='number' disabled={isSubmitting} {...field} />
+                      <Input
+                        type='number'
+                        disabled={isSubmitting}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -197,7 +191,10 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
                   <FormItem>
                     <FormLabel>Alamat</FormLabel>
                     <FormControl>
-                      <Textarea disabled={isSubmitting} {...field} />
+                      <Textarea
+                        disabled={isSubmitting}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -231,7 +228,10 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
                   <FormItem>
                     <FormLabel>Institusi Pendidikan</FormLabel>
                     <FormControl>
-                      <Input disabled={isSubmitting} {...field} />
+                      <Input
+                        disabled={isSubmitting}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -222,38 +222,24 @@ export const testimonials = [
   },
 ];
 
-// export const sidebarLinks = [
-//   {
-//     icon: LayoutDashboard,
-//     route: '/',
-//     label: 'Dashboard',
-//   },
-//   {
-//     icon: HomeOutlinedIcon,
-//     route: '/search',
-//     label: 'Search',
-//   },
-//   {
-//     icon: HomeOutlinedIcon,
-//     route: '/activity',
-//     label: 'Activity',
-//   },
-//   {
-//     icon: HomeOutlinedIcon,
-//     route: '/create-thread',
-//     label: 'Create Thread',
-//   },
-//   {
-//     icon: HomeOutlinedIcon,
-//     route: '/communities',
-//     label: 'Communities',
-//   },
-//   {
-//     icon: HomeOutlinedIcon,
-//     route: '/profile',
-//     label: 'Profile',
-//   },
-// ];
+export const lastEducations = [
+  {
+    label: 'SMA',
+    value: 'SMA',
+  },
+  {
+    label: 'S1',
+    value: 'S1',
+  },
+  {
+    label: 'S2',
+    value: 'S2',
+  },
+  {
+    label: 'S3',
+    value: 'S3',
+  },
+];
 
 export interface SidebarLink {
   title: string;

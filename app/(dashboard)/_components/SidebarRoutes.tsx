@@ -82,14 +82,14 @@ const studentRoutes: SidebarItemProps[] = [
   { label: 'Dashboard', icon: Layout, href: '/student/dashboard' },
   { label: 'My Classes', icon: GraduationCap, href: '/student/my-classes' },
   { label: 'Schedule', icon: CalendarDays, href: '/student/schedule' },
-  { label: 'Profile', icon: User, href: '/student/profile' },
+  { label: 'Profile', icon: User, href: '/profile' },
 ];
 
 const instructorRoutes: SidebarItemProps[] = [
   { label: 'Dashboard', icon: Layout, href: '/instructor/dashboard' },
   { label: 'My Classes', icon: GraduationCap, href: '/instructor/my-classes' },
   { label: 'Schedule', icon: CalendarDays, href: '/instructor/schedule' },
-  { label: 'Profile', icon: User, href: '/instructor/profile' },
+  { label: 'Profile', icon: User, href: '/profile' },
 ];
 
 const SidebarRoutes = ({ session }: { session: SessionInterface }) => {
@@ -105,7 +105,10 @@ const SidebarRoutes = ({ session }: { session: SessionInterface }) => {
   return (
     <div className='py-8'>
       {routes.map((item) => (
-        <SidebarItem {...item} key={item.label} />
+        <SidebarItem
+          {...item}
+          key={item.label}
+        />
       ))}
     </div>
   );

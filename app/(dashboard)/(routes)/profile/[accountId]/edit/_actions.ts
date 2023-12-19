@@ -133,3 +133,53 @@ export const updateStudentInfo = async ({
     throw new Error(error.message);
   }
 };
+
+export const fetchSkills = async () => {
+  try {
+    return await db.skill.findMany({
+      where: { isActive: true },
+    });
+  } catch (error: any) {
+    console.log('fetchSkills', error.message);
+    throw new Error(error.message);
+  }
+};
+
+interface UpdateInstructorInfoParams {
+  id: string;
+  dateOfBirth: Date;
+  lastEducation: string;
+  educationInstitution: string;
+  skillIds: string[];
+  pathname: string;
+}
+
+export const updateInstructorInfo = async ({
+  dateOfBirth,
+  educationInstitution,
+  id,
+  lastEducation,
+  skillIds,
+  pathname,
+}: UpdateInstructorInfoParams) => {
+  try {
+    const instructor = await db.instructor.update({
+      where: { id },
+      data: {
+        dateOfBirth,
+        educationInstitution,
+        lastEducation,
+        skills: {
+          set: skillIds.map((id) => ({ id })),
+        },
+      },
+    });
+
+    revalidatePath(pathname);
+
+    return instructor;
+  } catch (error: any) {
+    console.log('updateInstructorInfo', error.message);
+    throw new Error(error.message);
+  }
+};

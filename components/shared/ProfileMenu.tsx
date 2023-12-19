@@ -55,7 +55,7 @@ export const ProfileMenu = ({ session }: { session: SessionInterface }) => {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <Link href={`/${session.user.role.toLocaleLowerCase()}/profile`}>
+          <Link href='/profile'>
             <DropdownMenuItem>
               <User className='mr-2 h-4 w-4' />
               <span>Profile</span>
