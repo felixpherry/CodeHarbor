@@ -7,19 +7,19 @@ import { toast } from 'sonner';
 import { convertToBase64 } from '@/lib/utils';
 import { X } from 'lucide-react';
 
-interface HeroImageDropzoneProps {
+interface ProfileImageDropzoneProps {
   onFileChange: (value: string) => void;
   setFiles: (files: File[]) => void;
   value: string;
   handleResetImage: () => void;
 }
 
-const HeroImageDropzone = ({
+const ProfileImageDropzone = ({
   onFileChange,
   setFiles,
   value,
   handleResetImage,
-}: HeroImageDropzoneProps) => {
+}: ProfileImageDropzoneProps) => {
   const handleUploadFile = async (files: File[]) => {
     if (!files[0]) return;
 
@@ -100,4 +100,4 @@ const HeroImageDropzone = ({
   );
 };
 
-export default HeroImageDropzone;
+export default ProfileImageDropzone;

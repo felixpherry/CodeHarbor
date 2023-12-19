@@ -15,7 +15,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { MultiSelect } from '@mantine/core';
 import { Course, MasterDay, MasterShift } from '@prisma/client';
 import { CheckCircle2, CircleIcon, Loader2, SunIcon } from 'lucide-react';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { InstructorSchedule } from './InstructorOnboardingStepper';
@@ -132,7 +131,11 @@ const InstructorCourseScheduleForm = ({
                     Which courses would you like to teach?
                   </FormDescription>
                   <FormControl>
-                    <MultiSelect data={courseOptions} {...field} />
+                    <MultiSelect
+                      checkIconPosition='right'
+                      data={courseOptions}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

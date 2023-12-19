@@ -68,7 +68,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
           <span className='text-sm text-muted-foreground'>
             <Preview
               value={description || ''}
-              className='[&_p]:line-clamp-3 px-2 my-3'
+              className='[&_p]:line-clamp-3 px-6 my-3'
             />
           </span>
         </CardContent>

@@ -4,9 +4,12 @@ import { db } from '@/lib/db';
 import { Gender, Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcrypt';
+import { utapi } from '@/app/api/uploadthing/core';
 
 interface UpdateAccountParams {
   id: string;
+  image: string;
+  fileKey: string | null;
   username: string;
   phoneNumber: string;
   address: string;
@@ -15,24 +18,38 @@ interface UpdateAccountParams {
 
 export const updateAccount = async ({
   id,
+  image,
+  fileKey,
   address,
   pathname,
   phoneNumber,
   username,
 }: UpdateAccountParams) => {
   try {
-    const account = await db.account.update({
+    const account = await db.account.findUnique({
+      where: { id },
+    });
+
+    if (!account) throw new Error('Account not found');
+
+    if (account.fileKey !== fileKey && account.fileKey) {
+      await utapi.deleteFiles(account.fileKey);
+    }
+
+    const newAccount = await db.account.update({
       where: { id },
       data: {
         address,
         phoneNumber,
         username,
+        image,
+        fileKey,
       },
     });
 
     revalidatePath(pathname);
 
-    return account;
+    return newAccount;
   } catch (error: any) {
     console.log('updateAccount', error.message);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

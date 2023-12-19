@@ -38,7 +38,7 @@ const FilterSelect = ({
       !newSelected
         ? params.delete(searchParamsKey!)
         : params.set(searchParamsKey!, newSelected);
-      router.push(pathname + '?' + params.toString(), {
+      router.replace(pathname + '?' + params.toString(), {
         scroll: false,
       });
     }
