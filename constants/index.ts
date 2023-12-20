@@ -1,19 +1,5 @@
-// import {
-//   LayoutDashboard,
-//   Users,
-//   GraduationCap,
-//   Receipt,
-//   Video,
-//   Code2,
-//   Hexagon,
-//   AppWindow,
-//   FileQuestion,
-//   Shapes,
-//   LucideIcon,
-// } from 'lucide-react';
-
 import { MantineSelectOption } from '@/types';
-import { LucideProps } from 'lucide-react';
+import { BookText, Code, Home, LucideProps } from 'lucide-react';
 import dynamicIconImports from 'lucide-react/dynamicIconImports';
 
 export const NavLinks = [
@@ -21,16 +7,19 @@ export const NavLinks = [
     href: '/',
     key: 'Beranda',
     text: 'Beranda',
+    icon: Home,
   },
   {
     href: '/courses',
     key: 'Kursus',
     text: 'Kursus',
+    icon: Code,
   },
   {
     href: '/register-instructor',
     key: 'Daftar Instruktur',
     text: 'Daftar Instruktur',
+    icon: BookText,
   },
 ];
 
@@ -249,79 +238,6 @@ export interface SidebarLink {
     label: string;
   }[];
 }
-
-export const adminSideBarLinks: SidebarLink[] = [
-  {
-    title: '',
-    content: [
-      {
-        icon: 'layout-dashboard',
-        route: '/admin/dashboard',
-        label: 'Dashboard',
-      },
-    ],
-  },
-  {
-    title: 'Data',
-    content: [
-      {
-        icon: 'users',
-        route: '/admin/users',
-        label: 'Users', // admin and instructor
-      },
-      {
-        icon: 'graduation-cap',
-        route: '/admin/students',
-        label: 'Students',
-      },
-      {
-        icon: 'receipt',
-        route: '/admin/transactions',
-        label: 'Transactions',
-      },
-    ],
-  },
-  {
-    title: 'Content',
-    content: [
-      {
-        icon: 'code-2',
-        route: '/admin/create-course',
-        label: 'Create Courses',
-      },
-      {
-        icon: 'video',
-        route: '/admin/live-courses',
-        label: 'Live Courses',
-      },
-    ],
-  },
-  {
-    title: 'Customization',
-    content: [
-      {
-        icon: 'hexagon',
-        route: '/admin/logo',
-        label: 'Logo',
-      },
-      {
-        icon: 'app-window',
-        route: '/admin/hero',
-        label: 'Hero',
-      },
-      {
-        icon: 'file-question',
-        route: '/admin/faq',
-        label: 'FAQ',
-      },
-      {
-        icon: 'shapes',
-        route: '/admin/categories',
-        label: 'Categories',
-      },
-    ],
-  },
-];
 
 export const statusOptions: MantineSelectOption[] = [
   {
