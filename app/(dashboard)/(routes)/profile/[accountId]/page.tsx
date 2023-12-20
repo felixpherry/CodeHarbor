@@ -544,7 +544,7 @@ const Page = async ({ params: { accountId }, searchParams }: PageProps) => {
             </div>
           ) : (
             <div className='flex items-center justify-center flex-col gap-5 flex-1 mt-5'>
-              <Code2 className='text-muted-foreground h-24 w-24' />
+              <File className='text-muted-foreground h-24 w-24' />
               <div className='flex flex-col gap-1 justify-center items-center'>
                 <h3 className='text-primary font-semibold text-xl'>No Class</h3>
                 <p className='text-muted-foreground'>

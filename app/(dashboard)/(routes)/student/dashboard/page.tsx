@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { fetchAccountDetail } from '@/lib/actions/account.actions';
+import { getCurrentPeriod } from '@/lib/actions/period.actions';
 import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/session';
 import { SessionInterface } from '@/types';
@@ -9,6 +10,7 @@ import {
   CalendarX2,
   Clock,
   Code2,
+  File,
   Mail,
   ServerIcon,
 } from 'lucide-react';
@@ -41,6 +43,8 @@ const Page = async () => {
     },
   });
 
+  const currentPeriod = await getCurrentPeriod();
+
   if (!accountDetail) return notFound();
 
   const classes = await db.class.findMany({
@@ -50,6 +54,7 @@ const Page = async () => {
           studentId: accountDetail.student?.id,
         },
       },
+      periodId: currentPeriod?.id,
     },
     take: 2,
     orderBy: {
@@ -123,7 +128,8 @@ const Page = async () => {
                 variant='primary-blue'
                 className='w-fit text-sm rounded-full px-6'
                 size='sm'
-                asChild>
+                asChild
+              >
                 <Link href='/student/enroll'>Enroll a new course</Link>
               </Button>
 
@@ -141,7 +147,8 @@ const Page = async () => {
               <h2 className='font-extrabold text-2xl'>My Schedule</h2>
               <Link
                 href='/student/schedule'
-                className='text-primary-blue hover:underline text-sm font-medium'>
+                className='text-primary-blue hover:underline text-sm font-medium'
+              >
                 View All
               </Link>
             </div>
@@ -172,7 +179,8 @@ const Page = async () => {
                     }) => (
                       <div
                         key={id}
-                        className='flex flex-col gap-2 p-5 border rounded-md shadow w-full hover:shadow-lg'>
+                        className='flex flex-col gap-2 p-5 border rounded-md shadow w-full hover:shadow-lg'
+                      >
                         <h3 className='font-bold text-primary text-xl'>
                           {classData.course.code} - {classData.course.name}
                         </h3>
@@ -198,16 +206,14 @@ const Page = async () => {
                           <Button
                             size='sm'
                             variant='primary-blue'
-                            className='w-fit mt-1'>
+                            className='w-fit mt-1'
+                          >
                             {!meetingUrl ? (
-                              <Link
-                                href={`/student/my-classes/${classData.id}/meeting`}>
+                              <Link href={`/classes/${classData.id}/meeting`}>
                                 Join Meeting
                               </Link>
                             ) : (
-                              <a
-                                href={meetingUrl}
-                                target='_blank'>
+                              <a href={meetingUrl} target='_blank'>
                                 Join Meeting
                               </a>
                             )}
@@ -216,9 +222,11 @@ const Page = async () => {
                             size='sm'
                             variant='primary-blue-outline'
                             className='w-fit mt-1'
-                            asChild>
+                            asChild
+                          >
                             <Link
-                              href={`/student/my-classes/${classData.id}/sessions/${id}`}>
+                              href={`/classes/${classData.id}/sessions/${id}`}
+                            >
                               Details
                             </Link>
                           </Button>
@@ -234,80 +242,94 @@ const Page = async () => {
             <div className='flex justify-between items-center'>
               <h2 className='font-extrabold text-2xl'>My Classes</h2>
               <Link
-                href='/student/my-classes'
-                className='text-primary-blue hover:underline text-sm font-medium'>
+                href='/classes'
+                className='text-primary-blue hover:underline text-sm font-medium'
+              >
                 View All
               </Link>
             </div>
-            <div className='grid grid-cols-1 lg:grid-cols-2 gap-5'>
-              {classes.map(
-                ({ course, id, name, instructorSchedule, schedules }) => (
-                  <Link
-                    key={id}
-                    href={`/student/my-classes/${id}/sessions/${schedules[0].id}`}>
-                    <Card
-                      className='shadow-lg hover:shadow-2xl'
-                      key={id}>
-                      <CardContent className='overflow-visible p-0 pb-5'>
-                        <div className='relative'>
-                          <div className='card-image_shadow absolute h-full w-full top-0 left-0 rounded-tr-lg z-20' />
-                          <Image
-                            width={480}
-                            height={140}
-                            alt={course.name}
-                            className='w-full object-cover h-[160px] rounded-t-lg relative'
-                            src={course.image || ''}
-                          />
-                        </div>
-                        <div className='px-6 mt-4 flex flex-col gap-8'>
-                          <h3 className='text-xl font-semibold hover:text-primary-blue'>
-                            {course.name} - {name}
-                          </h3>
-                        </div>
-                      </CardContent>
-                      <CardFooter>
-                        <div className='flex flex-col w-full gap-3'>
-                          <div className='h-3 bg-secondary rounded-full'>
-                            <div
-                              className='h-full bg-primary-blue rounded-full'
-                              style={{
-                                width: `${getProgress(id)}%`,
-                              }}
+            {classes.length === 0 ? (
+              <div className='flex items-center justify-center flex-col gap-5 py-5 flex-1 bg-white'>
+                <File className='text-muted-foreground h-24 w-24' />
+                <div className='flex flex-col gap-1 justify-center items-center'>
+                  <h3 className='text-primary font-semibold text-xl'>
+                    No Class
+                  </h3>
+                  <p className='text-muted-foreground'>
+                    There is no class available.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className='grid grid-cols-1 lg:grid-cols-2 gap-5'>
+                {classes.map(
+                  ({ course, id, name, instructorSchedule, schedules }) => (
+                    <Link
+                      key={id}
+                      href={`/classes/${id}/sessions/${schedules[0].id}`}
+                    >
+                      <Card className='shadow-lg hover:shadow-2xl' key={id}>
+                        <CardContent className='overflow-visible p-0 pb-5'>
+                          <div className='relative'>
+                            <div className='card-image_shadow absolute h-full w-full top-0 left-0 rounded-tr-lg z-20' />
+                            <Image
+                              width={480}
+                              height={140}
+                              alt={course.name}
+                              className='w-full object-cover h-[160px] rounded-t-lg relative'
+                              src={course.image || ''}
                             />
                           </div>
-                          <div className='flex justify-between w-full'>
-                            <div className='flex gap-1 items-center'>
-                              <Image
-                                src={
-                                  instructorSchedule?.instructor.account
-                                    .image || ''
-                                }
-                                alt={
-                                  instructorSchedule?.instructor.account.name ||
-                                  ''
-                                }
-                                height={30}
-                                width={30}
-                                className='rounded-full h-8 w-8'
+                          <div className='px-6 mt-4 flex flex-col gap-8'>
+                            <h3 className='text-xl font-semibold hover:text-primary-blue'>
+                              {course.name} - {name}
+                            </h3>
+                          </div>
+                        </CardContent>
+                        <CardFooter>
+                          <div className='flex flex-col w-full gap-3'>
+                            <div className='h-3 bg-secondary rounded-full'>
+                              <div
+                                className='h-full bg-primary-blue rounded-full'
+                                style={{
+                                  width: `${getProgress(id)}%`,
+                                }}
                               />
-                              <p className='font-light'>
-                                {instructorSchedule?.instructor.account.name}
-                              </p>
                             </div>
-                            <div className='flex flex-col items-end text-primary-blue'>
-                              <span className='font-medium'>
-                                {Math.round(getProgress(id))}%
-                              </span>
-                              <span className='font-light'>Complete</span>
+                            <div className='flex justify-between w-full'>
+                              <div className='flex gap-1 items-center'>
+                                <Image
+                                  src={
+                                    instructorSchedule?.instructor.account
+                                      .image || ''
+                                  }
+                                  alt={
+                                    instructorSchedule?.instructor.account
+                                      .name || ''
+                                  }
+                                  height={30}
+                                  width={30}
+                                  className='rounded-full h-8 w-8'
+                                />
+                                <p className='font-light'>
+                                  {instructorSchedule?.instructor.account.name}
+                                </p>
+                              </div>
+                              <div className='flex flex-col items-end text-primary-blue'>
+                                <span className='font-medium'>
+                                  {Math.round(getProgress(id))}%
+                                </span>
+                                <span className='font-light'>Complete</span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </CardFooter>
-                    </Card>
-                  </Link>
-                )
-              )}
-            </div>
+                        </CardFooter>
+                      </Card>
+                    </Link>
+                  )
+                )}
+              </div>
+            )}
           </div>
         </div>
         <div className='w-full md:w-1/3'>
@@ -342,7 +364,8 @@ const Page = async () => {
                   variant='primary-blue-outline'
                   size='xs'
                   className='rounded-full font-semibold leading-3 mt-1'
-                  asChild>
+                  asChild
+                >
                   <Link href={`/profile/${session.user.id}/edit`}>
                     Edit profile
                   </Link>

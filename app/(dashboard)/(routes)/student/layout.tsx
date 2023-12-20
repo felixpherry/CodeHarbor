@@ -16,11 +16,7 @@ const StudentLayout = async ({ children }: Props) => {
 
   if (!userInfo?.onboarded) return redirect('/student/onboarding');
 
-  return (
-    <div className='w-full min-h-[calc(100vh-80px)] bg-[#F7F9FD] p-5'>
-      {children}
-    </div>
-  );
+  return <>{children}</>;
 };
 
 export default StudentLayout;

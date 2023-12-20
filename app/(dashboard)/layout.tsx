@@ -3,7 +3,6 @@ import Navbar from './_components/Navbar';
 import { SessionInterface } from '@/types';
 import { redirect } from 'next/navigation';
 import Sidebar from './_components/Sidebar';
-import Footer from './_components/Footer';
 import { SocketProvider } from '@/providers/SocketProvider';
 
 interface DashboardLayoutProps {
@@ -25,8 +24,9 @@ const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
           <Sidebar session={session} />
         </div>
         <main className='md:pl-64 pt-[80px] h-full'>
-          {children}
-          {/* <Footer /> */}
+          <div className='w-full min-h-[calc(100vh-80px)] bg-[#F7F9FD] p-5'>
+            {children}
+          </div>
         </main>
       </div>
     </SocketProvider>

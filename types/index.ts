@@ -2,7 +2,17 @@ import { User, Session } from 'next-auth';
 import { Server as NetServer, Socket } from 'net';
 import { NextApiResponse } from 'next';
 import { Server as SocketIOServer } from 'socket.io';
-import { Account, Instructor, Skill, Student } from '@prisma/client';
+import {
+  Account,
+  Class,
+  Course,
+  Instructor,
+  InstructorSchedule,
+  Period,
+  Schedule,
+  Skill,
+  Student,
+} from '@prisma/client';
 
 export type NextApiResponseServerIo = NextApiResponse & {
   socket: Socket & {
@@ -43,3 +53,23 @@ export type AccountWithRoleDetails = {
       } & Instructor)
     | null;
 } & Account;
+
+export type ScheduleWithClassWithCourse = {
+  class: {
+    course: Course;
+  } & Class;
+} & Schedule;
+
+export type ClassCollectionDetail = {
+  course: Course;
+  period: Period;
+  schedules: Schedule[];
+  instructorSchedule: {
+    instructor: {
+      account: Account;
+    } & Instructor;
+  } & InstructorSchedule;
+  _count: {
+    studentCourses: number;
+  };
+} & Class;

@@ -3,7 +3,6 @@
 import { IconTableOptions } from '@tabler/icons-react';
 import SidebarItem, { SidebarItemProps } from './SidebarItem';
 import {
-  BookCheck,
   CalendarDays,
   Code2,
   GraduationCap,
@@ -15,6 +14,7 @@ import {
   Users2,
   Wrench,
 } from 'lucide-react';
+
 import { SessionInterface } from '@/types';
 
 const adminRoutes: SidebarItemProps[] = [
@@ -80,35 +80,47 @@ const adminRoutes: SidebarItemProps[] = [
 
 const studentRoutes: SidebarItemProps[] = [
   { label: 'Dashboard', icon: Layout, href: '/student/dashboard' },
-  { label: 'My Classes', icon: GraduationCap, href: '/student/my-classes' },
-  { label: 'Schedule', icon: CalendarDays, href: '/student/schedule' },
+  { label: 'My Classes', icon: GraduationCap, href: '/classes' },
+  { label: 'Schedule', icon: CalendarDays, href: '/schedule' },
   { label: 'Profile', icon: User, href: '/profile' },
 ];
 
 const instructorRoutes: SidebarItemProps[] = [
   { label: 'Dashboard', icon: Layout, href: '/instructor/dashboard' },
-  { label: 'My Classes', icon: GraduationCap, href: '/instructor/my-classes' },
-  { label: 'Schedule', icon: CalendarDays, href: '/instructor/schedule' },
+  { label: 'My Classes', icon: GraduationCap, href: '/classes' },
+  { label: 'Schedule', icon: CalendarDays, href: '/schedule' },
+  { label: 'Profile', icon: User, href: '/profile' },
+];
+
+const parentRoutes: SidebarItemProps[] = [
+  { label: 'Dashboard', icon: Layout, href: '/parent/dashboard' },
+  { label: 'Classes', icon: GraduationCap, href: '/classes' },
+  { label: 'Schedule', icon: CalendarDays, href: '/schedule' },
   { label: 'Profile', icon: User, href: '/profile' },
 ];
 
 const SidebarRoutes = ({ session }: { session: SessionInterface }) => {
   let routes: SidebarItemProps[] = [];
-  if (session.user.role === 'ADMIN') {
-    routes = adminRoutes;
-  } else if (session.user.role === 'STUDENT') {
-    routes = studentRoutes;
-  } else if (session.user.role === 'INSTRUCTOR') {
-    routes = instructorRoutes;
+
+  switch (session.user.role) {
+    case 'ADMIN':
+      routes = adminRoutes;
+      break;
+    case 'STUDENT':
+      routes = studentRoutes;
+      break;
+    case 'INSTRUCTOR':
+      routes = instructorRoutes;
+      break;
+    case 'PARENT':
+      routes = parentRoutes;
+      break;
   }
 
   return (
     <div className='py-8'>
       {routes.map((item) => (
-        <SidebarItem
-          {...item}
-          key={item.label}
-        />
+        <SidebarItem {...item} key={item.label} />
       ))}
     </div>
   );
