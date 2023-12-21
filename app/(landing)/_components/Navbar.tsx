@@ -10,16 +10,16 @@ import { LogIn, UserCircle2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
-import MobileMenu from './MobileMenu';
 
 interface NavbarProps {
   session: SessionInterface;
   logo: {
     image: string;
   };
+  mobileMenu: JSX.Element;
 }
 
-const Navbar = ({ session, logo }: NavbarProps) => {
+const Navbar = ({ session, logo, mobileMenu }: NavbarProps) => {
   const [scroll, setScroll] = useState(false);
 
   const pathname = usePathname()!;
@@ -43,14 +43,13 @@ const Navbar = ({ session, logo }: NavbarProps) => {
         'navbar',
         scroll &&
           'fixed top-0 left-1/2 z-[80] -translate-x-1/2 shadow-xl animate-navbar-down'
-      )}>
+      )}
+    >
       <div className={'flexBetween container max-w-7xl p-0'}>
         <div className='flex-1 flexStart gap-10'>
           <div className='flex items-center gap-3'>
-            <MobileMenu />
-            <Link
-              href='/'
-              className='flex items-center'>
+            {mobileMenu}
+            <Link href='/' className='flex items-center'>
               <Image
                 className='mr-3'
                 src={logo?.image || '/logo-no-bg.png'}
@@ -73,10 +72,12 @@ const Navbar = ({ session, logo }: NavbarProps) => {
               return (
                 <li
                   key={link.key}
-                  className='hover:text-primary-blue hover:scale-110 transition !duration-500 font-semibold'>
+                  className='hover:text-primary-blue hover:scale-110 transition !duration-500 font-semibold'
+                >
                   <Link
                     href={link.href}
-                    className={cn(isActive && 'text-primary-blue')}>
+                    className={cn(isActive && 'text-primary-blue')}
+                  >
                     {link.text}
                   </Link>
                 </li>
@@ -90,19 +91,16 @@ const Navbar = ({ session, logo }: NavbarProps) => {
             <ProfileMenu session={session} />
           ) : (
             <>
-              <Button
-                variant='primary-blue-outline'
-                asChild>
+              <Button variant='primary-blue-outline' asChild>
                 <Link
                   href='/login'
-                  className='hidden md:inline-flex !rounded-full text-sm font-semibold'>
+                  className='hidden md:inline-flex !rounded-full text-sm font-semibold'
+                >
                   <UserCircle2 />
                   Masuk
                 </Link>
               </Button>
-              <Link
-                href='/login'
-                className='block md:hidden text-primary-blue'>
+              <Link href='/login' className='block md:hidden text-primary-blue'>
                 <LogIn />
               </Link>
             </>

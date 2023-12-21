@@ -3,6 +3,7 @@ import Footer from '@/app/(landing)/_components/Footer';
 import { getCurrentUser } from '@/lib/session';
 import { SessionInterface } from '@/types';
 import { fetchLogo } from '@/lib/actions/logo.actions';
+import MobileMenu from './_components/MobileMenu';
 // import Seed from '@/components/Seed';
 
 interface LandingLayoutProps {
@@ -15,7 +16,7 @@ const LandingLayout = async ({ children }: LandingLayoutProps) => {
 
   return (
     <>
-      <Navbar session={session} logo={logo!} />
+      <Navbar session={session} logo={logo!} mobileMenu={<MobileMenu />} />
       <main>{children}</main>
       <Footer />
     </>

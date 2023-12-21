@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/session';
 import { SessionInterface } from '@/types';
-import { notFound, redirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 interface PageParams {
   params: { classId: string };
@@ -9,30 +9,33 @@ interface PageParams {
 
 const Page = async ({ params: { classId } }: PageParams) => {
   const session = (await getCurrentUser()) as SessionInterface;
-  if (!session || session.user.role !== 'INSTRUCTOR') return notFound();
+  if (!session) return redirect('/not-found');
 
   const classData = await db.class.findUnique({
-    where: {
-      id: classId,
-      OR: [
-        {
-          instructorSchedule: {
-            instructor: {
-              accountId: session.user.id,
-            },
-          },
-        },
-        {
-          studentCourses: {
-            some: {
-              student: {
-                accountId: session.user.id,
+    where:
+      session.user.role === 'ADMIN'
+        ? { id: classId }
+        : {
+            id: classId,
+            OR: [
+              {
+                instructorSchedule: {
+                  instructor: {
+                    accountId: session.user.id,
+                  },
+                },
               },
-            },
+              {
+                studentCourses: {
+                  some: {
+                    student: {
+                      accountId: session.user.id,
+                    },
+                  },
+                },
+              },
+            ],
           },
-        },
-      ],
-    },
     include: {
       schedules: {
         orderBy: {
@@ -42,7 +45,7 @@ const Page = async ({ params: { classId } }: PageParams) => {
     },
   });
 
-  if (!classData) return redirect('/classes');
+  if (!classData) return redirect('/not-found');
 
   const currSchedule =
     classData?.schedules.find(
@@ -50,7 +53,7 @@ const Page = async ({ params: { classId } }: PageParams) => {
         new Date(scheduleDate).getTime() > new Date().getTime()
     ) || classData?.schedules.slice().pop();
 
-  if (!currSchedule) return notFound();
+  if (!currSchedule) return null;
   return redirect(`/classes/${classId}/sessions/${currSchedule.id}`);
 };
 

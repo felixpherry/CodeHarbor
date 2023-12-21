@@ -442,7 +442,11 @@ const Page = async ({ params: { accountId }, searchParams }: PageProps) => {
             <div className='grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5'>
               {accountDetail.instructor.instructorCourses.map(({ course }) =>
                 course.classes.map((classData) => (
-                  <div key={course.id} className='bg-white rounded-md shadow'>
+                  <Link
+                    href={`/classes/${classData.id}`}
+                    key={course.id}
+                    className='bg-white rounded-md shadow'
+                  >
                     <Image
                       alt={course.name}
                       src={course.image || ''}
@@ -456,7 +460,7 @@ const Page = async ({ params: { accountId }, searchParams }: PageProps) => {
                       </h3>
                       <p className='text-muted-foreground'>{course.code}</p>
                     </div>
-                  </div>
+                  </Link>
                 ))
               )}
             </div>
@@ -525,7 +529,11 @@ const Page = async ({ params: { accountId }, searchParams }: PageProps) => {
           {studentClasses && studentClasses.length > 0 ? (
             <div className='grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5'>
               {studentClasses.map(({ course, class: classData }) => (
-                <div key={classData!.id} className='bg-white rounded-md shadow'>
+                <Link
+                  key={classData!.id}
+                  href={`/classes/${classData?.id}`}
+                  className='bg-white rounded-md shadow'
+                >
                   <Image
                     alt={course.name}
                     src={course.image || ''}
@@ -539,7 +547,7 @@ const Page = async ({ params: { accountId }, searchParams }: PageProps) => {
                     </h3>
                     <p className='text-muted-foreground'>{course.code}</p>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           ) : (

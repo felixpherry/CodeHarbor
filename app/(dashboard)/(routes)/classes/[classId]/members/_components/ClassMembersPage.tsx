@@ -14,27 +14,32 @@ const ClassMembersPage = async ({ classId }: ClassMembersPageProps) => {
   if (!session) return notFound();
 
   const classData = await db.class.findUnique({
-    where: {
-      OR: [
-        {
-          studentCourses: {
-            some: {
-              student: {
-                accountId: session?.user.id,
+    where:
+      session.user.role === 'ADMIN'
+        ? {
+            id: classId,
+          }
+        : {
+            OR: [
+              {
+                studentCourses: {
+                  some: {
+                    student: {
+                      accountId: session?.user.id,
+                    },
+                  },
+                },
               },
-            },
+              {
+                instructorSchedule: {
+                  instructor: {
+                    accountId: session?.user.id,
+                  },
+                },
+              },
+            ],
+            id: classId,
           },
-        },
-        {
-          instructorSchedule: {
-            instructor: {
-              accountId: session?.user.id,
-            },
-          },
-        },
-      ],
-      id: classId,
-    },
     include: {
       instructorSchedule: {
         include: {

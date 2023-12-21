@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { fetchAccountDetail } from '@/lib/actions/account.actions';
 import { getCurrentPeriod } from '@/lib/actions/period.actions';
 import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/session';
@@ -17,10 +16,12 @@ import {
 import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 const Page = async () => {
   const session = (await getCurrentUser()) as SessionInterface;
+
+  const currentPeriod = await getCurrentPeriod();
   const accountDetail = await db.account.findUnique({
     where: { id: session.user.id },
     include: {
@@ -33,6 +34,7 @@ const Page = async () => {
                   class: {
                     isNot: null,
                   },
+                  periodId: currentPeriod?.id,
                 },
               },
             },
@@ -43,9 +45,7 @@ const Page = async () => {
     },
   });
 
-  const currentPeriod = await getCurrentPeriod();
-
-  if (!accountDetail) return notFound();
+  if (!accountDetail) return redirect('/not-found');
 
   const classes = await db.class.findMany({
     where: {
@@ -146,7 +146,7 @@ const Page = async () => {
             <div className='flex justify-between items-center'>
               <h2 className='font-extrabold text-2xl'>My Schedule</h2>
               <Link
-                href='/student/schedule'
+                href='/schedule'
                 className='text-primary-blue hover:underline text-sm font-medium'
               >
                 View All
@@ -264,10 +264,7 @@ const Page = async () => {
               <div className='grid grid-cols-1 lg:grid-cols-2 gap-5'>
                 {classes.map(
                   ({ course, id, name, instructorSchedule, schedules }) => (
-                    <Link
-                      key={id}
-                      href={`/classes/${id}/sessions/${schedules[0].id}`}
-                    >
+                    <Link key={id} href={`/classes/${id}/sessions`}>
                       <Card className='shadow-lg hover:shadow-2xl' key={id}>
                         <CardContent className='overflow-visible p-0 pb-5'>
                           <div className='relative'>
@@ -301,7 +298,7 @@ const Page = async () => {
                                 <Image
                                   src={
                                     instructorSchedule?.instructor.account
-                                      .image || ''
+                                      .image || '/avatar-fallback.svg'
                                   }
                                   alt={
                                     instructorSchedule?.instructor.account
@@ -344,7 +341,7 @@ const Page = async () => {
             <div className='flex flex-col gap-5 px-5 relative -top-10'>
               <div className='rounded-md p-2 shadow-md bg-white w-fit'>
                 <Image
-                  src={accountDetail.image || ''}
+                  src={accountDetail.image || '/avatar-fallback.svg'}
                   alt={accountDetail.name}
                   width={64}
                   height={64}

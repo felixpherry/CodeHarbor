@@ -2,7 +2,7 @@ import LayoutTabs from './_components/LayoutTabs';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className='flex flex-col gap-5 p-5 bg-[#F7F9FD] min-h-[calc(100vh-80px)]'>
+    <div className='flex flex-col gap-5'>
       <h1 className='text-lg text-muted-foreground font-bold'>
         Layout Settings
       </h1>

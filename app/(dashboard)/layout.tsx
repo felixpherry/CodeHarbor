@@ -4,6 +4,7 @@ import { SessionInterface } from '@/types';
 import { redirect } from 'next/navigation';
 import Sidebar from './_components/Sidebar';
 import { SocketProvider } from '@/providers/SocketProvider';
+import { fetchAccountDetail } from '@/lib/actions/account.actions';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -13,6 +14,11 @@ const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
   const session = (await getCurrentUser()) as SessionInterface;
 
   if (!session) return redirect('/login');
+
+  const userInfo = await fetchAccountDetail(session.user.id);
+
+  if (!userInfo?.onboarded)
+    return redirect(`/${session.user.role.toLocaleLowerCase()}/onboarding`);
 
   return (
     <SocketProvider>

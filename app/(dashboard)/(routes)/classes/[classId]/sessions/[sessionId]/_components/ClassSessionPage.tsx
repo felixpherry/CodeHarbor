@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { File, Presentation, ScaleIcon, Video } from 'lucide-react';
 import moment from 'moment';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import AttachmentActions from './AttachmentActions';
 import AddAttachmentModal from './AddAttachmentModal';
 import SessionReportModal from './SessionReportModal';
@@ -28,37 +28,40 @@ interface PageProps {
 
 const ClassSessionPage = async ({ classId, sessionId }: PageProps) => {
   const session = (await getCurrentUser()) as SessionInterface;
-  if (!session) return notFound();
+  if (!session) return redirect('/not-found');
 
   const classData = await db.class.findFirst({
-    where: {
-      OR: [
-        {
-          studentCourses: {
-            some: {
-              student: {
-                accountId: session?.user.id,
+    where:
+      session.user.role === 'ADMIN'
+        ? { id: classId }
+        : {
+            OR: [
+              {
+                studentCourses: {
+                  some: {
+                    student: {
+                      accountId: session?.user.id,
+                    },
+                  },
+                },
               },
-            },
+              {
+                instructorSchedule: {
+                  instructor: {
+                    accountId: session?.user.id,
+                  },
+                },
+              },
+            ],
+            id: classId,
           },
-        },
-        {
-          instructorSchedule: {
-            instructor: {
-              accountId: session?.user.id,
-            },
-          },
-        },
-      ],
-      id: classId,
-    },
     include: {
       course: true,
       schedules: true,
     },
   });
 
-  if (!classData) return notFound();
+  if (!classData) return redirect('/not-found');
 
   const scheduleData = await db.schedule.findUnique({
     where: {
@@ -85,7 +88,7 @@ const ClassSessionPage = async ({ classId, sessionId }: PageProps) => {
     },
   });
 
-  if (!scheduleData) return notFound();
+  if (!scheduleData) return redirect('not-found');
 
   const sessionData = await db.session.findFirst({
     where: {
@@ -97,7 +100,7 @@ const ClassSessionPage = async ({ classId, sessionId }: PageProps) => {
     },
   });
 
-  if (!sessionData) return notFound();
+  if (!sessionData) return redirect('not-found');
 
   const sessionReport = scheduleData.sessionReports.find(
     ({ student }) => student.accountId === session.user.id

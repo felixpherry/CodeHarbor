@@ -83,33 +83,32 @@ const Layout = async ({ children }: LayoutProps) => {
   const mappedClassesCount = await getMappedClassesCount();
 
   return (
-    <div className='w-full min-h-[calc(100vh-80px)] bg-[#F7F9FD] p-8'>
+    <>
       <StoreInitializer
         instructorSchedules={instructorSchedules}
         studentCourses={studentCourses}
         courses={courses}
         mappedClassesCount={mappedClassesCount}
       />
-      <div className='container max-w-7xl px-0'>
-        <div className='flex mb-5 flex-col md:flex-row items-center md:justify-between gap-5 w-full'>
-          <h3 className='text-muted-foreground text-xl font-semibold'>
-            Create Classes for {moment(nextPeriod.startDate).format('MMM')}
-            {' - '}
-            {moment(nextPeriod.endDate).format('MMM')}{' '}
-            {moment(nextPeriod.startDate).format('YYYY')}
-          </h3>
-          <div className='flex items-center gap-2'>
-            <GenerateClassButton />
-            <CreateClassButton />
-          </div>
+
+      <div className='flex mb-5 flex-col md:flex-row items-center md:justify-between gap-5 w-full'>
+        <h3 className='text-muted-foreground text-xl font-semibold'>
+          Create Classes for {moment(nextPeriod.startDate).format('MMM')}
+          {' - '}
+          {moment(nextPeriod.endDate).format('MMM')}{' '}
+          {moment(nextPeriod.startDate).format('YYYY')}
+        </h3>
+        <div className='flex items-center gap-2'>
+          <GenerateClassButton />
+          <CreateClassButton />
         </div>
-        <CreateClassTabs
-          schedulesCount={schedulesCount}
-          studentsCount={studentsCount}
-        />
-        <div className='bg-white rounded-b-lg shadow-sm'>{children}</div>
       </div>
-    </div>
+      <CreateClassTabs
+        schedulesCount={schedulesCount}
+        studentsCount={studentsCount}
+      />
+      <div className='bg-white rounded-b-lg shadow-sm'>{children}</div>
+    </>
   );
 };
 

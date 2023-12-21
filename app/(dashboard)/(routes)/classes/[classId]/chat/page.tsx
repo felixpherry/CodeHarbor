@@ -53,7 +53,7 @@ const Page = async ({ params: { classId } }: PageProps) => {
     },
   });
 
-  if (!classData) return notFound();
+  if (!classData) return redirect('/not-found');
 
   const member =
     session.user.role === 'STUDENT'
@@ -62,7 +62,7 @@ const Page = async ({ params: { classId } }: PageProps) => {
         )?.student
       : classData.instructorSchedule?.instructor;
 
-  if (!member) return notFound();
+  if (!member) return redirect('/not-found');
 
   return (
     <div className=' flex flex-col h-full'>

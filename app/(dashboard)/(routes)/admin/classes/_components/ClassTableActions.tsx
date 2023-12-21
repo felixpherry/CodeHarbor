@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { usePathname } from 'next/navigation';
 import { deleteClass } from '../_actions';
+import Link from 'next/link';
 
 interface ClassTableActionsProps {
   classData: ClassTableInterface;
@@ -45,10 +46,9 @@ const ClassTableActions = ({ classData }: ClassTableActionsProps) => {
 
   return (
     <div className='flex items-center gap-4'>
-      <EyeIcon
-        onClick={() => openModalForm('VIEW')}
-        className='w-5 h-5 text-muted-foreground hover:text-primary cursor-pointer'
-      />
+      <Link href={`/classes/${classData.id}`}>
+        <EyeIcon className='w-5 h-5 text-muted-foreground hover:text-primary cursor-pointer' />
+      </Link>
       <PencilIcon
         onClick={() => openModalForm('EDIT')}
         className='text-primary-blue cursor-pointer w-5 h-5'

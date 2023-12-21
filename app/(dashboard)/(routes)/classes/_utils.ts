@@ -95,6 +95,21 @@ const getInstructorTabs = (classId: string) => {
   ];
 };
 
+const getAdminTabs = (classId: string) => {
+  return [
+    {
+      label: 'Sessions',
+      href: `/classes/${classId}/sessions`,
+      icon: CalendarDays,
+    },
+    {
+      label: 'Members',
+      href: `/classes/${classId}/members`,
+      icon: Users,
+    },
+  ];
+};
+
 interface ClassTab {
   label: string;
   href: string;
@@ -106,6 +121,6 @@ export const getClassTabs = (role: Role, classId: string): ClassTab[] => {
     [Role.INSTRUCTOR]: getInstructorTabs(classId),
     [Role.STUDENT]: getStudentTabs(classId),
     [Role.PARENT]: getParentTabs(classId),
-    [Role.ADMIN]: [],
+    [Role.ADMIN]: getAdminTabs(classId),
   }[role];
 };

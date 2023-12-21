@@ -40,7 +40,10 @@ const Layout = async ({ children, params: { classId } }: LayoutProps) => {
           {classData.course.name} - {classData.name}
         </h1>
         <div className='flex items-center gap-2'>
-          <Link href='/classes' className='text-xs font-normal text-primary'>
+          <Link
+            href={session.user.role === 'ADMIN' ? '/admin/classes' : 'classes'}
+            className='text-xs font-normal text-primary'
+          >
             {isObserver ? 'Classes' : 'My Classes'}
           </Link>
           <ChevronRight className='h-3 w-3 text-muted-foreground' />
