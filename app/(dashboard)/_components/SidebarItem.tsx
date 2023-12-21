@@ -46,9 +46,10 @@ const SidebarItem = ({
         <>
           <UnstyledButton
             onClick={() => setOpened((o) => !o)}
-            className='font-medium block w-full !py-[10px] !px-4 text-primary hover:bg-slate-200/20'
-          >
-            <Group className='flex justify-between items-center gap-0' unstyled>
+            className='font-medium block w-full !py-[10px] !px-4 text-primary hover:bg-slate-200/20'>
+            <Group
+              className='flex justify-between items-center gap-0'
+              unstyled>
               <Box className='flex items-center'>
                 <div className='text-primary-blue w-8 h-8 rounded-sm flex justify-center items-center bg-sky-200/20'>
                   <Icon className='w-4 h-4' />
@@ -78,8 +79,7 @@ const SidebarItem = ({
                       'text-primary-blue bg-sky-200/20 hover:bg-sky-200/20 hover:text-primary-blue border-primary-blue'
                   )}
                   href={link.href}
-                  key={link.label}
-                >
+                  key={link.label}>
                   {link.label}
                 </Link>
               );
@@ -93,20 +93,18 @@ const SidebarItem = ({
             'font-medium block w-full !py-[10px] !px-4 text-primary hover:bg-slate-200/20',
             isActive &&
               'text-primary-blue bg-sky-200/20 hover:bg-sky-200/20 hover:text-primary-blue'
-          )}
-        >
-          <Group justify='space-between' gap={0}>
+          )}>
+          <Group
+            justify='space-between'
+            gap={0}>
             <Box style={{ display: 'flex', alignItems: 'center' }}>
-              {/* <ThemeIcon variant='light' size={30}> */}
               <div
                 className={cn(
                   'text-primary-blue w-8 h-8 rounded-sm flex justify-center items-center',
                   isActive ? 'bg-transparent' : 'bg-sky-200/20'
-                )}
-              >
+                )}>
                 <Icon className='w-4 h-4' />
               </div>
-              {/* </ThemeIcon> */}
               <Box ml='md'>{label}</Box>
             </Box>
           </Group>
