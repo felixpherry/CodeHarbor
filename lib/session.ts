@@ -132,12 +132,9 @@ export const authOptions: NextAuthOptions = {
       });
 
       if (!result) {
-        throw new Error('Email tidak terdaftar');
+        return `/login?error=${'Email tidak terdaftar'}`;
       }
       return true;
-    },
-    async redirect({ url, baseUrl }) {
-      return baseUrl;
     },
   },
 };

@@ -55,13 +55,7 @@ const Hero = ({ title, subtitle, image, session }: HeroProps) => {
               className='h-14 rounded-full px-12 text-base font-semibold'
               asChild
             >
-              <Link
-                href={`/${
-                  session?.user.role.toLocaleLowerCase() || ''
-                }/dashboard`}
-              >
-                Lihat Dashboard
-              </Link>
+              <Link href='/dashboard'>Lihat Dashboard</Link>
             </Button>
           )}
         </div>

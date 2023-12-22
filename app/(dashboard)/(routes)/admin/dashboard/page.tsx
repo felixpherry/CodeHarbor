@@ -118,17 +118,23 @@ const Page = async () => {
       <h1 className='font-extrabold text-3xl'>Dashboard</h1>
       <div className='flex flex-col-reverse md:flex-row gap-5'>
         <div className='w-full md:w-2/3 flex flex-col gap-5'>
-          <div className='w-full p-8 rounded-md shadow-sm bg-[#e3e5fe]'>
-            <div className='flex flex-col gap-5 relative'>
-              <div className='flex flex-col gap-1'>
-                <h3 className='font-semibold text-xl'>
-                  Welcome back, {accountDetail.name}
-                </h3>
-                <p className='text-muted-foreground'>
-                  Your latest updates and class progress will appear here.
-                </p>
+          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5'>
+            {statistics.map(({ icon: Icon, label, value }) => (
+              <div
+                key={label}
+                className='p-8 bg-[#e3e5fe] rounded-md shadow-sm'
+              >
+                <div className='flex flex-col gap-5'>
+                  <div className='flex justify-between items-start'>
+                    <h3 className='font-extrabold text-4xl'>{value}</h3>
+                    <div className='h-8 w-8 flex justify-center items-center shadow-lg rounded-full bg-sky-200/20'>
+                      <Icon className='text-primary-blue' />
+                    </div>
+                  </div>
+                  <p className='text-muted-foreground text-lg'>{label}</p>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
 
           <div className='flex flex-col gap-5'>
@@ -348,25 +354,6 @@ const Page = async () => {
               </div>
             )}
           </div>
-
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
-            {statistics.map(({ icon: Icon, label, value }) => (
-              <div
-                key={label}
-                className='p-8 bg-[#e3e5fe] rounded-md shadow-sm'
-              >
-                <div className='flex flex-col gap-5'>
-                  <div className='flex justify-between items-start'>
-                    <h3 className='font-extrabold text-4xl'>{value}</h3>
-                    <div className='h-8 w-8 flex justify-center items-center shadow-lg rounded-full bg-sky-200/20'>
-                      <Icon className='text-primary-blue' />
-                    </div>
-                  </div>
-                  <p className='text-muted-foreground text-lg'>{label}</p>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
         <div className='w-full md:w-1/3'>
           <div className='bg-white rounded-md shadow-sm'>
@@ -380,7 +367,11 @@ const Page = async () => {
             <div className='flex flex-col gap-5 px-5 relative -top-10'>
               <div className='rounded-md p-2 shadow-md bg-white w-fit'>
                 <Image
-                  src={accountDetail.image || '/avatar-fallback.svg'}
+                  src={
+                    accountDetail.image ||
+                    session.user.image ||
+                    '/avatar-fallback.svg'
+                  }
                   alt={accountDetail.name}
                   width={64}
                   height={64}

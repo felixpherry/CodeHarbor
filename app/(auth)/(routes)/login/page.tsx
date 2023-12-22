@@ -1,4 +1,3 @@
-// import UserAuthForm from '@/components/forms/UserAuthForm';
 import UserAuthForm from '@/components/forms/UserAuthForm';
 import { Button } from '@/components/ui/button';
 import { fetchLogo } from '@/lib/actions/logo.actions';
@@ -9,14 +8,22 @@ import { ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import ErrorNotification from './_components/ErrorNotification';
 
-const LoginPage = async () => {
+interface LoginPageProps {
+  searchParams: {
+    error?: string;
+  };
+}
+
+const LoginPage = async ({ searchParams }: LoginPageProps) => {
   const session = (await getCurrentUser()) as SessionInterface;
   const logo = await fetchLogo();
 
-  if (session) redirect(`/${session.user.role.toLocaleLowerCase()}/dashboard`);
+  if (session) redirect('/dashboard');
   return (
     <div className='container flex h-screen w-screen flex-col items-center justify-center'>
+      {searchParams.error && <ErrorNotification error={searchParams.error} />}
       <Link href='/' className='absolute left-4 top-4 md:left-8 md:top-8'>
         <Button variant='ghost'>
           <ChevronLeft className='h-4 w-4 mr-2' /> Kembali
