@@ -5,6 +5,8 @@ import '@livekit/components-styles';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { SessionInterface } from '@/types';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 interface MediaRoomProps {
   session: SessionInterface;
@@ -15,6 +17,7 @@ interface MediaRoomProps {
 
 const MediaRoom = ({ session, audio, classId, video }: MediaRoomProps) => {
   const [token, setToken] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     if (!session) return;
@@ -27,8 +30,8 @@ const MediaRoom = ({ session, audio, classId, video }: MediaRoomProps) => {
         );
         const data = await response.json();
         setToken(data.token);
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        toast.error(error.message);
       }
     })();
   }, [session, classId]);
@@ -50,6 +53,7 @@ const MediaRoom = ({ session, audio, classId, video }: MediaRoomProps) => {
       connect={true}
       video={video}
       audio={audio}
+      onDisconnected={() => router.push(`/classes/${classId}/sessions`)}
     >
       <VideoConference />
     </LiveKitRoom>

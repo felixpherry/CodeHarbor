@@ -4,9 +4,8 @@ import { getCurrentUser } from '@/lib/session';
 import { SessionInterface } from '@/types';
 import { Account, Instructor } from '@prisma/client';
 
-const Page = async () => {
-  const session = (await getCurrentUser()) as SessionInterface;
-  const data = (await db.account.findUnique({
+const getInstructorData = async (session: SessionInterface) => {
+  return (await db.account.findUnique({
     where: {
       id: session?.user.id,
     },
@@ -28,34 +27,37 @@ const Page = async () => {
       }[];
     } & Instructor;
   } & Account;
+};
 
-  const skills = await db.skill.findMany();
-
-  const days = await db.masterDay.findMany({
-    where: {
-      isActive: true,
-    },
-  });
-
-  const shifts = await db.masterShift.findMany({
-    where: {
-      isActive: true,
-    },
-    orderBy: {
-      startTime: 'asc',
-    },
-  });
-
-  const courses = await db.course.findMany({
-    where: {
-      isPublished: true,
-      isDeleted: false,
-      program: {
+const Page = async () => {
+  const session = (await getCurrentUser()) as SessionInterface;
+  const [data, skills, days, shifts, courses] = await Promise.all([
+    getInstructorData(session),
+    db.skill.findMany(),
+    db.masterDay.findMany({
+      where: {
+        isActive: true,
+      },
+    }),
+    db.masterShift.findMany({
+      where: {
+        isActive: true,
+      },
+      orderBy: {
+        startTime: 'asc',
+      },
+    }),
+    db.course.findMany({
+      where: {
         isPublished: true,
         isDeleted: false,
+        program: {
+          isPublished: true,
+          isDeleted: false,
+        },
       },
-    },
-  });
+    }),
+  ]);
 
   return (
     <div className='flex flex-col gap-3'>

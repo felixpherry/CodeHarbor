@@ -2,7 +2,7 @@ import MediaRoom from '@/components/MediaRoom';
 import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/session';
 import { SessionInterface } from '@/types';
-import { notFound, redirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 interface Props {
   params: {
@@ -39,14 +39,12 @@ const page = async ({ params: { classId } }: Props) => {
 
   if (!classData) return redirect('/not-found');
   return (
-    <div className='bg-white flex flex-col h-full'>
-      <MediaRoom
-        session={session}
-        classId={classData.id}
-        video={true}
-        audio={true}
-      />
-    </div>
+    <MediaRoom
+      session={session}
+      classId={classData.id}
+      video={true}
+      audio={true}
+    />
   );
 };
 

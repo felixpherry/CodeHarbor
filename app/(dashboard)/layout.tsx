@@ -5,6 +5,9 @@ import { redirect } from 'next/navigation';
 import Sidebar from './_components/Sidebar';
 import { SocketProvider } from '@/providers/SocketProvider';
 import { fetchAccountDetail } from '@/lib/actions/account.actions';
+import { getNextPeriod, hasSchedule } from '@/lib/actions/period.actions';
+import moment from 'moment';
+import { db } from '@/lib/db';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -15,10 +18,25 @@ const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
 
   if (!session) return redirect('/login');
 
-  const userInfo = await fetchAccountDetail(session.user.id);
+  const [userInfo, nextPeriod] = await Promise.all([
+    fetchAccountDetail(session.user.id),
+    getNextPeriod(),
+  ]);
 
   if (!userInfo?.onboarded)
     return redirect(`/${session.user.role.toLocaleLowerCase()}/onboarding`);
+
+  if (
+    session.user.role === 'INSTRUCTOR' &&
+    nextPeriod &&
+    moment(nextPeriod.startDate).diff(moment(new Date()), 'days') <= 14
+  ) {
+    const hasScheduleForNextPeriod = await hasSchedule(
+      userInfo.id,
+      nextPeriod.id
+    );
+    if (!hasScheduleForNextPeriod) return redirect('/availability');
+  }
 
   return (
     <SocketProvider>

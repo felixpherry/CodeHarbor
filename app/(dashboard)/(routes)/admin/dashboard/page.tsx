@@ -7,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { getCurrentPeriod } from '@/lib/actions/period.actions';
 import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/session';
 import { SessionInterface } from '@/types';
@@ -28,36 +27,66 @@ import { redirect } from 'next/navigation';
 const Page = async () => {
   const session = (await getCurrentUser()) as SessionInterface;
 
-  const currentPeriod = await getCurrentPeriod();
   const accountDetail = await db.account.findUnique({
     where: { id: session.user.id },
   });
 
   if (!accountDetail) return redirect('/not-found');
 
-  const totalStudents = await db.account.count({
-    where: { role: 'STUDENT' },
-  });
-
-  const totalInstructors = await db.account.count({
-    where: { role: 'INSTRUCTOR' },
-  });
-
-  const totalClasses = await db.class.count();
-  const totalCourses = await db.course.count({
-    where: {
-      isPublished: true,
-      isDeleted: false,
-      program: {
+  const [
+    totalInstructors,
+    totalStudents,
+    totalClasses,
+    totalCourses,
+    totalPrograms,
+    courseRegistrations,
+    instructorRegistrations,
+    trialClassRegistrations,
+  ] = await Promise.all([
+    db.account.count({
+      where: { role: 'INSTRUCTOR' },
+    }),
+    db.account.count({
+      where: { role: 'STUDENT' },
+    }),
+    db.class.count(),
+    db.course.count({
+      where: {
         isPublished: true,
         isDeleted: false,
+        program: {
+          isPublished: true,
+          isDeleted: false,
+        },
       },
-    },
-  });
-
-  const totalPrograms = await db.program.count({
-    where: { isPublished: true, isDeleted: false },
-  });
+    }),
+    db.program.count({
+      where: { isPublished: true, isDeleted: false },
+    }),
+    db.courseRegistration.findMany({
+      where: { status: 'PENDING' },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: { course: true },
+      take: 3,
+    }),
+    db.instructorRegistration.findMany({
+      where: { status: 'PENDING' },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 3,
+    }),
+    db.trialClassRegistration.findMany({
+      where: { status: 'PENDING' },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: { course: true },
+      take: 3,
+    }),
+  ]);
 
   const statistics = [
     {
@@ -86,32 +115,6 @@ const Page = async () => {
       icon: UserCheck,
     },
   ];
-
-  const courseRegistrations = await db.courseRegistration.findMany({
-    where: { status: 'PENDING' },
-    orderBy: {
-      createdAt: 'desc',
-    },
-    include: { course: true },
-    take: 3,
-  });
-
-  const instructorRegistrations = await db.instructorRegistration.findMany({
-    where: { status: 'PENDING' },
-    orderBy: {
-      createdAt: 'desc',
-    },
-    take: 3,
-  });
-
-  const trialClassRegistrations = await db.trialClassRegistration.findMany({
-    where: { status: 'PENDING' },
-    orderBy: {
-      createdAt: 'desc',
-    },
-    include: { course: true },
-    take: 3,
-  });
 
   return (
     <div className='flex flex-col gap-5 font-josefin container max-w-7xl p-0'>
