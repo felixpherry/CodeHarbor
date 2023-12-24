@@ -2,20 +2,31 @@
 
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { Badge, BadgeProps } from '@/components/ui/badge';
-import { InstructorRegistration, RegistrationStatus } from '@prisma/client';
+import {
+  Account,
+  Course,
+  RegistrationStatus,
+  Student,
+  StudentCourse,
+} from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { ArrowUpDown, Eye, ThumbsDown, ThumbsUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
-import {
-  createAccountForInstructor,
-  updateInstructorRegistrationStatus,
-} from '../_actions';
-import InstructorRegistrationDetail from './InstructorRegistrationDetail';
+import Image from 'next/image';
+import Link from 'next/link';
+import { updateEnrollmentStatus } from '../_actions';
 import moment from 'moment';
 
-export const columns: ColumnDef<InstructorRegistration>[] = [
+export const columns: ColumnDef<
+  {
+    course: Course;
+    student: {
+      account: Account;
+    } & Student;
+  } & StudentCourse
+>[] = [
   {
     header: 'No',
   },
@@ -27,35 +38,17 @@ export const columns: ColumnDef<InstructorRegistration>[] = [
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const pathname = usePathname()!;
 
-      const instructorData = row.original as {
-        skills: {
-          id: string;
-          name: string;
-        }[];
-      } & InstructorRegistration;
-
       const confirmStatus = async (status: RegistrationStatus) => {
         try {
-          await updateInstructorRegistrationStatus({
-            id,
-            status,
+          await updateEnrollmentStatus({
             pathname,
+            status,
+            studentCourseId: id,
           });
 
-          toast.success('Successfully updated registration status');
-          if (status === 'APPROVED') {
-            try {
-              await createAccountForInstructor(instructorData);
-
-              toast.success(
-                'Successfully created account for the instructor. Please contact the instructor for the account credentials'
-              );
-            } catch (error: any) {
-              toast.error('Failed to create account for the instructor');
-            }
-          }
+          toast.success('Successfully updated enrollment status');
         } catch (error: any) {
-          toast.error('Failed to update registration status');
+          toast.error('Failed to update enrollment status');
         }
       };
 
@@ -64,29 +57,33 @@ export const columns: ColumnDef<InstructorRegistration>[] = [
           {row.getValue('status') === 'PENDING' && (
             <>
               <ConfirmModal
-                title='Approve Registration'
-                description='Do you want to approve this registration'
+                title='Approve Enrollment'
+                description='Do you want to approve this enrollment'
                 onConfirm={() => confirmStatus('APPROVED')}
               >
                 <ThumbsUp className='text-green-500 cursor-pointer' />
               </ConfirmModal>
               <ConfirmModal
-                title='Reject Registration'
-                description='Do you want to reject this registration'
+                title='Reject Enrollment'
+                description='Do you want to reject this enrollment'
                 onConfirm={() => confirmStatus('REJECTED')}
               >
                 <ThumbsDown className='text-red-500 cursor-pointer' />
               </ConfirmModal>
             </>
           )}
-
-          <InstructorRegistrationDetail data={instructorData} />
+          <Link href={`/profile/${row.original.student.accountId}`}>
+            <Eye className='text-muted-foreground hover:text-primary' />
+          </Link>
         </div>
       );
     },
   },
   {
     accessorKey: 'name',
+    accessorFn: ({ student }) => {
+      return student.account.name;
+    },
     header: ({ column }) => {
       return (
         <Button
@@ -100,13 +97,17 @@ export const columns: ColumnDef<InstructorRegistration>[] = [
       );
     },
     cell: ({ row }) => {
+      const { student } = row.original;
       return (
-        <span className='font-bold text-primary'>{row.getValue('name')}</span>
+        <div className='text-primary font-semibold'>{student.account.name}</div>
       );
     },
   },
   {
-    accessorKey: 'email',
+    accessorKey: 'studentId',
+    accessorFn: ({ student }) => {
+      return student.studentId;
+    },
     header: ({ column }) => {
       return (
         <Button
@@ -114,14 +115,36 @@ export const columns: ColumnDef<InstructorRegistration>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className='whitespace-nowrap'
         >
-          Email
+          Student ID
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <div className='text-primary font-semibold'>
+          {row.original.student.studentId}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'course.name',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='whitespace-nowrap'
+        >
+          Course
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
     },
   },
   {
-    accessorKey: 'phoneNumber',
+    accessorKey: 'student.account.phoneNumber',
     header: ({ column }) => {
       return (
         <Button
@@ -133,6 +156,9 @@ export const columns: ColumnDef<InstructorRegistration>[] = [
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
+    },
+    cell: ({ row }) => {
+      return <span>{row.original.student.account.phoneNumber || '-'}</span>;
     },
   },
   {

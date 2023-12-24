@@ -3,8 +3,9 @@
 import { modals } from '@mantine/modals';
 import { ButtonProps, Button } from '../ui/button';
 import ConfirmForm from './ConfirmForm';
+import { ComponentProps } from 'react';
 
-interface ConfirmModalProps {
+type ConfirmModalProps = {
   children: React.ReactNode;
   onConfirm: (...args: any[]) => Promise<unknown> | void;
   title: string;
@@ -17,7 +18,8 @@ interface ConfirmModalProps {
     confirm?: ButtonProps['variant'];
     cancel?: ButtonProps['variant'];
   };
-}
+  className?: string;
+} & ComponentProps<'button'>;
 
 export const ConfirmModal = ({
   children,
@@ -26,6 +28,7 @@ export const ConfirmModal = ({
   description,
   label,
   variant,
+  className = '',
 }: ConfirmModalProps) => {
   const openModal = () => {
     modals.open({
@@ -41,5 +44,9 @@ export const ConfirmModal = ({
     });
   };
 
-  return <button onClick={openModal}>{children}</button>;
+  return (
+    <button className={className} onClick={openModal}>
+      {children}
+    </button>
+  );
 };

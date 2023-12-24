@@ -589,7 +589,7 @@ model StudentCourse {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([courseId, studentId, periodId])
+  @@unique([courseId, studentId, periodId, status])
   @@index([courseId])
   @@index([studentId])
   @@index([periodId])

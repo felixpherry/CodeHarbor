@@ -17,6 +17,62 @@ export const columns: ColumnDef<TrialClassRegistration>[] = [
     header: 'No',
   },
   {
+    id: 'actions',
+    header: 'Actions',
+    cell: ({ row }) => {
+      const { id } = row.original;
+
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const pathname = usePathname()!;
+
+      const confirmStatus = async (status: RegistrationStatus) => {
+        try {
+          await updateTrialClassRegistrationStatus({
+            id,
+            status,
+            pathname,
+          });
+          toast.success('Successfully updated registration status');
+        } catch (error: any) {
+          toast.error('Failed to update registration status');
+        }
+      };
+
+      return (
+        <div className='flex items-center gap-6'>
+          {row.getValue('status') === 'PENDING' && (
+            <>
+              <ConfirmModal
+                title='Approve Registration'
+                description='Do you want to approve this registration?'
+                onConfirm={() => confirmStatus('APPROVED')}
+              >
+                <ThumbsUp className='text-green-500 cursor-pointer' />
+              </ConfirmModal>
+              <ConfirmModal
+                title='Reject Registration'
+                description='Do you want to reject this registration?'
+                onConfirm={() => confirmStatus('REJECTED')}
+              >
+                <ThumbsDown className='text-red-500 cursor-pointer' />
+              </ConfirmModal>
+            </>
+          )}
+
+          <TrialClassDetail
+            data={
+              row.original as {
+                course: {
+                  name: string;
+                };
+              } & TrialClassRegistration
+            }
+          />
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: 'childName',
     header: ({ column }) => {
       return (
@@ -115,58 +171,24 @@ export const columns: ColumnDef<TrialClassRegistration>[] = [
     },
   },
   {
-    id: 'actions',
-    header: 'Actions',
+    accessorKey: 'createdAt',
+    header: 'Created At',
     cell: ({ row }) => {
-      const { id } = row.original;
-
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const pathname = usePathname()!;
-
-      const confirmStatus = async (status: RegistrationStatus) => {
-        try {
-          await updateTrialClassRegistrationStatus({
-            id,
-            status,
-            pathname,
-          });
-          toast.success('Successfully updated registration status');
-        } catch (error: any) {
-          toast.error('Failed to update registration status');
-        }
-      };
-
       return (
-        <div className='flex items-center gap-6'>
-          {row.getValue('status') === 'PENDING' && (
-            <>
-              <ConfirmModal
-                title='Approve Registration'
-                description='Do you want to approve this registration?'
-                onConfirm={() => confirmStatus('APPROVED')}
-              >
-                <ThumbsUp className='text-green-500 cursor-pointer' />
-              </ConfirmModal>
-              <ConfirmModal
-                title='Reject Registration'
-                description='Do you want to reject this registration?'
-                onConfirm={() => confirmStatus('REJECTED')}
-              >
-                <ThumbsDown className='text-red-500 cursor-pointer' />
-              </ConfirmModal>
-            </>
-          )}
-
-          <TrialClassDetail
-            data={
-              row.original as {
-                course: {
-                  name: string;
-                };
-              } & TrialClassRegistration
-            }
-          />
-        </div>
+        <span className='font-bold text-muted-foreground'>
+          {moment(row.getValue('createdAt')).format('DD/MM/YYYY')}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: 'Updated At',
+    cell: ({ row }) => {
+      return (
+        <span className='font-bold text-muted-foreground'>
+          {moment(row.getValue('updatedAt')).format('DD/MM/YYYY')}
+        </span>
       );
     },
   },

@@ -13,7 +13,6 @@ interface PageProps {
 }
 
 const Page = async ({ searchParams }: PageProps) => {
-  // await generateCourseRegistrationData();
   const statuses = ['APPROVED', 'PENDING', 'REJECTED'];
 
   const data = await db.courseRegistration.findMany({

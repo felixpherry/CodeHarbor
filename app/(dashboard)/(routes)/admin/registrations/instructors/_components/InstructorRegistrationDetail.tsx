@@ -11,6 +11,7 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { InstructorRegistration } from '@prisma/client';
+import { Eye } from 'lucide-react';
 import moment from 'moment';
 
 interface InstructorRegistrationDetailProps {
@@ -78,9 +79,7 @@ const InstructorRegistrationDetail = ({
   return (
     <Dialog>
       <DialogTrigger>
-        <span className='hover:underline cursor-pointer text-primary-blue'>
-          Details
-        </span>
+        <Eye className='text-muted-foreground hover:text-primary' />
       </DialogTrigger>
       <DialogContent className='p-8'>
         <DialogHeader>
@@ -91,9 +90,6 @@ const InstructorRegistrationDetail = ({
           <Badge variant={statusVariant}>
             {status[0] + status.substring(1).toLocaleLowerCase()}
           </Badge>
-          {/* {coupon?.code && (
-            <Badge variant='sky-lighten'>Coupon {coupon.code}</Badge>
-          )} */}
         </div>
         <div className='flex gap-3 flex-wrap'>
           {skills.map(({ id, name }) => (

@@ -2,7 +2,6 @@ import { db } from '@/lib/db';
 import CourseCard from './CourseCard';
 import CoursesPagination from './CoursesPagination';
 import { Level } from '@prisma/client';
-import { generateTrialClassData } from '@/lib/actions/generate.actions';
 
 interface CoursesProps {
   searchParams: {
@@ -16,64 +15,55 @@ interface CoursesProps {
 
 const Courses = async ({ searchParams }: CoursesProps) => {
   const levels = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED'];
-  const courses = await db.course.findMany({
-    where: {
+  const baseCourseQuery = {
+    isPublished: true,
+    isDeleted: false,
+    program: {
       isPublished: true,
       isDeleted: false,
-      program: {
-        isPublished: true,
-        isDeleted: false,
-      },
-      name: {
-        contains: searchParams.search,
-      },
-      level: levels.includes(searchParams.level?.toLocaleUpperCase() || '')
-        ? (searchParams.level?.toLocaleUpperCase() as Level)
-        : undefined,
-      categoryId: searchParams.category,
-      programId: searchParams.program,
     },
-    include: {
-      category: {
-        select: {
-          ageDescription: true,
+    name: {
+      contains: searchParams.search,
+    },
+    level: levels.includes(searchParams.level?.toLocaleUpperCase() || '')
+      ? (searchParams.level?.toLocaleUpperCase() as Level)
+      : undefined,
+    categoryId: searchParams.category,
+    programId: searchParams.program,
+  };
+
+  const [courses, count] = await Promise.all([
+    db.course.findMany({
+      where: baseCourseQuery,
+      include: {
+        category: {
+          select: {
+            ageDescription: true,
+          },
         },
-      },
-      _count: {
-        select: {
-          sessions: {
-            where: {
-              isPublished: true,
+        _count: {
+          select: {
+            sessions: {
+              where: {
+                isPublished: true,
+              },
             },
           },
         },
       },
-    },
-    orderBy: {
-      name: 'asc',
-    },
-    take: 12,
-    skip: ((Number(searchParams.page) || 1) - 1) * 12,
-  });
-
-  const count = await db.course.count({
-    where: {
-      isPublished: true,
-      program: {
-        isPublished: true,
+      orderBy: {
+        name: 'asc',
       },
-      name: {
-        contains: searchParams.search,
-      },
-      level: levels.includes(searchParams.level?.toLocaleUpperCase() || '')
-        ? (searchParams.level?.toLocaleUpperCase() as Level)
-        : undefined,
-      categoryId: searchParams.category,
-      programId: searchParams.program,
-    },
-  });
+      take: 12,
+      skip: ((Number(searchParams.page) || 1) - 1) * 12,
+    }),
+    db.course.count({
+      where: baseCourseQuery,
+    }),
+  ]);
 
   const hasNextPage = (Number(searchParams.page) || 1) * 12 < count;
+
   return (
     <>
       {!courses.length && (

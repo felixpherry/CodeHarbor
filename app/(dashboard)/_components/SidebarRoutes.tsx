@@ -3,6 +3,7 @@
 import { IconTableOptions } from '@tabler/icons-react';
 import SidebarItem, { SidebarItemProps } from './SidebarItem';
 import {
+  BookOpen,
   CalendarDays,
   Code2,
   GraduationCap,
@@ -25,6 +26,10 @@ const adminRoutes: SidebarItemProps[] = [
     icon: Wrench,
     initiallyOpened: false,
     links: [
+      {
+        label: 'Category',
+        href: '/admin/master/categories',
+      },
       {
         label: 'Day',
         href: '/admin/master/day',
@@ -57,6 +62,11 @@ const adminRoutes: SidebarItemProps[] = [
     href: '/admin/registrations/trial-class',
   },
   {
+    label: 'Enrollments',
+    icon: BookOpen,
+    href: '/admin/enrollments',
+  },
+  {
     label: 'Programs',
     icon: Code2,
     href: '/admin/programs',
@@ -81,6 +91,7 @@ const adminRoutes: SidebarItemProps[] = [
 const studentRoutes: SidebarItemProps[] = [
   { label: 'Dashboard', icon: Layout, href: '/student/dashboard' },
   { label: 'My Classes', icon: GraduationCap, href: '/classes' },
+  { label: 'Courses', icon: Code2, href: '/student/courses' },
   { label: 'Schedule', icon: CalendarDays, href: '/schedule' },
   { label: 'Profile', icon: User, href: '/profile' },
 ];

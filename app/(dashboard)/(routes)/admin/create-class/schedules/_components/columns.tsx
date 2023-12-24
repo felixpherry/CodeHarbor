@@ -13,6 +13,7 @@ import {
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { convertToTitleCase } from '@/lib/utils';
+import Link from 'next/link';
 
 type CreateClassSchedules = {
   day: MasterDay;
@@ -86,6 +87,16 @@ export const columns: ColumnDef<CreateClassSchedules>[] = [
           Instructor
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <Link
+          className='font-medium text-primary-blue hover:underline'
+          href={`/profile/${row.original.instructor.accountId}`}
+        >
+          {row.original.instructor.account.name}
+        </Link>
       );
     },
   },

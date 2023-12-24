@@ -13,10 +13,81 @@ import {
   updateCourseRegistrationStatus,
 } from '../_actions';
 import CourseRegistrationDetail from './CourseRegistrationDetail';
+import moment from 'moment';
 
 export const columns: ColumnDef<CourseRegistration>[] = [
   {
     header: 'No',
+  },
+  {
+    id: 'actions',
+    header: 'Actions',
+    cell: ({ row }) => {
+      const { id } = row.original;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const pathname = usePathname()!;
+
+      const confirmStatus = async (status: RegistrationStatus) => {
+        try {
+          await updateCourseRegistrationStatus({
+            id,
+            status,
+            pathname,
+          });
+
+          toast.success('Successfully updated registration status');
+          if (status === 'APPROVED') {
+            try {
+              await createAccountForStudent(row.original);
+
+              toast.success(
+                'Successfully created account for the user. Please contact the user for the account credentials'
+              );
+            } catch (error: any) {
+              toast.error('Failed to create account for the user');
+            }
+          }
+        } catch (error: any) {
+          toast.error('Failed to update registration status');
+        }
+      };
+
+      return (
+        <div className='flex items-center gap-6'>
+          {row.getValue('status') === 'PENDING' && (
+            <>
+              <ConfirmModal
+                title='Approve Registration'
+                description='Do you want to approve this registration'
+                onConfirm={() => confirmStatus('APPROVED')}
+              >
+                <ThumbsUp className='text-green-500 cursor-pointer' />
+              </ConfirmModal>
+              <ConfirmModal
+                title='Reject Registration'
+                description='Do you want to reject this registration'
+                onConfirm={() => confirmStatus('REJECTED')}
+              >
+                <ThumbsDown className='text-red-500 cursor-pointer' />
+              </ConfirmModal>
+            </>
+          )}
+
+          <CourseRegistrationDetail
+            data={
+              row.original as {
+                course: {
+                  name: string;
+                };
+                coupon: {
+                  code: string;
+                };
+              } & CourseRegistration
+            }
+          />
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'childName',
@@ -98,80 +169,24 @@ export const columns: ColumnDef<CourseRegistration>[] = [
     },
   },
   {
-    id: 'actions',
-    header: 'Actions',
+    accessorKey: 'createdAt',
+    header: 'Created At',
     cell: ({ row }) => {
-      const { id } = row.original;
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const pathname = usePathname()!;
-
-      const confirmStatus = async (status: RegistrationStatus) => {
-        try {
-          await updateCourseRegistrationStatus({
-            id,
-            status,
-            pathname,
-          });
-
-          toast.success('Successfully updated registration status');
-          // toast.custom(
-          //   (t) => (
-          //     <CourseRegistrationSuccess toastId={t} payload={row.original} />
-          //   ),
-          //   {
-          //     duration: 100000,
-          //   }
-          // );
-          if (status === 'APPROVED') {
-            try {
-              await createAccountForStudent(row.original);
-
-              toast.success(
-                'Successfully created account for the user. Please contact the user for the account credentials'
-              );
-            } catch (error: any) {
-              toast.error('Failed to create account for the user');
-            }
-          }
-        } catch (error: any) {
-          toast.error('Failed to update registration status');
-        }
-      };
-
       return (
-        <div className='flex items-center gap-6'>
-          {row.getValue('status') === 'PENDING' && (
-            <>
-              <ConfirmModal
-                title='Approve Registration'
-                description='Do you want to approve this registration'
-                onConfirm={() => confirmStatus('APPROVED')}
-              >
-                <ThumbsUp className='text-green-500 cursor-pointer' />
-              </ConfirmModal>
-              <ConfirmModal
-                title='Reject Registration'
-                description='Do you want to reject this registration'
-                onConfirm={() => confirmStatus('REJECTED')}
-              >
-                <ThumbsDown className='text-red-500 cursor-pointer' />
-              </ConfirmModal>
-            </>
-          )}
-
-          <CourseRegistrationDetail
-            data={
-              row.original as {
-                course: {
-                  name: string;
-                };
-                coupon: {
-                  code: string;
-                };
-              } & CourseRegistration
-            }
-          />
-        </div>
+        <span className='font-bold text-muted-foreground'>
+          {moment(row.getValue('createdAt')).format('DD/MM/YYYY')}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: 'Updated At',
+    cell: ({ row }) => {
+      return (
+        <span className='font-bold text-muted-foreground'>
+          {moment(row.getValue('updatedAt')).format('DD/MM/YYYY')}
+        </span>
       );
     },
   },

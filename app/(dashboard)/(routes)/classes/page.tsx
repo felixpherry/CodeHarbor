@@ -31,7 +31,21 @@ const page = async ({ searchParams }: PageProps) => {
 
   if (!session) return redirect('/login');
 
-  const currPeriod = await getCurrentPeriod();
+  const [currPeriod, pastPeriods, nextPeriod] = await Promise.all([
+    getCurrentPeriod(),
+    db.period.findMany({
+      where: {
+        endDate: {
+          lte: new Date(),
+        },
+      },
+    }),
+    getNextPeriod(),
+  ]);
+
+  const allPeriods = [...pastPeriods, currPeriod, nextPeriod].filter(
+    Boolean
+  ) as Period[];
 
   const periodId = searchParams?.period || currPeriod?.id;
 
@@ -56,20 +70,6 @@ const page = async ({ searchParams }: PageProps) => {
         periodId
       )) as ClassCollectionDetail[];
   }
-
-  const pastPeriods = await db.period.findMany({
-    where: {
-      endDate: {
-        lte: new Date(),
-      },
-    },
-  });
-
-  const nextPeriod = await getNextPeriod();
-
-  const allPeriods = [...pastPeriods, currPeriod, nextPeriod].filter(
-    Boolean
-  ) as Period[];
 
   const periodOptions: MantineSelectOption[] = allPeriods.map(
     ({ id, name }) => ({

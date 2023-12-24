@@ -10,10 +10,14 @@ const Page = async () => {
   });
 
   return (
-    <DataTable
-      columns={columns}
-      data={categories}
-    />
+    <div className='container mx-auto p-0'>
+      <div className='flex flex-col gap-5'>
+        <h1 className='text-muted-foreground font-bold text-lg'>
+          Master Category
+        </h1>
+        <DataTable columns={columns} data={categories} />
+      </div>
+    </div>
   );
 };
 

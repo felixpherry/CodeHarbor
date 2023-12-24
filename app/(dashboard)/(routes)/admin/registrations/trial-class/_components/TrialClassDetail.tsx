@@ -11,6 +11,7 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { TrialClassRegistration } from '@prisma/client';
+import { Eye } from 'lucide-react';
 import moment from 'moment';
 
 interface TrialClassDetailProps {
@@ -79,9 +80,7 @@ const TrialClassDetail = ({ data }: TrialClassDetailProps) => {
   return (
     <Dialog>
       <DialogTrigger>
-        <span className='hover:underline cursor-pointer text-primary-blue'>
-          Details
-        </span>
+        <Eye className='text-muted-foreground hover:text-primary' />
       </DialogTrigger>
       <DialogContent className='p-8'>
         <DialogHeader>

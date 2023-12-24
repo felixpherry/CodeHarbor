@@ -11,6 +11,7 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { CourseRegistration } from '@prisma/client';
+import { Eye } from 'lucide-react';
 import moment from 'moment';
 
 interface CourseRegistrationDetailProps {
@@ -103,9 +104,7 @@ const CourseRegistrationDetail = ({ data }: CourseRegistrationDetailProps) => {
   return (
     <Dialog>
       <DialogTrigger>
-        <span className='hover:underline cursor-pointer text-primary-blue'>
-          Details
-        </span>
+        <Eye className='text-muted-foreground hover:text-primary' />
       </DialogTrigger>
       <DialogContent className='p-8'>
         <DialogHeader>

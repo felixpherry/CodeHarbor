@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { Chrome, FileQuestion, Layout, LucideIcon, Shapes } from 'lucide-react';
+import { Chrome, FileQuestion, Layout, LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -22,11 +22,6 @@ const LayoutTabs = () => {
       label: 'FAQ',
       url: '/admin/layouts/faq',
       icon: FileQuestion,
-    },
-    {
-      label: 'Categories',
-      url: '/admin/layouts/categories',
-      icon: Shapes,
     },
     {
       label: 'Logo',

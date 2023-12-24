@@ -17,7 +17,7 @@ interface FaqProps {
 
 const Faq = ({ faq }: FaqProps) => {
   return (
-    <div className='bg-light-white w-full px-4 py-20 md:px-10'>
+    <div className='bg-white w-full px-4 py-20 md:px-10'>
       <h1 className='mb-12 text-4xl text-center font-bold tracking-tight leading-none'>
         Frequently Asked Questions
       </h1>

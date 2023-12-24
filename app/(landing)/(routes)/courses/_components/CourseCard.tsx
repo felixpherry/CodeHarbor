@@ -2,8 +2,9 @@ import Preview from '@/components/shared/Preview';
 import { Button } from '@/components/ui/button';
 import { Card, CardFooter, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { SessionInterface } from '@/types';
 
-import { Course, Session } from '@prisma/client';
+import { Course } from '@prisma/client';
 import { CalendarDays, Dot } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
