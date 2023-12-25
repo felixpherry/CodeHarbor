@@ -35,10 +35,11 @@ const ClassTableActions = ({ classData }: ClassTableActionsProps) => {
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
-      await deleteClass(classData.id, pathname);
-      toast.success('Successfully deleted class');
+      const { error, message } = await deleteClass(classData.id, pathname);
+      if (error !== null) throw new Error(message);
+      toast.success(message);
     } catch (error: any) {
-      toast.error('Failed to delete class');
+      toast.error(error.message);
     } finally {
       setIsDeleting(false);
     }

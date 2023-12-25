@@ -73,7 +73,10 @@ const ClassForm = ({ initialData }: ClassFormProps) => {
     try {
       setIsLoading(true);
 
-      await updateClass(tempClass, pathname);
+      const { error, message } = await updateClass(tempClass, pathname);
+
+      if (error !== null) throw new Error(message);
+      toast.success(message);
       queryClient.invalidateQueries({
         queryKey: ['available-instructors'],
       });
@@ -83,7 +86,7 @@ const ClassForm = ({ initialData }: ClassFormProps) => {
       toast.success('Successfully updated class');
       modals.closeAll();
     } catch (error: any) {
-      toast.error(error);
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }

@@ -4,6 +4,8 @@ import { getNextPeriod } from '@/lib/actions/period.actions';
 import { db } from '@/lib/db';
 import { ClassTableInterface } from './_components/columns';
 import { revalidatePath } from 'next/cache';
+import { ServerActionsResponse } from '@/types';
+import { Class } from '@prisma/client';
 
 export const getAvailableInstructors = async (
   courseId: string,
@@ -71,7 +73,7 @@ export const getAvailableStudents = async (
 export const updateClass = async (
   data: ClassTableInterface,
   pathname: string
-) => {
+): Promise<ServerActionsResponse<Class>> => {
   try {
     const newClass = await db.class.update({
       where: {
@@ -110,23 +112,42 @@ export const updateClass = async (
     });
 
     revalidatePath(pathname);
-    return newClass;
+    return {
+      data: newClass,
+      error: null,
+      message: 'Successfully updated class',
+    };
   } catch (error: any) {
-    console.log(error.message);
-    throw new Error(`Failed to update class: ${error.message}`);
+    console.log('updateClass', error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to update class',
+    };
   }
 };
 
-export const deleteClass = async (id: string, pathname: string) => {
+export const deleteClass = async (
+  id: string,
+  pathname: string
+): Promise<ServerActionsResponse<Class>> => {
   try {
     const res = await db.class.delete({
       where: { id },
     });
 
     revalidatePath(pathname);
-    return res;
+    return {
+      data: res,
+      error: null,
+      message: 'Successfully deleted class',
+    };
   } catch (error: any) {
-    console.log(error.message);
-    throw new Error(`Failed to delete class: ${error.message}`);
+    console.log('deleteClass', error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to delete class',
+    };
   }
 };
