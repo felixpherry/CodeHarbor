@@ -4,6 +4,7 @@ import { revalidatePath, unstable_cache } from 'next/cache';
 import { db } from '../db';
 import { Logo } from '@prisma/client';
 import { utapi } from '@/app/api/uploadthing/core';
+import { ServerActionsResponse } from '@/types';
 
 export const fetchLogo = unstable_cache(
   async () => {
@@ -31,7 +32,7 @@ interface CreateOrUpdateLogoParams {
 export const createOrUpdateLogo = async ({
   pathname,
   payload,
-}: CreateOrUpdateLogoParams) => {
+}: CreateOrUpdateLogoParams): Promise<ServerActionsResponse<Logo>> => {
   try {
     const { fileKey, image } = payload;
 
@@ -59,9 +60,17 @@ export const createOrUpdateLogo = async ({
 
     revalidatePath(pathname);
 
-    return logo;
+    return {
+      data: logo,
+      error: null,
+      message: 'Successfully updated logo',
+    };
   } catch (error: any) {
-    console.log('createOrUpdateLogo', error);
-    throw new Error('Internal Server Error');
+    console.log('createOrUpdateLogo', error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to update logo',
+    };
   }
 };

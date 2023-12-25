@@ -48,17 +48,23 @@ const FaqForm = ({ type, initialData }: FaqFormProps) => {
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       if (type === 'ADD') {
-        await addNewFaq(values.question, values.answer, pathname);
+        const { error, message } = await addNewFaq(
+          values.question,
+          values.answer,
+          pathname
+        );
+        if (error !== null) throw new Error(message);
+        toast.success(message);
       } else {
-        await updateFaq(
+        const { error, message } = await updateFaq(
           initialData?.id!,
           values.question,
           values.answer,
           pathname
         );
+        if (error !== null) throw new Error(message);
+        toast.success(message);
       }
-
-      toast.success(`Successfully ${type === 'ADD' ? 'added' : 'updated'} FAQ`);
 
       modals.closeAll();
     } catch (error: any) {

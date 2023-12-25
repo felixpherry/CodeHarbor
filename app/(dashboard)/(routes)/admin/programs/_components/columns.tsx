@@ -37,24 +37,24 @@ export const columns: ColumnDef<Program>[] = [
             <PencilIcon className='text-primary-blue cursor-pointer w-5 h-5' />
           </Link>
           <Trash2
-            onClick={() => {
-              // modals.openConfirmModal({
-              //   title: `Delete ${name}?`,
-              //   centered: true,
-              //   children: (
-              //     <Text size='sm'>
-              //       Are you sure you want to delete this period? This action can
-              //       not be undone
-              //     </Text>
-              //   ),
-              //   labels: {
-              //     confirm: 'Delete',
-              //     cancel: 'Cancel',
-              //   },
-              //   confirmProps: { color: 'red' },
-              //   onConfirm: confirmDelete,
-              // });
-            }}
+            // onClick={() => {
+            //   modals.openConfirmModal({
+            //     title: `Delete ${name}?`,
+            //     centered: true,
+            //     children: (
+            //       <Text size='sm'>
+            //         Are you sure you want to delete this period? This action can
+            //         not be undone
+            //       </Text>
+            //     ),
+            //     labels: {
+            //       confirm: 'Delete',
+            //       cancel: 'Cancel',
+            //     },
+            //     confirmProps: { color: 'red' },
+            //     onConfirm: confirmDelete,
+            //   });
+            // }}
             className='text-red-500 cursor-pointer w-5 h-5'
           />
         </div>

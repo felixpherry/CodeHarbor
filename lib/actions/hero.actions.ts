@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { db } from '../db';
 import { Hero } from '@prisma/client';
 import { utapi } from '@/app/api/uploadthing/core';
+import { ServerActionsResponse } from '@/types';
 
 export const fetchHero = async () => {
   try {
@@ -28,7 +29,7 @@ interface CreateOrUpdateHeroParams {
 export const createOrUpdateHero = async ({
   pathname,
   payload,
-}: CreateOrUpdateHeroParams) => {
+}: CreateOrUpdateHeroParams): Promise<ServerActionsResponse<Hero>> => {
   try {
     const { fileKey, image, subtitle, title } = payload;
 
@@ -60,9 +61,17 @@ export const createOrUpdateHero = async ({
 
     revalidatePath(pathname);
 
-    return hero;
+    return {
+      data: hero,
+      error: null,
+      message: 'Successfully updated hero',
+    };
   } catch (error: any) {
     console.log('createOrUpdateHero', error);
-    throw new Error('Internal Server Error');
+    return {
+      error: error.message,
+      data: null,
+      message: 'Failed to update hero',
+    };
   }
 };

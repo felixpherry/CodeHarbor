@@ -67,9 +67,12 @@ const LogoForm = ({ initialData }: LogoFormProps) => {
         payload.image = url;
       }
 
-      await createOrUpdateLogo({ payload, pathname });
-
-      toast.success('Successfully updated logo');
+      const { error, message } = await createOrUpdateLogo({
+        payload,
+        pathname,
+      });
+      if (error !== null) throw new Error(message);
+      toast.success(message);
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -86,9 +89,7 @@ const LogoForm = ({ initialData }: LogoFormProps) => {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-4 w-full'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 w-full'>
         <FormField
           control={form.control}
           name='image'
@@ -115,7 +116,8 @@ const LogoForm = ({ initialData }: LogoFormProps) => {
                       onClick={handleDeleteImage}
                       className='bg-rose-500 text-white p-1 rounded-full absolute -top-2 -right-0 shadow-sm'
                       type='button'
-                      disabled={isSubmitting}>
+                      disabled={isSubmitting}
+                    >
                       <X className='h-4 w-4' />
                     </button>
                   </div>
@@ -127,9 +129,7 @@ const LogoForm = ({ initialData }: LogoFormProps) => {
         />
 
         <div className='flex justify-start'>
-          <Button
-            size='sm'
-            disabled={isSubmitting}>
+          <Button size='sm' disabled={isSubmitting}>
             {isSubmitting ? (
               <Loader2 className='h-4 w-4 animate-spin' />
             ) : (

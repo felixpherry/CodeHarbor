@@ -27,18 +27,16 @@ export const columns: ColumnDef<Account>[] = [
 
       const confirmStatus = async (status: Status) => {
         try {
-          await updateAccountStatus({
+          const { error, message } = await updateAccountStatus({
             id,
             status,
             pathname,
           });
-          toast.success(
-            `Successfully ${status === 'ACTIVE' ? 'unban' : 'ban'} this account`
-          );
+
+          if (error !== null) throw new Error(message);
+          toast.success(message);
         } catch (error: any) {
-          toast.error(
-            `Failed to ${status === 'ACTIVE' ? 'unban' : 'ban'} this account`
-          );
+          toast.error(error.message);
         }
       };
 

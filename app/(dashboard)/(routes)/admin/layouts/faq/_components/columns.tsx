@@ -25,8 +25,9 @@ export const columns: ColumnDef<Faq>[] = [
 
       const confirmDelete = async () => {
         try {
-          await deleteFaq(id, pathname);
-          toast.success('Successfully deleted faq');
+          const { error, message } = await deleteFaq(id, pathname);
+          if (error !== null) throw new Error(message);
+          toast.success(message);
         } catch (error: any) {
           toast.error(error.message);
         }
