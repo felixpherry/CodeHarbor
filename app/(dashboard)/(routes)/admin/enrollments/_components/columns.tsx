@@ -40,15 +40,16 @@ export const columns: ColumnDef<
 
       const confirmStatus = async (status: RegistrationStatus) => {
         try {
-          await updateEnrollmentStatus({
+          const { error, message } = await updateEnrollmentStatus({
             pathname,
             status,
             studentCourseId: id,
           });
 
-          toast.success('Successfully updated enrollment status');
+          if (error !== null) throw new Error(message);
+          toast.success(message);
         } catch (error: any) {
-          toast.error('Failed to update enrollment status');
+          toast.error(error.message);
         }
       };
 

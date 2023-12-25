@@ -59,7 +59,21 @@ const adminRoutes: SidebarItemProps[] = [
   {
     label: 'Registrations',
     icon: ScrollText,
-    href: '/admin/registrations/trial-class',
+    initiallyOpened: false,
+    links: [
+      {
+        label: 'Trial Class',
+        href: '/admin/registrations/trial-class',
+      },
+      {
+        label: 'Courses',
+        href: '/admin/registrations/courses',
+      },
+      {
+        label: 'Instructors',
+        href: '/admin/registrations/instructors',
+      },
+    ],
   },
   {
     label: 'Enrollments',
