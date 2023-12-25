@@ -25,8 +25,8 @@ const AttachmentList = ({ attachments }: AttachmentListProps) => {
       setDeletingId(id);
       await deleteAttachment(id, pathname);
       toast.success('Successfully deleted attachment');
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch {
+      toast.error('Failed to delete attachment');
     } finally {
       setDeletingId(null);
     }

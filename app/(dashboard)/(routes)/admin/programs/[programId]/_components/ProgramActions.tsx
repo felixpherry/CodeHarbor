@@ -22,8 +22,9 @@ const ProgramActions = ({ disabled, program }: ProgramActionsProps) => {
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      await deleteProgram(program.id);
-      toast.success('Successfully deleted program');
+      const { error, message } = await deleteProgram(program.id, pathname);
+      if (error !== null) throw new Error(error);
+      toast.success(message);
       router.refresh();
       router.push(`/admin/programs`);
     } catch (error: any) {
@@ -38,23 +39,25 @@ const ProgramActions = ({ disabled, program }: ProgramActionsProps) => {
       setIsLoading(true);
 
       if (program.isPublished) {
-        await updateProgram({
+        const { error, message } = await updateProgram({
           id: program.id,
           pathname,
           payload: {
             isPublished: false,
           },
         });
-        toast.success('Successfully unpublish program');
+        if (error !== null) throw new Error(error);
+        toast.success(message);
       } else {
-        await updateProgram({
+        const { error, message } = await updateProgram({
           id: program.id,
           pathname,
           payload: {
             isPublished: true,
           },
         });
-        toast.success('Successfully publish program');
+        if (error !== null) throw new Error(error);
+        toast.success(message);
       }
     } catch (error: any) {
       toast.error(error.message);
@@ -75,8 +78,8 @@ const ProgramActions = ({ disabled, program }: ProgramActionsProps) => {
       </Button>
       <ConfirmModal
         onConfirm={onDelete}
-        title='Are you sure'
-        description='This action cannot be undone'
+        title='Are you sure?'
+        description='Do you want to delete this program? This actions cannot be undone.'
       >
         <Button asChild size='sm' disabled={isLoading}>
           <span>

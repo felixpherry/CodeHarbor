@@ -10,6 +10,7 @@ import { CalendarCheck, Pencil, PlusCircle, Trash2 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useReducer } from 'react';
 import EvaluationForm from './EvaluationForm';
+import { toast } from 'sonner';
 
 interface EvaluationListProps {
   evaluations: CourseEvaluation[];
@@ -81,6 +82,19 @@ const EvaluationsList = ({ evaluations }: EvaluationListProps) => {
     ({ id, isSessionReport }) => id !== evaluationId && isSessionReport === true
   );
 
+  const handleDeleteEvaluation = async (id: string) => {
+    try {
+      const { error, message } = await deleteCourseEvaluation({
+        courseEvaluationId: id,
+        pathname,
+      });
+      if (error !== null) throw new Error(error);
+      toast.success(message);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
   return (
     <div className='relative mt-6 border bg-slate-100 rounded-md p-4'>
       <div className='font-medium flex items-center justify-between'>
@@ -151,12 +165,7 @@ const EvaluationsList = ({ evaluations }: EvaluationListProps) => {
                       <ConfirmModal
                         title='Are you sure'
                         description='Do you want to remove this course evaluation?'
-                        onConfirm={async () =>
-                          await deleteCourseEvaluation({
-                            courseEvaluationId: id,
-                            pathname,
-                          })
-                        }
+                        onConfirm={() => handleDeleteEvaluation(id)}
                       >
                         <Trash2 className='text-rose-500 h-5 w-5 cursor-pointer' />
                       </ConfirmModal>

@@ -23,8 +23,10 @@ const CourseActions = ({ disabled, course }: CourseActionsProps) => {
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      await deleteCourse(course.id);
-      toast.success('Successfully deleted course');
+      const { error, message } = await deleteCourse(course.id);
+      if (error !== null) throw new Error(error);
+      toast.success(message);
+
       router.refresh();
       router.push(`/admin/programs/${course.programId}`);
     } catch (error: any) {
@@ -39,7 +41,7 @@ const CourseActions = ({ disabled, course }: CourseActionsProps) => {
       setIsLoading(true);
 
       if (course.isPublished) {
-        await updateCourse({
+        const { error, message } = await updateCourse({
           id: course.id,
           pathname,
           payload: {
@@ -47,13 +49,15 @@ const CourseActions = ({ disabled, course }: CourseActionsProps) => {
             isPublished: false,
           },
         });
-        toast.success('Successfully unpublish course');
+        if (error !== null) throw new Error(error);
+        toast.success(message);
       } else {
-        await publishCourse({
+        const { error, message } = await publishCourse({
           courseId: course.id,
           pathname,
         });
-        toast.success('Successfully publish course');
+        if (error !== null) throw new Error(error);
+        toast.success(message);
       }
     } catch (error: any) {
       toast.error(error.message);
@@ -75,7 +79,7 @@ const CourseActions = ({ disabled, course }: CourseActionsProps) => {
       <ConfirmModal
         onConfirm={onDelete}
         title='Are you sure?'
-        description='This action cannot be undone'
+        description='Do you want to delete this program? This actions cannot be undone.'
       >
         <Button asChild size='sm' disabled={isLoading}>
           <span>

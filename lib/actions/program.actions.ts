@@ -1,14 +1,17 @@
 'use server';
 
-import { Program, Session, Course } from '@prisma/client';
+import { Program, Session, Course, Prisma } from '@prisma/client';
 import { db } from '../db';
 import { revalidatePath } from 'next/cache';
 import { authorizeByRoles } from '../authorization';
 import { utapi } from '@/app/api/uploadthing/core';
+import { ServerActionsResponse } from '@/types';
 
 export const fetchPrograms = async (categoryId: string = '') => {
   try {
-    return await db.program.findMany();
+    return await db.program.findMany({
+      where: { isDeleted: false },
+    });
   } catch (error: any) {
     throw new Error(`Failed to fetch program: ${error.message}`);
   }
@@ -44,10 +47,12 @@ export const fetchProgramById = async (id: string) => {
 export const createProgram = async ({
   name,
   accountId,
+  pathname,
 }: {
   name: string;
   accountId: string;
-}) => {
+  pathname: string;
+}): Promise<ServerActionsResponse<Program>> => {
   try {
     const admin = await db.admin.findUnique({
       where: {
@@ -56,14 +61,36 @@ export const createProgram = async ({
     });
 
     if (!admin) throw new Error('Unauthorized');
-    return await db.program.create({
+    const program = await db.program.create({
       data: {
         name,
         userId: admin.id,
       },
     });
+
+    revalidatePath(pathname);
+
+    return {
+      data: program,
+      error: null,
+      message: 'Successfully created program',
+    };
   } catch (error: any) {
-    throw new Error(`Failed to create program: ${error.message}`);
+    console.log('createProgram', error.message);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        return {
+          data: null,
+          error: error.message,
+          message: 'Program name must be unique',
+        };
+      }
+    }
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to create program',
+    };
   }
 };
 
@@ -75,21 +102,44 @@ export const updateProgram = async ({
   id: string;
   payload: Partial<Program>;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<Program>> => {
   try {
-    await db.program.update({
+    const program = await db.program.update({
       data: payload,
       where: {
         id,
       },
     });
     revalidatePath(pathname);
+
+    return {
+      data: program,
+      error: null,
+      message: 'Successfully updated program',
+    };
   } catch (error: any) {
-    throw new Error(`Failed to update program: ${error.message}`);
+    console.log('updateProgram', error.message);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        return {
+          data: null,
+          error: error.message,
+          message: 'Program name must be unique',
+        };
+      }
+    }
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to update program',
+    };
   }
 };
 
-export const deleteProgram = async (id: string) => {
+export const deleteProgram = async (
+  id: string,
+  pathname: string
+): Promise<ServerActionsResponse<Program>> => {
   try {
     const program = await db.program.update({
       where: {
@@ -100,9 +150,20 @@ export const deleteProgram = async (id: string) => {
       },
     });
 
-    return program;
+    revalidatePath(pathname);
+
+    return {
+      data: program,
+      error: null,
+      message: 'Successfully deleted program',
+    };
   } catch (error: any) {
-    throw new Error(`Failed to delete program: ${error.message}`);
+    console.log('deleteProgram');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to delete program',
+    };
   }
 };
 
@@ -142,7 +203,7 @@ export const addCourse = async ({
   name: string;
   programId: string;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<Course>> => {
   try {
     const course = await db.course.create({
       data: {
@@ -156,9 +217,18 @@ export const addCourse = async ({
     });
 
     revalidatePath(pathname);
-    return course;
+    return {
+      data: course,
+      error: null,
+      message: 'Successfully added course',
+    };
   } catch (error: any) {
-    throw new Error(`Failed to add course: ${error.message}`);
+    console.log('addCourse', error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to add course',
+    };
   }
 };
 
@@ -170,7 +240,7 @@ export const updateCourse = async ({
   id: string;
   payload: Partial<Course>;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<Course>> => {
   try {
     const course = await db.course.update({
       data: payload,
@@ -199,12 +269,34 @@ export const updateCourse = async ({
       }
     }
     revalidatePath(pathname);
+
+    return {
+      data: course,
+      error: null,
+      message: 'Successfully updated course',
+    };
   } catch (error: any) {
-    throw new Error(`Failed to update course: ${error.message}`);
+    console.log('updateCourse', error.message);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        return {
+          data: null,
+          error: error.message,
+          message: 'Course name and code must be unique',
+        };
+      }
+    }
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to update course',
+    };
   }
 };
 
-export const deleteCourse = async (id: string) => {
+export const deleteCourse = async (
+  id: string
+): Promise<ServerActionsResponse<Course>> => {
   try {
     const course = await db.course.update({
       where: {
@@ -232,9 +324,18 @@ export const deleteCourse = async (id: string) => {
       });
     }
 
-    return course;
+    return {
+      data: course,
+      error: null,
+      message: 'Successfully deleted course',
+    };
   } catch (error: any) {
-    throw new Error(`Failed to delete course: ${error.message}`);
+    console.log('deleteCourse', error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to delete course',
+    };
   }
 };
 
@@ -246,7 +347,7 @@ export const addSession = async ({
   main: string;
   courseId: string;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<Session>> => {
   try {
     const lastSession = await db.session.findFirst({
       where: {
@@ -270,9 +371,18 @@ export const addSession = async ({
     });
 
     revalidatePath(pathname);
-    return session;
+    return {
+      data: session,
+      error: null,
+      message: 'Successfully added session',
+    };
   } catch (error: any) {
-    throw new Error(`Failed to add session: ${error.message}`);
+    console.log('addSession', error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to add session',
+    };
   }
 };
 
@@ -337,9 +447,9 @@ export const updateSession = async ({
   id: string;
   payload: Partial<Session>;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<Session>> => {
   try {
-    await db.session.update({
+    const session = await db.session.update({
       data: payload,
       where: {
         id,
@@ -384,12 +494,23 @@ export const updateSession = async ({
       }
     }
     revalidatePath(pathname);
+    return {
+      data: session,
+      error: null,
+      message: 'Successfully updated session',
+    };
   } catch (error: any) {
-    throw new Error(`Failed to update session: ${error.message}`);
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to update session',
+    };
   }
 };
 
-export const deleteSession = async (id: string) => {
+export const deleteSession = async (
+  id: string
+): Promise<ServerActionsResponse<Session>> => {
   try {
     const session = await db.session.delete({
       where: {
@@ -433,9 +554,17 @@ export const deleteSession = async (id: string) => {
       }
     }
 
-    return session;
+    return {
+      data: session,
+      error: null,
+      message: 'Successfully deleted session',
+    };
   } catch (error: any) {
-    throw new Error(`Failed to delete session: ${error.message}`);
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to delete session',
+    };
   }
 };
 
@@ -496,7 +625,7 @@ export const updateProgramImage = async ({
   pathname,
   programId,
   fileKey,
-}: UpdateProgramImageParams) => {
+}: UpdateProgramImageParams): Promise<ServerActionsResponse<Program>> => {
   try {
     await authorizeByRoles(['ADMIN']);
 
@@ -523,9 +652,17 @@ export const updateProgramImage = async ({
 
     revalidatePath(pathname);
 
-    return newProgram;
+    return {
+      data: newProgram,
+      error: null,
+      message: 'Successfully updated image',
+    };
   } catch (error: any) {
     console.log('updateProgramImage', error.message);
-    throw new Error(error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to update image',
+    };
   }
 };

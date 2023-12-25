@@ -54,12 +54,13 @@ const SessionsForm = ({ initialData }: SessionsFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await addSession({
+      const { error, message } = await addSession({
         main: values.main,
         courseId: initialData.id,
         pathname,
       });
-      toast.success('Successfully added session');
+      if (error !== null) throw new Error(error);
+      toast.success(message);
       toggleCreating();
       form.reset();
     } catch (error: any) {
@@ -76,9 +77,9 @@ const SessionsForm = ({ initialData }: SessionsFormProps) => {
         updateData,
         pathname,
       });
-      toast.success('Sessions reordered');
+      toast.success('Successfully reordered sessions');
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error('Failed to reorder sessions');
     } finally {
       setIsUpdating(false);
     }
@@ -138,7 +139,7 @@ const SessionsForm = ({ initialData }: SessionsFormProps) => {
               ) : (
                 <Save className='w-4 h-4' />
               )}
-              Create
+              Save
             </Button>
           </form>
         </Form>

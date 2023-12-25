@@ -54,12 +54,14 @@ const DescriptionForm = ({ initialData }: DescriptionFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateProgram({
+      const { error, message } = await updateProgram({
         id: initialData.id,
         payload: { description: values.description },
         pathname,
       });
-      toast.success('Successfully updated program');
+
+      if (error !== null) throw new Error(message);
+      toast.success(message);
       setIsEditing(false);
     } catch (error: any) {
       toast.error(error.message);

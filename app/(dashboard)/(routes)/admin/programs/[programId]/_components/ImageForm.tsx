@@ -31,13 +31,15 @@ const ImageForm = ({ initialData }: ImageFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateProgramImage({
+      const { error, message } = await updateProgramImage({
         programId: initialData.id,
         image: values.image,
         fileKey: values.fileKey,
         pathname,
       });
-      toast.success('Successfully updated image');
+
+      if (error !== null) throw new Error(message);
+      toast.success(message);
 
       setIsEditing(false);
     } catch (error: any) {

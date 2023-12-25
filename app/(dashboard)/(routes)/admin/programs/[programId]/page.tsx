@@ -3,7 +3,6 @@ import { fetchProgramById } from '@/lib/actions/program.actions';
 import { getCurrentUser } from '@/lib/session';
 import { SessionInterface } from '@/types';
 import { LayoutDashboard, ListChecks } from 'lucide-react';
-import { notFound, redirect } from 'next/navigation';
 import ProgramNameForm from './_components/ProgramNameForm';
 import SubtitleForm from './_components/SubtitleForm';
 import DescriptionForm from './_components/DescriptionForm';
@@ -11,6 +10,7 @@ import ImageForm from './_components/ImageForm';
 import CoursesForm from './_components/CoursesForm';
 import Banner from '@/components/shared/Banner';
 import ProgramActions from './_components/ProgramActions';
+import { redirect } from 'next/navigation';
 
 const Page = async ({
   params: { programId },
@@ -20,7 +20,7 @@ const Page = async ({
   const program = await fetchProgramById(programId);
   const session = (await getCurrentUser()) as SessionInterface;
 
-  if (!session?.user || !program) return notFound();
+  if (!session?.user || !program) return redirect('/not-found');
 
   const requiredFields = [
     program.name,

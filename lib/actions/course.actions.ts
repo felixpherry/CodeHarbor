@@ -2,9 +2,10 @@
 
 import { revalidatePath, unstable_cache } from 'next/cache';
 import { db } from '../db';
-import { Attachment, Prisma } from '@prisma/client';
+import { Attachment, Course, CourseEvaluation, Prisma } from '@prisma/client';
 import { authorizeByRoles } from '../authorization';
 import { utapi } from '@/app/api/uploadthing/core';
+import { ServerActionsResponse } from '@/types';
 
 export const getPublishedCourses = unstable_cache(
   async () => {
@@ -40,7 +41,7 @@ export const addNewEvaluation = async ({
   courseId,
   newEvaluation,
   pathname,
-}: AddNewEvaluationParams) => {
+}: AddNewEvaluationParams): Promise<ServerActionsResponse<object>> => {
   try {
     await authorizeByRoles(['ADMIN']);
 
@@ -82,9 +83,19 @@ export const addNewEvaluation = async ({
     }
 
     revalidatePath(pathname);
+
+    return {
+      data: {},
+      error: null,
+      message: 'Successfully added evaluation',
+    };
   } catch (error: any) {
     console.log('addNewEvaluation', error.message);
-    throw new Error(error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to add new evaluation',
+    };
   }
 };
 
@@ -96,7 +107,7 @@ interface DeleteCourseEvaluationParams {
 export const deleteCourseEvaluation = async ({
   courseEvaluationId,
   pathname,
-}: DeleteCourseEvaluationParams) => {
+}: DeleteCourseEvaluationParams): Promise<ServerActionsResponse<object>> => {
   try {
     await authorizeByRoles(['ADMIN']);
 
@@ -107,10 +118,18 @@ export const deleteCourseEvaluation = async ({
 
     revalidatePath(pathname);
 
-    return evaluation;
+    return {
+      data: evaluation,
+      error: null,
+      message: 'Successfully deleted evaluation',
+    };
   } catch (error: any) {
     console.log('deleteCourseEvaluation', error.message);
-    throw new Error(error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to delete course evaluation',
+    };
   }
 };
 
@@ -126,7 +145,7 @@ export const updateCourseEvaluation = async ({
   evaluationId,
   newEvaluation,
   pathname,
-}: UpdateCourseEvaluationParams) => {
+}: UpdateCourseEvaluationParams): Promise<ServerActionsResponse<object>> => {
   try {
     await authorizeByRoles(['ADMIN']);
 
@@ -180,9 +199,18 @@ export const updateCourseEvaluation = async ({
     }
 
     revalidatePath(pathname);
+    return {
+      data: {},
+      error: null,
+      message: 'Successfully updated course evaluation',
+    };
   } catch (error: any) {
     console.log('updateCourseEvaluation', error.message);
-    throw new Error(error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to update evaluation',
+    };
   }
 };
 
@@ -194,7 +222,7 @@ interface PublishCourseParams {
 export const publishCourse = async ({
   courseId,
   pathname,
-}: PublishCourseParams) => {
+}: PublishCourseParams): Promise<ServerActionsResponse<Course>> => {
   try {
     await authorizeByRoles(['ADMIN']);
     const course = await db.course.findUnique({
@@ -241,10 +269,18 @@ export const publishCourse = async ({
     });
 
     revalidatePath(pathname);
-    return newCourse;
+    return {
+      data: newCourse,
+      error: null,
+      message: 'Successfully published course',
+    };
   } catch (error: any) {
     console.log('publishCourse', error.message);
-    throw new Error(error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: error.message,
+    };
   }
 };
 
@@ -323,7 +359,7 @@ export const updateCourseImage = async ({
   pathname,
   courseId,
   fileKey,
-}: UpdateCourseImageParams) => {
+}: UpdateCourseImageParams): Promise<ServerActionsResponse<Course>> => {
   try {
     await authorizeByRoles(['ADMIN']);
 
@@ -350,9 +386,17 @@ export const updateCourseImage = async ({
 
     revalidatePath(pathname);
 
-    return newCourse;
+    return {
+      data: newCourse,
+      error: null,
+      message: 'Successfully updated image',
+    };
   } catch (error: any) {
     console.log('updateCourseImage', error.message);
-    throw new Error(error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: error.message,
+    };
   }
 };

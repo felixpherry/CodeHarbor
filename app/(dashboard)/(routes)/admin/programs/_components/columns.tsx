@@ -8,6 +8,10 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import moment from 'moment';
+import { ConfirmModal } from '@/components/modals/ConfirmModal';
+import { toast } from 'sonner';
+import { deleteProgram } from '@/lib/actions/program.actions';
+import { usePathname } from 'next/navigation';
 
 export const columns: ColumnDef<Program>[] = [
   {
@@ -19,44 +23,31 @@ export const columns: ColumnDef<Program>[] = [
     cell: ({ row }) => {
       const { id, name } = row.original;
 
-      // const confirmDelete = async () => {
-      //   try {
-      //     await deletePeriod({
-      //       id,
-      //       pathname,
-      //     });
-      //     toast.success('Successfully deleted period');
-      //   } catch (error: any) {
-      //     toast.error('Failed to delete period');
-      //   }
-      // };
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const pathname = usePathname()!;
+
+      const handleDelete = async () => {
+        try {
+          const { error, message } = await deleteProgram(id, pathname);
+          if (error !== null) throw new Error(message);
+          toast.success(message);
+        } catch (error: any) {
+          toast.error(error.message);
+        }
+      };
 
       return (
         <div className='flex items-center gap-4'>
           <Link href={`/admin/programs/${id}`}>
             <PencilIcon className='text-primary-blue cursor-pointer w-5 h-5' />
           </Link>
-          <Trash2
-            // onClick={() => {
-            //   modals.openConfirmModal({
-            //     title: `Delete ${name}?`,
-            //     centered: true,
-            //     children: (
-            //       <Text size='sm'>
-            //         Are you sure you want to delete this period? This action can
-            //         not be undone
-            //       </Text>
-            //     ),
-            //     labels: {
-            //       confirm: 'Delete',
-            //       cancel: 'Cancel',
-            //     },
-            //     confirmProps: { color: 'red' },
-            //     onConfirm: confirmDelete,
-            //   });
-            // }}
-            className='text-red-500 cursor-pointer w-5 h-5'
-          />
+          <ConfirmModal
+            title='Are you sure?'
+            description='Do you want to delete this program? This actions cannot be undone.'
+            onConfirm={handleDelete}
+          >
+            <Trash2 className='text-red-500 cursor-pointer w-5 h-5' />
+          </ConfirmModal>
         </div>
       );
     },

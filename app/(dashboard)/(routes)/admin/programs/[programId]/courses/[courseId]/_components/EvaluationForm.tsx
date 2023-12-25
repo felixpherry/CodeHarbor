@@ -21,7 +21,6 @@ import {
   addNewEvaluation,
   updateCourseEvaluation,
 } from '@/lib/actions/course.actions';
-import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { modals } from '@mantine/modals';
 import ConfirmForm from '@/components/modals/ConfirmForm';
 
@@ -75,7 +74,7 @@ const EvaluationForm = ({
     const handleSave = async () => {
       try {
         if (type === 'ADD') {
-          await addNewEvaluation({
+          const { error, message } = await addNewEvaluation({
             courseId: params.courseId as string,
             newEvaluation: {
               courseId: params.courseId as string,
@@ -83,10 +82,13 @@ const EvaluationForm = ({
             },
             pathname,
           });
+
+          if (error !== null) throw new Error(error);
+          toast.success(message);
         } else if (type === 'EDIT') {
           if (!initialData?.id) throw new Error('Evaluation ID is missing');
 
-          await updateCourseEvaluation({
+          const { error, message } = await updateCourseEvaluation({
             courseId: params.courseId as string,
             evaluationId: initialData?.id,
             newEvaluation: {
@@ -95,10 +97,9 @@ const EvaluationForm = ({
             },
             pathname,
           });
+          if (error !== null) throw new Error(error);
+          toast.success(message);
         }
-        toast.success(
-          `Successfully ${type === 'ADD' ? 'added' : 'updated'} evaluation`
-        );
         closeForm();
         form.reset();
       } catch (error: any) {

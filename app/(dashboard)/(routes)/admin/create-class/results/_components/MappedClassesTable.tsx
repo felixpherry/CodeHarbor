@@ -112,13 +112,16 @@ const MappedClassesTable = () => {
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      await createClassesForNextPeriod({ mappedClasses });
+      const { error, message } = await createClassesForNextPeriod({
+        mappedClasses,
+      });
+      if (error !== null) throw new Error(message);
       const nextPeriod = await getNextPeriod();
       setMappedClasses([]);
-      toast.success('Successfully saved classes');
+      toast.success(message);
       router.push(`/admin/classes?period=${nextPeriod?.id}`);
     } catch (error: any) {
-      toast.error(error);
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }

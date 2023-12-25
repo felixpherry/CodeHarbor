@@ -3,7 +3,7 @@
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import {
   Form,
@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { SessionInterface } from '@/types';
-import { Loader2 } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import { createProgram } from '@/lib/actions/program.actions';
 import { toast } from 'sonner';
 
@@ -43,21 +43,26 @@ const CreateProgramForm = ({ session }: CreateProgramFormProps) => {
   const { isSubmitting, isValid } = form.formState;
   const router = useRouter();
 
+  const pathname = usePathname()!;
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const res = await createProgram({
+      const { data, error, message } = await createProgram({
         name: values.name,
         accountId: session.user.id,
+        pathname,
       });
-      toast.success('Successfully created program.');
-      router.push(`/admin/programs/${res.id}`);
+
+      if (error !== null) throw new Error(message);
+      toast.success(message);
+      router.push(`/admin/programs/${data.id}`);
     } catch (error: any) {
       toast.error(error.message);
     }
   };
   return (
-    <div className='max-w-5xl mx-auto flex md:items-center md:justify-center h-full p-6'>
-      <div className=''>
+    <div className='w-fit mx-auto flex md:items-center md:justify-center min-h-[calc(100vh-120px)]'>
+      <div className='p-6 bg-white shadow rounded-md'>
         <h1 className='text-2xl font-semibold'>Create Program</h1>
         <p className='text-sm text-slate-600'>
           What would you like to name the program? Program name can be changed
@@ -90,8 +95,10 @@ const CreateProgramForm = ({ session }: CreateProgramFormProps) => {
                 <Link href='/admin/programs'>Cancel</Link>
               </Button>
               <Button type='submit' disabled={!isValid || isSubmitting}>
-                {isSubmitting && (
-                  <Loader2 className='mr-2 w-4 h-4 animate-spin' />
+                {isSubmitting ? (
+                  <Loader2 className='w-4 h-4 animate-spin' />
+                ) : (
+                  <ArrowRight className='h-4 w-4' />
                 )}
                 Continue
               </Button>

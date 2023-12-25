@@ -47,12 +47,14 @@ const SubtitleForm = ({ initialData }: SubtitleFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateProgram({
+      const { error, message } = await updateProgram({
         id: initialData.id,
         payload: { subtitle: values.subtitle },
         pathname,
       });
-      toast.success('Successfully updated program');
+
+      if (error !== null) throw new Error(message);
+      toast.success(message);
       setIsEditing(false);
     } catch (error: any) {
       toast.error(error.message);

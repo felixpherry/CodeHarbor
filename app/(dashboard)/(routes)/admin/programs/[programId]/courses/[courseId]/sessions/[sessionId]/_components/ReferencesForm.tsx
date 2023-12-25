@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
-import { Loader2, Pencil } from 'lucide-react';
+import { Loader2, Pencil, Save } from 'lucide-react';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Session } from '@prisma/client';
@@ -49,7 +49,7 @@ const ReferencesForm = ({ initialData }: ReferencesFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateSession({
+      const { error, message } = await updateSession({
         id: initialData.id,
         payload: {
           reference: values.reference,
@@ -57,7 +57,9 @@ const ReferencesForm = ({ initialData }: ReferencesFormProps) => {
         },
         pathname,
       });
-      toast.success('Successfully updated session');
+
+      if (error !== null) throw new Error(error);
+      toast.success(message);
       setIsEditing(false);
     } catch (error: any) {
       toast.error(error.message);
@@ -98,9 +100,15 @@ const ReferencesForm = ({ initialData }: ReferencesFormProps) => {
               )}
             />
             <div className='flex items-center gap-x-2'>
-              <Button disabled={!isValid || isSubmitting} type='submit'>
-                {isSubmitting && (
-                  <Loader2 className='mr-2 w-4 h-4 animate-spin' />
+              <Button
+                size='sm'
+                disabled={!isValid || isSubmitting}
+                type='submit'
+              >
+                {isSubmitting ? (
+                  <Loader2 className='w-4 h-4 animate-spin' />
+                ) : (
+                  <Save className='w-4 h-4' />
                 )}
                 Save
               </Button>

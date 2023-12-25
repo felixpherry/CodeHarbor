@@ -5,6 +5,8 @@ import { db } from '../db';
 import { getNextPeriod } from './period.actions';
 import { revalidatePath } from 'next/cache';
 import moment from 'moment';
+import { ServerActionsResponse } from '@/types';
+import { Class } from '@prisma/client';
 
 export const createClass = async ({
   name,
@@ -50,7 +52,9 @@ interface CreateClassesForNextPeriodParams {
 
 export const createClassesForNextPeriod = async ({
   mappedClasses,
-}: CreateClassesForNextPeriodParams) => {
+}: CreateClassesForNextPeriodParams): Promise<
+  ServerActionsResponse<Class[]>
+> => {
   try {
     const nextPeriod = await getNextPeriod();
     if (!nextPeriod) throw new Error('There is no next period');
@@ -121,11 +125,17 @@ export const createClassesForNextPeriod = async ({
 
     const classes = await db.$transaction(transactions);
     revalidatePath('/admin/classes');
-    return classes;
+    return {
+      data: classes,
+      error: null,
+      message: 'Successfully added classes',
+    };
   } catch (error: any) {
-    console.log('Create Classes for Next Period', error.message);
-    throw new Error(
-      `Failed to create classes for the next period: ${error.message}`
-    );
+    console.log('createClassesForNextPeriod', error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: error.message,
+    };
   }
 };

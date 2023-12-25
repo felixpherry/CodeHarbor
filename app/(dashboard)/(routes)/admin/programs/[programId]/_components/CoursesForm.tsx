@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
-import { List, Loader2, Pencil, PlusCircle } from 'lucide-react';
+import { List, Loader2, Pencil, PlusCircle, Save } from 'lucide-react';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -52,13 +52,14 @@ const CoursesForm = ({ initialData }: CoursesFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await addCourse({
+      const { error, message } = await addCourse({
         name: values.name,
         programId: initialData.id,
         pathname,
       });
 
-      toast.success('Successfully created course');
+      if (error !== null) throw new Error(message);
+      toast.success(message);
       toggleCreating();
       form.reset();
     } catch (error: any) {
@@ -103,11 +104,13 @@ const CoursesForm = ({ initialData }: CoursesFormProps) => {
                 </FormItem>
               )}
             />
-            <Button disabled={!isValid || isSubmitting} type='submit'>
-              {isSubmitting && (
-                <Loader2 className='mr-2 w-4 h-4 animate-spin' />
+            <Button size='sm' disabled={!isValid || isSubmitting} type='submit'>
+              {isSubmitting ? (
+                <Loader2 className='w-4 h-4 animate-spin' />
+              ) : (
+                <Save className='w-4 h-4' />
               )}
-              Create
+              Save
             </Button>
           </form>
         </Form>
@@ -160,8 +163,6 @@ const CoursesForm = ({ initialData }: CoursesFormProps) => {
                 </div>
               ))}
             </div>
-
-            {/* end */}
           </div>
         </>
       )}

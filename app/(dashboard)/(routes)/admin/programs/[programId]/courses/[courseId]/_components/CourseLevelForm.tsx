@@ -61,7 +61,7 @@ const CourseLevelForm = ({ initialData }: CourseLevelFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateCourse({
+      const { error, message } = await updateCourse({
         id: initialData.id,
         payload: {
           level: values.level,
@@ -69,7 +69,9 @@ const CourseLevelForm = ({ initialData }: CourseLevelFormProps) => {
         },
         pathname,
       });
-      toast.success('Successfully updated course');
+
+      if (error !== null) throw new Error(error);
+      toast.success(message);
       setIsEditing(false);
     } catch (error: any) {
       toast.error(error.message);

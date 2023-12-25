@@ -47,12 +47,13 @@ const CourseCodeForm = ({ initialData }: CourseCodeFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateCourse({
+      const { error, message } = await updateCourse({
         id: initialData.id,
         payload: { code: values.code, programId: initialData.programId },
         pathname,
       });
-      toast.success('Successfully updated course');
+      if (error !== null) throw new Error(error);
+      toast.success(message);
       setIsEditing(false);
     } catch (error: any) {
       toast(error.message);

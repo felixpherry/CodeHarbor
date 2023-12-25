@@ -27,8 +27,9 @@ const SessionActions = ({
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      await deleteSession(session.id);
-      toast.success('Successfully deleted session');
+      const { error, message } = await deleteSession(session.id);
+      if (error !== null) throw new Error(error);
+      toast.success(message);
       router.refresh();
       router.push(`/admin/programs/${programId}/courses/${session.courseId}`);
     } catch (error: any) {
@@ -43,7 +44,7 @@ const SessionActions = ({
       setIsLoading(true);
 
       if (session.isPublished) {
-        await updateSession({
+        const { error, message } = await updateSession({
           id: session.id,
           pathname,
           payload: {
@@ -51,16 +52,19 @@ const SessionActions = ({
             isPublished: false,
           },
         });
-        toast.success('Successfully unpublish session');
+        if (error !== null) throw new Error(error);
+        toast.success(message);
       } else {
-        await updateSession({
+        const { error, message } = await updateSession({
           id: session.id,
           pathname,
           payload: {
             isPublished: true,
           },
         });
-        toast.success('Successfully publish session');
+
+        if (error !== null) throw new Error(error);
+        toast.success(message);
       }
     } catch (error: any) {
       toast.error(error.message);
