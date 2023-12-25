@@ -20,9 +20,9 @@ import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import qs from 'query-string';
-import { useRouter, useParams } from 'next/navigation';
 import { Account, Instructor, Student } from '@prisma/client';
 import { ConfirmModal } from '../modals/ConfirmModal';
+import { toast } from 'sonner';
 
 interface ChatItemProps {
   id: string;
@@ -100,8 +100,6 @@ const ChatItem = ({
   const isImage = !isPDF && fileUrl;
 
   const { isSubmitting } = form.formState;
-  const params = useParams();
-  const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -117,8 +115,8 @@ const ChatItem = ({
 
       form.reset();
       setIsEditing(false);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 

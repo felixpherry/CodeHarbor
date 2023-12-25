@@ -19,7 +19,6 @@ export default async function handler(
       authOptions
     )) as SessionInterface;
     const { content, fileUrl, fileKey } = JSON.parse(req.body);
-    console.log(req.body);
 
     const { classId } = req.query;
 

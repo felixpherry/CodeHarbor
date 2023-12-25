@@ -8,8 +8,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useQuery } from '@tanstack/react-query';
-import { addSessionReports, fetchStudents } from './_actions';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  addSessionReports,
+  canFillSessionReports,
+  fetchStudents,
+  updateSessionReports,
+} from '../_actions';
 import Image from 'next/image';
 import {
   NumberInput,
@@ -21,7 +26,7 @@ import {
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Loader2, Save } from 'lucide-react';
+import { AlertTriangle, Loader2, Save } from 'lucide-react';
 import { modals } from '@mantine/modals';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
@@ -41,6 +46,7 @@ interface AddSessionReportFormProps {
 }
 
 export interface SessionReportItem {
+  id: string | null;
   studentId: string;
   attendanceStatus: boolean;
   score: number;
@@ -55,7 +61,8 @@ const AddSessionReportForm = ({
 }: AddSessionReportFormProps) => {
   const [sessionReports, setSessionReports] = useState<SessionReportItem[]>(
     initialData.map(
-      ({ studentId, attendanceStatus, score, feedback, scheduleId }) => ({
+      ({ studentId, attendanceStatus, score, feedback, scheduleId, id }) => ({
+        id,
         attendanceStatus,
         feedback,
         scheduleId,
@@ -64,6 +71,7 @@ const AddSessionReportForm = ({
       })
     )
   );
+
   const [isLoading, setIsLoading] = useState(false);
 
   const { data: students } = useQuery({
@@ -73,10 +81,28 @@ const AddSessionReportForm = ({
 
   const theme = useMantineTheme();
 
+  const { data: canFill } = useQuery({
+    queryKey: [
+      'canFillSessionReports',
+      { scheduleId, action: initialData.length === 0 ? 'ADD' : 'EDIT' },
+    ],
+    queryFn: async ({ queryKey }) => {
+      const { action, scheduleId } = queryKey[1] as {
+        scheduleId: string;
+        action: 'ADD' | 'EDIT';
+      };
+      return await canFillSessionReports(scheduleId, action);
+    },
+    staleTime: 60 * 1000,
+  });
+
+  const disabled = !canFill;
+
   useEffect(() => {
     if (!sessionReports.length) {
       setSessionReports(
         students?.map(({ id }) => ({
+          id: null,
           studentId: id,
           attendanceStatus: false,
           score: 0,
@@ -100,6 +126,8 @@ const AddSessionReportForm = ({
     </>
   );
 
+  const queryClient = useQueryClient();
+
   if (!sessionReports.length || !students)
     return (
       <div className='py-5 flex flex-col gap-3'>
@@ -113,8 +141,6 @@ const AddSessionReportForm = ({
   const allStudentsAttend = sessionReports.every(
     ({ attendanceStatus }) => attendanceStatus
   );
-
-  const disabled = initialData.length > 0;
 
   const handleToggle = (id: string) => {
     if (disabled) return;
@@ -181,9 +207,26 @@ const AddSessionReportForm = ({
     if (disabled) return;
     setIsLoading(true);
     try {
-      await addSessionReports({ pathname, sessionReports });
+      if (!initialData.length) {
+        const { error, message } = await addSessionReports({
+          pathname,
+          sessionReports,
+        });
+        if (error !== null) throw new Error(message);
+        toast.success(message);
+      } else {
+        const { error, message } = await updateSessionReports({
+          pathname,
+          sessionReports,
+        });
+        if (error !== null) throw new Error(message);
+        toast.success(message);
+      }
 
-      toast.success('Successfully updated session report');
+      queryClient.invalidateQueries({
+        queryKey: ['student-reports'],
+      });
+
       modals.closeAll();
     } catch (error: any) {
       toast.error(error.message);
@@ -194,6 +237,16 @@ const AddSessionReportForm = ({
 
   return (
     <div className='py-5 flex flex-col gap-5'>
+      <div className='p-3 bg-yellow-200 flex items-center gap-3'>
+        <div className='flex items-center'>
+          <AlertTriangle />
+        </div>
+        <p className='text-zinc-600'>
+          The <b>deadline</b> for submitting session reports is <b>24 hours</b>{' '}
+          after the session. You have a <b>7-day</b> window for edits after
+          submission.
+        </p>
+      </div>
       <div className='rounded-md border'>
         <Table>
           <TableHeader>

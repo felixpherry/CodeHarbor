@@ -89,24 +89,19 @@ export const updateClass = async (
           set: data.studentCourses.map(({ id }) => ({ id })),
         },
         schedules: {
-          deleteMany: {},
-          createMany: {
-            data: data.schedules.map(
-              ({
+          update: data.schedules.map(
+            ({ id, meetingUrl, recordingUrl, scheduleDate, scheduleTime }) => ({
+              data: {
                 meetingUrl,
                 recordingUrl,
-                sessionNumber,
                 scheduleDate,
                 scheduleTime,
-              }) => ({
-                meetingUrl,
-                recordingUrl,
-                sessionNumber,
-                scheduleDate,
-                scheduleTime,
-              })
-            ),
-          },
+              },
+              where: {
+                id,
+              },
+            })
+          ),
         },
       },
     });

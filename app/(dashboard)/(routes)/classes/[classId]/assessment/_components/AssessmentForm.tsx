@@ -21,20 +21,20 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { NumberInput, Select } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { Account, CourseEvaluation, Student } from '@prisma/client';
-import {
-  AlertTriangle,
-  FileWarning,
-  GraduationCap,
-  Loader2,
-  Save,
-} from 'lucide-react';
+import { AlertTriangle, GraduationCap, Loader2, Save } from 'lucide-react';
 import Image from 'next/image';
 import { useParams, usePathname } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
-import { addStudentScores } from '../_actions';
-import { ConfirmModal } from '@/components/modals/ConfirmModal';
+import {
+  addStudentScores,
+  canFillAssessment,
+  fetchStudentScores,
+  updateStudentScores,
+} from '../_actions';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 interface AssessmentFormProps {
   evaluations: CourseEvaluation[];
@@ -69,6 +69,8 @@ const AssessmentForm = ({ evaluations, students }: AssessmentFormProps) => {
   const params = useParams()!;
   const pathname = usePathname()!;
 
+  const queryClient = useQueryClient();
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (Object.keys(values.studentScores).length !== students.length)
       return form.setError('studentScores', {
@@ -76,22 +78,46 @@ const AssessmentForm = ({ evaluations, students }: AssessmentFormProps) => {
       });
 
     try {
-      await addStudentScores({
-        classId: params.classId as string,
-        evaluationId: values.evaluationId,
-        pathname,
-        studentScores: Object.entries(values.studentScores).map(
-          ([studentId, score]) => ({
-            studentId,
-            score,
-          })
-        ),
+      if (!studentScores?.length) {
+        const { error, message } = await addStudentScores({
+          classId: params.classId as string,
+          evaluationId: values.evaluationId,
+          pathname,
+          studentScores: Object.entries(values.studentScores).map(
+            ([studentId, score]) => ({
+              studentId,
+              score,
+            })
+          ),
+        });
+        if (error !== null) throw new Error(message);
+        toast.success(message);
+      } else {
+        const { error, message } = await updateStudentScores({
+          data: studentScores.map(({ id, studentId }) => ({
+            studentScoreId: id,
+            score: values.studentScores[studentId],
+          })),
+          pathname,
+          classId: params.classId as string,
+        });
+
+        if (error !== null) throw new Error(message);
+        toast.success(message);
+      }
+      queryClient.invalidateQueries({
+        queryKey: [
+          'assessment',
+          {
+            classId: params.classId,
+            evaluationId: form.getValues('evaluationId'),
+          },
+        ],
       });
 
-      toast.success('Successfully saved assessment');
       modals.closeAll();
     } catch (error: any) {
-      toast.error(error);
+      toast.error(error.message);
     }
   };
 
@@ -101,6 +127,68 @@ const AssessmentForm = ({ evaluations, students }: AssessmentFormProps) => {
       value: id,
     })
   );
+
+  const { data: studentScores } = useQuery({
+    queryKey: [
+      'assessment',
+      {
+        classId: params.classId,
+        evaluationId: form.watch('evaluationId'),
+      },
+    ],
+    queryFn: async ({ queryKey }) => {
+      const { classId, evaluationId } = queryKey[1] as {
+        classId: string;
+        evaluationId: string;
+      };
+
+      return await fetchStudentScores({
+        classId,
+        evaluationId,
+      });
+    },
+    enabled: form.getValues('evaluationId') !== undefined,
+  });
+
+  const { data: canFill } = useQuery({
+    queryKey: [
+      'canFillAssessment',
+      {
+        classId: params.classId as string,
+        action: studentScores?.length === 0 ? 'ADD' : 'EDIT',
+      },
+    ],
+    queryFn: async ({ queryKey }) => {
+      const { action, classId } = queryKey[1] as {
+        classId: string;
+        action: 'ADD' | 'EDIT';
+      };
+      return await canFillAssessment(classId, action);
+    },
+    staleTime: 60 * 1000,
+  });
+
+  const disabled = !canFill;
+
+  useEffect(() => {
+    if (studentScores?.length) {
+      form.setValue(
+        'studentScores',
+        studentScores?.reduce((acc, curr) => {
+          acc[curr.studentId] = curr.score ?? 0;
+          return acc;
+        }, {} as Record<string, number>) || {}
+      );
+    } else {
+      form.setValue(
+        'studentScores',
+        students.reduce((acc, curr) => {
+          acc[curr.id] = 0;
+          return acc;
+        }, {} as Record<string, number>)
+      );
+    }
+  }, [studentScores, form, students]);
 
   return (
     <Form {...form}>
@@ -113,8 +201,9 @@ const AssessmentForm = ({ evaluations, students }: AssessmentFormProps) => {
             <AlertTriangle />
           </div>
           <p className='text-zinc-600'>
-            <b>Assessments</b> can only be submitted <b>ONCE</b> for each
-            evaluations. No changes allowed after submission.
+            The <b>deadline</b> for submitting assessment is <b>14 days</b>{' '}
+            after the last session. You have a <b>7-day</b> window for edits
+            after submission.
           </p>
         </div>
         <FormField
@@ -208,7 +297,9 @@ const AssessmentForm = ({ evaluations, students }: AssessmentFormProps) => {
                                   fieldState.invalid &&
                                   field.value[id] === undefined
                                 }
-                                disabled={!form.getValues('evaluationId')}
+                                disabled={
+                                  !form.getValues('evaluationId') || disabled
+                                }
                               />
                             </FormControl>
                             {field.value[id] === undefined && <FormMessage />}
@@ -231,7 +322,7 @@ const AssessmentForm = ({ evaluations, students }: AssessmentFormProps) => {
           >
             Close
           </Button>
-          {evaluationOptions.length > 0 && (
+          {evaluationOptions.length > 0 && !disabled && (
             <Button size='sm'>
               {isSubmitting ? (
                 <Loader2 className='h-4 w-4 animate-spin' />

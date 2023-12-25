@@ -2,7 +2,7 @@
 
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { Loader2, Pencil, Trash2 } from 'lucide-react';
-import { deleteAttachment } from './_actions';
+import { deleteAttachment } from '../_actions';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
 import { useState } from 'react';

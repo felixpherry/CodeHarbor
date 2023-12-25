@@ -103,11 +103,6 @@ const AssessmentTable = ({
     );
   };
 
-  const remainingEvaluations = evaluations.filter(
-    ({ id }) =>
-      !classData.studentScores.find(({ evaluationId }) => id === evaluationId)
-  );
-
   const getAvgScore = (id: string) => {
     return Math.round(
       classData.studentScores
@@ -146,10 +141,7 @@ const AssessmentTable = ({
               ),
               fullScreen: true,
               children: (
-                <AssessmentForm
-                  evaluations={remainingEvaluations}
-                  students={students}
-                />
+                <AssessmentForm evaluations={evaluations} students={students} />
               ),
             })
           }

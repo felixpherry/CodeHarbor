@@ -25,7 +25,7 @@ import {
   AddNewAttachmentPayload,
   addNewAttachment,
   editAttachment,
-} from './_actions';
+} from '../_actions';
 import { usePathname } from 'next/navigation';
 import { OtherAttachment } from '@prisma/client';
 

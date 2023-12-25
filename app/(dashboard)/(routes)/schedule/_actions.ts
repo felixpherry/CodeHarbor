@@ -34,7 +34,6 @@ export const getInstructorSchedule = async (accountId: string, date: Date) => {
 };
 
 export const getStudentSchedule = async (accountId: string, date: Date) => {
-  console.log({ accountId });
   try {
     return await db.schedule.findMany({
       where: {

@@ -83,7 +83,6 @@ const ClassForm = ({ initialData }: ClassFormProps) => {
       queryClient.invalidateQueries({
         queryKey: ['available-students'],
       });
-      toast.success('Successfully updated class');
       modals.closeAll();
     } catch (error: any) {
       toast.error(error.message);
