@@ -25,11 +25,11 @@ const formSchema = z
       message: 'Current password should not be empty',
     }),
     newPassword: PasswordValidation,
-    confirmPassword: PasswordValidation,
+    confirmPassword: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: 'Passwords do not match',
-    path: ['password'],
+    path: ['newPassword'],
   });
 
 interface ChangePasswordFormProps {
@@ -52,14 +52,15 @@ const ChangePasswordForm = ({ accountId }: ChangePasswordFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await changePassword({
+      const { error, message } = await changePassword({
         id: accountId,
         currentPassword: values.currentPassword,
         newPassword: values.newPassword,
         pathname,
       });
 
-      toast.success('Successfully changed password');
+      if (error !== null) throw new Error(message);
+      toast.success(message);
 
       form.reset();
     } catch (error: any) {

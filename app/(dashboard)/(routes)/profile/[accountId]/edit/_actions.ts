@@ -1,10 +1,11 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { Gender, Prisma } from '@prisma/client';
+import { Account, Gender, Instructor, Prisma, Student } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcrypt';
 import { utapi } from '@/app/api/uploadthing/core';
+import { ServerActionsResponse } from '@/types';
 
 interface UpdateAccountParams {
   id: string;
@@ -24,7 +25,7 @@ export const updateAccount = async ({
   pathname,
   phoneNumber,
   username,
-}: UpdateAccountParams) => {
+}: UpdateAccountParams): Promise<ServerActionsResponse<Account>> => {
   try {
     const account = await db.account.findUnique({
       where: { id },
@@ -49,15 +50,27 @@ export const updateAccount = async ({
 
     revalidatePath(pathname);
 
-    return newAccount;
+    return {
+      data: newAccount,
+      error: null,
+      message: 'Successfully updated account.',
+    };
   } catch (error: any) {
     console.log('updateAccount', error.message);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
-        throw new Error('Username must be unique');
+        return {
+          data: null,
+          error: error.message,
+          message: 'Username must be unique.',
+        };
       }
     }
-    throw new Error(error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: error.message,
+    };
   }
 };
 
@@ -73,20 +86,20 @@ export const changePassword = async ({
   currentPassword,
   newPassword,
   pathname,
-}: ChangePasswordParams) => {
+}: ChangePasswordParams): Promise<ServerActionsResponse<Account>> => {
   try {
     const account = await db.account.findUnique({
       where: { id },
     });
 
-    if (!account) throw new Error('Account not found');
+    if (!account) throw new Error('Account not found.');
 
     const passwordMatch = await bcrypt.compare(
       currentPassword,
       account.password!
     );
 
-    if (!passwordMatch) throw new Error("Current password didn't match");
+    if (!passwordMatch) throw new Error("Current password didn't match.");
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     const newAccount = await db.account.update({
@@ -98,10 +111,18 @@ export const changePassword = async ({
 
     revalidatePath(pathname);
 
-    return newAccount;
+    return {
+      data: newAccount,
+      error: null,
+      message: 'Successfully changed password.',
+    };
   } catch (error: any) {
     console.log('changePassword', error.message);
-    throw new Error(error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: error.message,
+    };
   }
 };
 
@@ -127,7 +148,7 @@ export const updateStudentInfo = async ({
   gradeClass,
   hobby,
   pathname,
-}: UpdateStudentInfoParams) => {
+}: UpdateStudentInfoParams): Promise<ServerActionsResponse<Student>> => {
   try {
     const student = await db.student.update({
       where: { id },
@@ -144,10 +165,18 @@ export const updateStudentInfo = async ({
 
     revalidatePath(pathname);
 
-    return student;
+    return {
+      data: student,
+      error: null,
+      message: 'Successfully updated student information.',
+    };
   } catch (error: any) {
     console.log('updateStudentInfo', error.message);
-    throw new Error(error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: error.message,
+    };
   }
 };
 
@@ -178,7 +207,7 @@ export const updateInstructorInfo = async ({
   lastEducation,
   skillIds,
   pathname,
-}: UpdateInstructorInfoParams) => {
+}: UpdateInstructorInfoParams): Promise<ServerActionsResponse<Instructor>> => {
   try {
     const instructor = await db.instructor.update({
       where: { id },
@@ -194,9 +223,17 @@ export const updateInstructorInfo = async ({
 
     revalidatePath(pathname);
 
-    return instructor;
+    return {
+      data: instructor,
+      error: null,
+      message: 'Successfully updated instructor information.',
+    };
   } catch (error: any) {
     console.log('updateInstructorInfo', error.message);
-    throw new Error(error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: error.message,
+    };
   }
 };

@@ -14,7 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input, MultiSelect, Select } from '@mantine/core';
 import { Skill } from '@prisma/client';
-import { Loader2 } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { usePathname, useRouter } from 'next/navigation';
@@ -23,6 +23,7 @@ import { toast } from 'sonner';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { DateInput } from '@mantine/dates';
 import { lastEducations } from '@/constants';
+import { PhoneNumberValidationIDN } from '@/lib/validations/phone-number';
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -40,9 +41,7 @@ const formSchema = z.object({
   email: z.string().email({
     message: 'Masukkan email yang valid',
   }),
-  phoneNumber: z.coerce.string().min(1, {
-    message: 'No. HP wajib diisi',
-  }),
+  phoneNumber: PhoneNumberValidationIDN,
   address: z.string().min(1, {
     message: 'Alamat wajib diisi',
   }),
@@ -72,7 +71,7 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await registerInstructor({
+      const { error, message } = await registerInstructor({
         payload: {
           data: {
             address: values.address,
@@ -88,15 +87,13 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
         pathname,
       });
 
+      if (error !== null) throw new Error(message);
+      toast.success(message);
       form.reset();
 
       router.push('/');
-
-      toast.success(
-        'Pendaftaran berhasil. Mohon menunggu info lebih lanjut dari admin.'
-      );
     } catch (error: any) {
-      toast.error('Failed to register');
+      toast.error(error.message);
     }
   };
 
@@ -113,9 +110,7 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
         </CardTitle>
         <CardContent>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className='space-y-3'>
+            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-3'>
               <FormField
                 control={form.control}
                 name='name'
@@ -124,11 +119,7 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
                     <FormLabel>Nama Lengkap</FormLabel>
                     <FormDescription>Nama lengkap sesuai KTP</FormDescription>
                     <FormControl>
-                      <Input
-                        disabled={isSubmitting}
-                        autoFocus
-                        {...field}
-                      />
+                      <Input disabled={isSubmitting} autoFocus {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -141,10 +132,7 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input
-                        disabled={isSubmitting}
-                        {...field}
-                      />
+                      <Input disabled={isSubmitting} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -157,11 +145,7 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
                   <FormItem>
                     <FormLabel>No. HP</FormLabel>
                     <FormControl>
-                      <Input
-                        type='number'
-                        disabled={isSubmitting}
-                        {...field}
-                      />
+                      <Input type='number' disabled={isSubmitting} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -191,10 +175,7 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
                   <FormItem>
                     <FormLabel>Alamat</FormLabel>
                     <FormControl>
-                      <Textarea
-                        disabled={isSubmitting}
-                        {...field}
-                      />
+                      <Textarea disabled={isSubmitting} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -228,10 +209,7 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
                   <FormItem>
                     <FormLabel>Institusi Pendidikan</FormLabel>
                     <FormControl>
-                      <Input
-                        disabled={isSubmitting}
-                        {...field}
-                      />
+                      <Input disabled={isSubmitting} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -260,9 +238,11 @@ const InstructorRegistrationForm = ({ skills }: { skills: Skill[] }) => {
               />
 
               <div className='!mt-10'>
-                <Button type='submit'>
-                  {isSubmitting && (
-                    <Loader2 className='animate-spin mr-2 h-4 w-4' />
+                <Button size='sm' type='submit'>
+                  {isSubmitting ? (
+                    <Loader2 className='animate-spin h-4 w-4' />
+                  ) : (
+                    <ArrowRight className='h-4 w-4' />
                   )}
                   Daftar
                 </Button>

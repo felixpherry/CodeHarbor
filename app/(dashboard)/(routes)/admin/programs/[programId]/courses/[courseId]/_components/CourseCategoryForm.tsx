@@ -61,7 +61,7 @@ const CourseCategory = ({ options, initialData }: CourseCategoryFormProps) => {
         pathname,
       });
 
-      if (error !== null) throw new Error(error);
+      if (error !== null) throw new Error(message);
       toast.success(message);
       setIsEditing(false);
     } catch (error: any) {

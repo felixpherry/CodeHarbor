@@ -62,7 +62,7 @@ const InstructorInformationForm = ({
   const pathname = usePathname()!;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateInstructorInfo({
+      const { error, message } = await updateInstructorInfo({
         id: initialData.id,
         dateOfBirth: values.dateOfBirth,
         educationInstitution: values.educationInstitution,
@@ -70,7 +70,9 @@ const InstructorInformationForm = ({
         skillIds: values.skills,
         pathname,
       });
-      toast.success('Successfully updated instructor information');
+
+      if (error !== null) throw new Error(message);
+      toast.success(message);
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -89,9 +91,7 @@ const InstructorInformationForm = ({
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-3'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-3'>
         <FormField
           control={form.control}
           name='dateOfBirth'

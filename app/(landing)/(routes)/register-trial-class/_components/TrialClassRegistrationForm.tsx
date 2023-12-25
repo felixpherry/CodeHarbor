@@ -13,7 +13,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Course } from '@prisma/client';
-import { Loader2 } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { usePathname, useRouter } from 'next/navigation';
@@ -21,15 +21,9 @@ import { registerTrialClass } from '../_actions';
 import { toast } from 'sonner';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { TrialClassValidation } from '@/lib/validations/trial-class';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { DateTimePicker } from '@mantine/dates';
+import { DateInput, DateTimePicker } from '@mantine/dates';
+import { MantineSelectOption } from '@/types';
+import { Select } from '@mantine/core';
 
 const TrialClassRegistrationForm = ({ courses }: { courses: Course[] }) => {
   const form = useForm<z.infer<typeof TrialClassValidation>>({
@@ -52,22 +46,25 @@ const TrialClassRegistrationForm = ({ courses }: { courses: Course[] }) => {
 
   const onSubmit = async (values: z.infer<typeof TrialClassValidation>) => {
     try {
-      await registerTrialClass({
+      const { error, message } = await registerTrialClass({
         payload: values,
         pathname,
       });
+      if (error !== null) throw new Error(message);
+      toast.success(message);
 
       form.reset();
 
       router.push('/');
-
-      toast.success(
-        'Pendaftaran berhasil. Silakan tunggu info lebih lanjut dari admin.'
-      );
     } catch (error: any) {
-      toast.error('Pendaftaran gagal. Harap coba lagi nanti');
+      toast.error(error.message);
     }
   };
+
+  const courseOptions: MantineSelectOption[] = courses.map(({ id, name }) => ({
+    label: name,
+    value: id,
+  }));
 
   return (
     <div className='container max-w-3xl py-28'>
@@ -85,23 +82,7 @@ const TrialClassRegistrationForm = ({ courses }: { courses: Course[] }) => {
                   <FormItem>
                     <FormLabel>Pilih Kursus</FormLabel>
                     <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder='Pilih program' />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            {courses.map(({ name, id }) => (
-                              <SelectItem key={id} value={id}>
-                                {name}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
+                      <Select data={courseOptions} {...field} searchable />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -143,11 +124,7 @@ const TrialClassRegistrationForm = ({ courses }: { courses: Course[] }) => {
                   <FormItem>
                     <FormLabel>Tanggal Lahir</FormLabel>
                     <FormControl>
-                      <Input
-                        type='date'
-                        value={field.value.toString()}
-                        onChange={field.onChange}
-                      />
+                      <DateInput {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -189,7 +166,12 @@ const TrialClassRegistrationForm = ({ courses }: { courses: Course[] }) => {
                       Gunakan nomor yang terdaftar di Whatsapp
                     </FormDescription>
                     <FormControl>
-                      <Input type='number' disabled={isSubmitting} {...field} />
+                      <Input
+                        placeholder='No. HP diawali dengan angka 0'
+                        type='number'
+                        disabled={isSubmitting}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -202,10 +184,6 @@ const TrialClassRegistrationForm = ({ courses }: { courses: Course[] }) => {
                   <FormItem>
                     <FormLabel>Pilihan Hari Trial Class</FormLabel>
                     <FormControl>
-                      {/* <DateTimePicker
-                        date={field.value}
-                        setDate={field.onChange}
-                      /> */}
                       <DateTimePicker {...field} />
                     </FormControl>
                     <FormMessage />
@@ -214,9 +192,11 @@ const TrialClassRegistrationForm = ({ courses }: { courses: Course[] }) => {
               />
 
               <div className='!mt-10'>
-                <Button type='submit'>
-                  {isSubmitting && (
-                    <Loader2 className='animate-spin mr-2 h-4 w-4' />
+                <Button size='sm' type='submit'>
+                  {isSubmitting ? (
+                    <Loader2 className='animate-spin h-4 w-4' />
+                  ) : (
+                    <ArrowRight className='h-4 w-4' />
                   )}
                   Daftar
                 </Button>

@@ -28,7 +28,7 @@ const SessionActions = ({
     try {
       setIsLoading(true);
       const { error, message } = await deleteSession(session.id);
-      if (error !== null) throw new Error(error);
+      if (error !== null) throw new Error(message);
       toast.success(message);
       router.refresh();
       router.push(`/admin/programs/${programId}/courses/${session.courseId}`);

@@ -88,7 +88,7 @@ const EvaluationsList = ({ evaluations }: EvaluationListProps) => {
         courseEvaluationId: id,
         pathname,
       });
-      if (error !== null) throw new Error(error);
+      if (error !== null) throw new Error(message);
       toast.success(message);
     } catch (error: any) {
       toast.error(error.message);

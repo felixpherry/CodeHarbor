@@ -75,13 +75,14 @@ const AccountDetailsForm = ({ initialData }: AccountDetailsFormProps) => {
         payload.image = url;
       }
 
-      await updateAccount({
+      const { error, message } = await updateAccount({
         id: initialData.id,
         ...payload,
         pathname,
       });
 
-      toast.success('Successfully updated account');
+      if (error !== null) throw new Error(message);
+      toast.success(message);
     } catch (error: any) {
       toast.error(error.message);
     }

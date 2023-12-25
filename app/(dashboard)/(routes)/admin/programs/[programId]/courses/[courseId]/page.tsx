@@ -24,7 +24,6 @@ import CourseProgrammingToolsForm from './_components/CourseProgrammingToolsForm
 import CourseLevelForm from './_components/CourseLevelForm';
 import CourseImageForm from './_components/CourseImageForm';
 import CourseCodeForm from './_components/CourseCodeForm';
-import EvaluationsForm from './_components/EvaluationForm';
 import EvaluationsList from './_components/EvaluationsList';
 
 const Page = async ({

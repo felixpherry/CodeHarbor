@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { PhoneNumberValidationIDN } from './phone-number';
 
 export const TrialClassValidation = z.object({
   childName: z.string().min(1, {
@@ -13,9 +14,7 @@ export const TrialClassValidation = z.object({
   parentName: z.string().min(1, {
     message: 'Nama orang tua wajib diisi',
   }),
-  phoneNumber: z.string().min(1, {
-    message: 'No. HP wajib diisi',
-  }),
+  phoneNumber: PhoneNumberValidationIDN,
   email: z
     .string()
     .email({

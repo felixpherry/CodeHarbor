@@ -6,7 +6,7 @@ import { parentInfoSchema } from './ParentInfoForm';
 import { Card, CardContent } from '@/components/ui/card';
 import moment from 'moment';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { CheckCircle2, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { registerCourse } from '../_actions';
@@ -46,7 +46,7 @@ const CourseConfirmationForm = ({
         );
       }
 
-      await registerCourse({
+      const { error, message } = await registerCourse({
         payload: {
           couponId,
           courseId,
@@ -54,11 +54,12 @@ const CourseConfirmationForm = ({
           ...parentInfo,
         },
       });
+      if (error !== null) throw new Error(message);
+      toast.success(message);
 
-      toast.success('Pendaftaran berhasil. Silakan tunggu kontak dari admin.');
       router.push('/');
-    } catch {
-      toast.error('Pendaftaran gagal. Silakan coba beberapa saat lagi');
+    } catch (error: any) {
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -154,7 +155,11 @@ const CourseConfirmationForm = ({
             Kembali
           </Button>
           <Button onClick={onSubmit} disabled={isLoading} type='submit'>
-            {isLoading && <Loader2 className='animate-spin mr-2 h-4 w-4' />}
+            {isLoading ? (
+              <Loader2 className='animate-spin h-4 w-4' />
+            ) : (
+              <CheckCircle2 className='h-4 w-4' />
+            )}
             Konfirmasi
           </Button>
         </div>

@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { DateInput } from '@mantine/dates';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -132,11 +133,7 @@ const StudentInfoForm = ({
               <FormItem>
                 <FormLabel>Tanggal Lahir</FormLabel>
                 <FormControl>
-                  <Input
-                    type='date'
-                    value={field.value.toString()}
-                    onChange={field.onChange}
-                  />
+                  <DateInput {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { PhoneNumberValidationIDN } from '@/lib/validations/phone-number';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -24,9 +25,7 @@ export const parentInfoSchema = z.object({
   parentEmail: z.string().email({
     message: 'Mohon masukkan email yang valid',
   }),
-  phoneNumber: z.string().min(1, {
-    message: 'No. HP wajib diisi',
-  }),
+  phoneNumber: PhoneNumberValidationIDN,
   address: z.string().min(1, {
     message: 'Alamat wajib diisi',
   }),

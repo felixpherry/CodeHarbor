@@ -23,7 +23,7 @@ const ProgramActions = ({ disabled, program }: ProgramActionsProps) => {
     try {
       setIsLoading(true);
       const { error, message } = await deleteProgram(program.id, pathname);
-      if (error !== null) throw new Error(error);
+      if (error !== null) throw new Error(message);
       toast.success(message);
       router.refresh();
       router.push(`/admin/programs`);

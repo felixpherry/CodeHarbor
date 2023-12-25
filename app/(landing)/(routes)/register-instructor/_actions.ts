@@ -1,7 +1,8 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { Prisma } from '@prisma/client';
+import { ServerActionsResponse } from '@/types';
+import { InstructorRegistration, Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
 export const registerInstructor = async ({
@@ -13,7 +14,7 @@ export const registerInstructor = async ({
     skills: string[];
   };
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<InstructorRegistration>> => {
   try {
     const result = await db.instructorRegistration.create({
       data: {
@@ -25,8 +26,28 @@ export const registerInstructor = async ({
     });
 
     revalidatePath(pathname);
-    return result;
+    return {
+      data: result,
+      error: null,
+      message:
+        'Pendaftaran berhasil. Silakan tunggu info lebih lanjut dari admin.',
+    };
   } catch (error: any) {
-    throw new Error(`Failed to register instructor: ${error.message}`);
+    console.log('registerInstructor', error.message);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        return {
+          data: null,
+          error: error.message,
+          message:
+            'Email atau No.HP Anda telah terdaftar di sistem. Silakan gunakan email atau No. HP yang lain.',
+        };
+      }
+    }
+    return {
+      data: null,
+      error: error.message,
+      message: 'Pendaftaran gagal. Harap coba lagi nanti',
+    };
   }
 };

@@ -59,7 +59,7 @@ const SessionsForm = ({ initialData }: SessionsFormProps) => {
         courseId: initialData.id,
         pathname,
       });
-      if (error !== null) throw new Error(error);
+      if (error !== null) throw new Error(message);
       toast.success(message);
       toggleCreating();
       form.reset();

@@ -77,12 +77,14 @@ const StudentInformationForm = ({
   const pathname = usePathname()!;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateStudentInfo({
+      const { error, message } = await updateStudentInfo({
         ...values,
         id: initialData.id,
         pathname,
       });
-      toast.success('Successfully updated student information');
+
+      if (error !== null) throw new Error(message);
+      toast.success(message);
     } catch (error: any) {
       toast.error(error.message);
     }

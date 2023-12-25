@@ -52,7 +52,7 @@ const CourseCodeForm = ({ initialData }: CourseCodeFormProps) => {
         payload: { code: values.code, programId: initialData.programId },
         pathname,
       });
-      if (error !== null) throw new Error(error);
+      if (error !== null) throw new Error(message);
       toast.success(message);
       setIsEditing(false);
     } catch (error: any) {

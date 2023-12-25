@@ -24,7 +24,7 @@ const CourseActions = ({ disabled, course }: CourseActionsProps) => {
     try {
       setIsLoading(true);
       const { error, message } = await deleteCourse(course.id);
-      if (error !== null) throw new Error(error);
+      if (error !== null) throw new Error(message);
       toast.success(message);
 
       router.refresh();
