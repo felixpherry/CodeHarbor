@@ -2,7 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 import { db } from '../db';
-import { Prisma } from '@prisma/client';
+import { Category, Prisma } from '@prisma/client';
+import { ServerActionsResponse } from '@/types';
 
 export const fetchCategories = async () => {
   try {
@@ -19,7 +20,7 @@ export const addNewCategory = async ({
 }: {
   payload: Prisma.CategoryUncheckedCreateInput;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<Category>> => {
   try {
     const category = await db.category.create({
       data: payload,
@@ -27,15 +28,28 @@ export const addNewCategory = async ({
 
     revalidatePath(pathname);
 
-    return category;
+    return {
+      data: category,
+      error: null,
+      message: 'Successfully added category',
+    };
   } catch (error: any) {
     console.log('addNewCategory', error.message);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
-        throw new Error('Category name and age description must be unique');
+        return {
+          data: null,
+          error: error.message,
+          message: 'Category name and age description must be unique',
+        };
       }
     }
-    throw new Error('Internal Server Error');
+
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };
 
@@ -47,7 +61,7 @@ export const updateCategory = async ({
   id: string;
   payload: Prisma.CategoryUncheckedUpdateInput;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<Category>> => {
   try {
     const category = await db.category.update({
       where: { id },
@@ -56,15 +70,27 @@ export const updateCategory = async ({
 
     revalidatePath(pathname);
 
-    return category;
+    return {
+      data: category,
+      error: null,
+      message: 'Successfully updated category',
+    };
   } catch (error: any) {
     console.log('updateCategory', error.message);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
-        throw new Error('Category name and age description must be unique');
+        return {
+          data: null,
+          error: error.message,
+          message: 'Category name and age description must be unique',
+        };
       }
     }
-    throw new Error('Internal Server Error');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };
 
@@ -74,7 +100,7 @@ export const deleteCategory = async ({
 }: {
   id: string;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<Category>> => {
   try {
     const category = await db.category.delete({
       where: { id },
@@ -82,9 +108,17 @@ export const deleteCategory = async ({
 
     revalidatePath(pathname);
 
-    return category;
+    return {
+      data: category,
+      error: null,
+      message: 'Successfully deleted category',
+    };
   } catch (error: any) {
     console.log('deleteCategory', error.message);
-    throw new Error('Internal Server Error');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };

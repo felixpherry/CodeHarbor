@@ -26,11 +26,13 @@ export const columns: ColumnDef<Category>[] = [
 
       const confirmDelete = async () => {
         try {
-          await deleteCategory({
+          const { error, message } = await deleteCategory({
             id,
             pathname,
           });
-          toast.success('Successfully deleted category');
+
+          if (error !== null) throw new Error(message);
+          toast.success(message);
         } catch (error: any) {
           toast.error(error.message);
         }

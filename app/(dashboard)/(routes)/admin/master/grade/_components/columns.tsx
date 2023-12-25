@@ -27,13 +27,15 @@ export const columns: ColumnDef<MasterGrade>[] = [
 
       const confirmDelete = async () => {
         try {
-          await deleteGradeCategory({
+          const { error, message } = await deleteGradeCategory({
             id,
             pathname,
           });
-          toast.success('Successfully deleted grade category');
+
+          if (error !== null) throw new Error(message);
+          toast.success(message);
         } catch (error: any) {
-          toast.error('Failed to delete grade category');
+          toast.error(error.message);
         }
       };
 
@@ -79,13 +81,14 @@ export const columns: ColumnDef<MasterGrade>[] = [
 
       const changeStatus = async (checked: boolean) => {
         try {
-          await changeGradeCategoryStatus({
+          const { error, message } = await changeGradeCategoryStatus({
             id,
             isActive: checked,
             pathname,
           });
 
-          toast.success('Successfully changed status');
+          if (error !== null) throw new Error(message);
+          toast.success(message);
         } catch (error: any) {
           toast.error(error.message);
         }

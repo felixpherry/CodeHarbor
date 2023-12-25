@@ -27,11 +27,12 @@ export const columns: ColumnDef<Skill>[] = [
 
       const confirmDelete = async () => {
         try {
-          await deleteSkill({
+          const { error, message } = await deleteSkill({
             id,
             pathname,
           });
-          toast.success('Successfully deleted skill');
+          if (error !== null) throw new Error(message);
+          toast.success(message);
         } catch (error: any) {
           toast.error(error.message);
         }
@@ -75,13 +76,14 @@ export const columns: ColumnDef<Skill>[] = [
 
       const changeStatus = async (checked: boolean) => {
         try {
-          await changeSkillStatus({
+          const { error, message } = await changeSkillStatus({
             id,
             isActive: checked,
             pathname,
           });
 
-          toast.success('Successfully changed status');
+          if (error !== null) throw new Error(message);
+          toast.success(message);
         } catch (error: any) {
           toast.error(error.message);
         }

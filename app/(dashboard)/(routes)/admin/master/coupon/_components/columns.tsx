@@ -27,11 +27,13 @@ export const columns: ColumnDef<Coupon>[] = [
 
       const confirmDelete = async () => {
         try {
-          await deleteCoupon({
+          const { error, message } = await deleteCoupon({
             id,
             pathname,
           });
-          toast.success('Successfully deleted coupon');
+
+          if (error !== null) throw new Error(message);
+          toast.success(message);
         } catch (error: any) {
           toast.error(error.message);
         }
@@ -77,13 +79,14 @@ export const columns: ColumnDef<Coupon>[] = [
 
       const changeStatus = async (checked: boolean) => {
         try {
-          await updateCouponStatus({
+          const { error, message } = await updateCouponStatus({
             id,
             isActive: checked,
             pathname,
           });
 
-          toast.success('Successfully changed status');
+          if (error !== null) throw new Error(message);
+          toast.success(message);
         } catch (error: any) {
           toast.error(error.message);
         }

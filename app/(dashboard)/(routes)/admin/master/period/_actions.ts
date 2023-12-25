@@ -1,7 +1,8 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { Prisma } from '@prisma/client';
+import { ServerActionsResponse } from '@/types';
+import { Period, Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
 export const addNewPeriod = async ({
@@ -10,7 +11,7 @@ export const addNewPeriod = async ({
 }: {
   payload: Prisma.PeriodUncheckedCreateInput;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<Period>> => {
   try {
     const period = await db.period.create({
       data: payload,
@@ -18,15 +19,27 @@ export const addNewPeriod = async ({
 
     revalidatePath(pathname);
 
-    return period;
+    return {
+      data: period,
+      error: null,
+      message: 'Successfully added period',
+    };
   } catch (error: any) {
     console.log('addNewPeriod', error.message);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
-        throw new Error('Period name must be unique');
+        return {
+          data: null,
+          error: error.message,
+          message: 'Period name must be unique',
+        };
       }
     }
-    throw new Error('Internal Server Error');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };
 
@@ -38,7 +51,7 @@ export const updatePeriod = async ({
   id: string;
   payload: Prisma.PeriodUncheckedUpdateInput;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<Period>> => {
   try {
     const period = await db.period.update({
       where: { id },
@@ -47,15 +60,27 @@ export const updatePeriod = async ({
 
     revalidatePath(pathname);
 
-    return period;
+    return {
+      data: period,
+      error: null,
+      message: 'Successfully updated period',
+    };
   } catch (error: any) {
     console.log('updatePeriod', error.message);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
-        throw new Error('Period name must be unique');
+        return {
+          data: null,
+          error: error.message,
+          message: 'Period name must be unique',
+        };
       }
     }
-    throw new Error('Internal Server Error');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };
 
@@ -65,7 +90,7 @@ export const deletePeriod = async ({
 }: {
   id: string;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<Period>> => {
   try {
     const period = await db.period.delete({
       where: { id },
@@ -73,10 +98,18 @@ export const deletePeriod = async ({
 
     revalidatePath(pathname);
 
-    return period;
+    return {
+      data: period,
+      error: null,
+      message: 'Successfully deleted period',
+    };
   } catch (error: any) {
     console.log('deletePeriod', error.message);
-    throw new Error('Internal Server Error');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };
 
@@ -88,7 +121,7 @@ export const changePeriodStatus = async ({
   id: string;
   isActive: boolean;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<Period>> => {
   try {
     const period = await db.period.update({
       where: { id },
@@ -100,9 +133,17 @@ export const changePeriodStatus = async ({
 
     revalidatePath(pathname);
 
-    return period;
+    return {
+      data: period,
+      error: null,
+      message: 'Successfully changed period status',
+    };
   } catch (error: any) {
     console.log('changePeriodStatus', error.message);
-    throw new Error('Internal Server Error');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };

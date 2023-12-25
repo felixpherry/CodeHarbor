@@ -73,3 +73,15 @@ export type ClassCollectionDetail = {
     studentCourses: number;
   };
 } & Class;
+
+export type ServerActionsResponse<T> =
+  | {
+      data: T;
+      error: null;
+      message: string;
+    }
+  | {
+      data: null;
+      error: string;
+      message: string;
+    };

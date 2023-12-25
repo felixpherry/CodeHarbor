@@ -55,21 +55,23 @@ const PeriodForm = ({ type, initialData }: PeriodFormProps) => {
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       if (type === 'ADD') {
-        await addNewPeriod({
+        const { error, message } = await addNewPeriod({
           payload: values,
           pathname,
         });
+
+        if (error !== null) throw new Error(message);
+        toast.success(message);
       } else {
-        await updatePeriod({
+        const { error, message } = await updatePeriod({
           id: initialData?.id!,
           payload: values,
           pathname,
         });
-      }
 
-      toast.success(
-        `Successfully ${type === 'ADD' ? 'added' : 'updated'} period`
-      );
+        if (error !== null) throw new Error(message);
+        toast.success(message);
+      }
 
       modals.closeAll();
     } catch (error: any) {

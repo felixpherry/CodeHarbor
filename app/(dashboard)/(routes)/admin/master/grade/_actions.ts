@@ -1,7 +1,8 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { Prisma } from '@prisma/client';
+import { ServerActionsResponse } from '@/types';
+import { MasterGrade, Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
 interface AddNewGradeCategoryParams {
@@ -12,7 +13,7 @@ interface AddNewGradeCategoryParams {
 export const addNewGradeCategory = async ({
   pathname,
   payload,
-}: AddNewGradeCategoryParams) => {
+}: AddNewGradeCategoryParams): Promise<ServerActionsResponse<MasterGrade>> => {
   try {
     const gradeCategory = await db.masterGrade.create({
       data: {
@@ -25,17 +26,27 @@ export const addNewGradeCategory = async ({
     });
     revalidatePath(pathname);
 
-    return gradeCategory;
+    return {
+      data: gradeCategory,
+      error: null,
+      message: 'Successfully added new grade category',
+    };
   } catch (error: any) {
     console.log('addNewGradeCategory', error.message);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
-        throw new Error(
-          'Category name, min score, and max score must be unique'
-        );
+        return {
+          data: null,
+          error: error.message,
+          message: 'Category name, min score, and max score must be unique',
+        };
       }
     }
-    throw new Error('Internal Server Error');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };
 
@@ -49,7 +60,7 @@ export const updateGradeCategory = async ({
   id,
   pathname,
   payload,
-}: UpdateGradeCategoryParams) => {
+}: UpdateGradeCategoryParams): Promise<ServerActionsResponse<MasterGrade>> => {
   try {
     const gradeCategory = await db.masterGrade.update({
       data: payload,
@@ -57,17 +68,27 @@ export const updateGradeCategory = async ({
     });
     revalidatePath(pathname);
 
-    return gradeCategory;
+    return {
+      data: gradeCategory,
+      error: null,
+      message: 'Successfully updated grade category',
+    };
   } catch (error: any) {
     console.log('updateGradeCategory', error.message);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
-        throw new Error(
-          'Category name, min score, and max score must be unique'
-        );
+        return {
+          data: null,
+          error: error.message,
+          message: 'Category name, min score, and max score must be unique',
+        };
       }
     }
-    throw new Error('Internal Server Error');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };
 
@@ -79,17 +100,25 @@ interface DeleteGradeCategoryParams {
 export const deleteGradeCategory = async ({
   id,
   pathname,
-}: DeleteGradeCategoryParams) => {
+}: DeleteGradeCategoryParams): Promise<ServerActionsResponse<MasterGrade>> => {
   try {
     const gradeCategory = await db.masterGrade.delete({
       where: { id },
     });
     revalidatePath(pathname);
 
-    return gradeCategory;
+    return {
+      data: gradeCategory,
+      error: null,
+      message: 'Successfully deleted new grade category',
+    };
   } catch (error: any) {
     console.log('deleteGradeCategory', error.message);
-    throw new Error('Internal Server Error');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };
 
@@ -103,7 +132,9 @@ export const changeGradeCategoryStatus = async ({
   id,
   isActive,
   pathname,
-}: ChangeGradeCategoryStatusParams) => {
+}: ChangeGradeCategoryStatusParams): Promise<
+  ServerActionsResponse<MasterGrade>
+> => {
   try {
     const grade = await db.masterGrade.update({
       where: { id },
@@ -115,9 +146,17 @@ export const changeGradeCategoryStatus = async ({
 
     revalidatePath(pathname);
 
-    return grade;
+    return {
+      data: grade,
+      error: null,
+      message: 'Successfully changed grade category status',
+    };
   } catch (error: any) {
     console.log('changeGradeCategoryStatus', error.message);
-    throw new Error('Internal Server Error');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };

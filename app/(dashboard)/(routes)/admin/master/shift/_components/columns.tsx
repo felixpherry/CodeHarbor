@@ -27,11 +27,13 @@ export const columns: ColumnDef<MasterShift>[] = [
 
       const confirmDelete = async () => {
         try {
-          await deleteShift({
+          const { error, message } = await deleteShift({
             id,
             pathname,
           });
-          toast.success('Successfully deleted shift');
+
+          if (error !== null) throw new Error(message);
+          toast.success(message);
         } catch (error: any) {
           toast.error(error.message);
         }
@@ -75,13 +77,15 @@ export const columns: ColumnDef<MasterShift>[] = [
 
       const changeStatus = async (checked: boolean) => {
         try {
-          await changeShiftStatus({
+          const { error, message } = await changeShiftStatus({
             id,
             isActive: checked,
             pathname,
           });
 
-          toast.success('Successfully changed status');
+          if (error !== null) throw new Error(message);
+
+          toast.success(message);
         } catch (error: any) {
           toast.error(error.message);
         }

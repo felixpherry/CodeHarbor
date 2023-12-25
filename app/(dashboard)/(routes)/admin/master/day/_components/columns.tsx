@@ -23,15 +23,17 @@ export const columns: ColumnDef<MasterDay>[] = [
 
       const changeStatus = async (checked: boolean) => {
         try {
-          await changeDayStatus({
+          const { error, message } = await changeDayStatus({
             id,
             isActive: checked,
             pathname,
           });
 
-          toast.success('Successfully changed status');
+          if (error !== null) throw new Error(message);
+
+          toast.success(message);
         } catch (error: any) {
-          toast.error('Failed to change status');
+          toast.error(error.message);
         }
       };
 

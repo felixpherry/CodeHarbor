@@ -1,7 +1,8 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { Prisma } from '@prisma/client';
+import { ServerActionsResponse } from '@/types';
+import { Coupon, Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
 export const addNewCoupon = async ({
@@ -10,22 +11,34 @@ export const addNewCoupon = async ({
 }: {
   payload: Prisma.CouponUncheckedCreateInput;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<Coupon>> => {
   try {
     const coupon = await db.coupon.create({
       data: payload,
     });
 
     revalidatePath(pathname);
-    return coupon;
+    return {
+      data: coupon,
+      error: null,
+      message: 'Successfully added new coupon',
+    };
   } catch (error: any) {
     console.log('addNewCoupon', error.message);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
-        throw new Error('Coupon code must be unique');
+        return {
+          data: null,
+          error: error.message,
+          message: 'Coupon code must be unique',
+        };
       }
     }
-    throw new Error('Internal Server Error');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };
 
@@ -37,7 +50,7 @@ export const updateCoupon = async ({
   id: string;
   payload: Prisma.CouponUncheckedCreateInput;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<Coupon>> => {
   try {
     const coupon = await db.coupon.update({
       where: { id },
@@ -46,15 +59,27 @@ export const updateCoupon = async ({
 
     revalidatePath(pathname);
 
-    return coupon;
+    return {
+      data: coupon,
+      error: null,
+      message: 'Successfully updated coupon',
+    };
   } catch (error: any) {
     console.log('updateCoupon', error.message);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
-        throw new Error('Coupon code must be unique');
+        return {
+          data: null,
+          error: error.message,
+          message: 'Coupon code must be unique',
+        };
       }
     }
-    throw new Error('Internal Server Error');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };
 
@@ -64,7 +89,7 @@ export const deleteCoupon = async ({
 }: {
   id: string;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<Coupon>> => {
   try {
     const coupon = await db.coupon.delete({
       where: { id },
@@ -72,10 +97,18 @@ export const deleteCoupon = async ({
 
     revalidatePath(pathname);
 
-    return coupon;
+    return {
+      data: coupon,
+      error: null,
+      message: 'Successfully deleted coupon',
+    };
   } catch (error: any) {
     console.log('deleteCoupon', error.message);
-    throw new Error('Internal Server Error');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };
 
@@ -87,7 +120,7 @@ export const updateCouponStatus = async ({
   id: string;
   isActive: boolean;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<Coupon>> => {
   try {
     const coupon = await db.coupon.update({
       where: { id },
@@ -96,9 +129,17 @@ export const updateCouponStatus = async ({
 
     revalidatePath(pathname);
 
-    return coupon;
+    return {
+      data: coupon,
+      error: null,
+      message: 'Successfully changed coupon status',
+    };
   } catch (error: any) {
     console.log('updateCouponStatus', error.message);
-    throw new Error('Internal Server Error');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };

@@ -48,21 +48,23 @@ const CategoryForm = ({ type, initialData }: CategoryFormProps) => {
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       if (type === 'ADD') {
-        await addNewCategory({
+        const { error, message } = await addNewCategory({
           payload: values,
           pathname,
         });
+
+        if (error !== null) throw new Error(message);
+        toast.success(message);
       } else {
-        await updateCategory({
+        const { error, message } = await updateCategory({
           id: initialData?.id!,
           payload: values,
           pathname,
         });
-      }
 
-      toast.success(
-        `Successfully ${type === 'ADD' ? 'added' : 'updated'} category`
-      );
+        if (error !== null) throw new Error(message);
+        toast.success(message);
+      }
 
       modals.closeAll();
     } catch (error: any) {

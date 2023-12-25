@@ -65,21 +65,23 @@ const CouponForm = ({ type, initialData }: CouponFormProps) => {
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       if (type === 'ADD') {
-        await addNewCoupon({
+        const { error, message } = await addNewCoupon({
           payload: values,
           pathname,
         });
+
+        if (error !== null) throw new Error(message);
+        toast.success(message);
       } else {
-        await updateCoupon({
+        const { error, message } = await updateCoupon({
           id: initialData?.id!,
           payload: values,
           pathname,
         });
-      }
 
-      toast.success(
-        `Successfully ${type === 'ADD' ? 'added' : 'updated'} coupon`
-      );
+        if (error !== null) throw new Error(message);
+        toast.success(message);
+      }
 
       modals.closeAll();
     } catch (error: any) {

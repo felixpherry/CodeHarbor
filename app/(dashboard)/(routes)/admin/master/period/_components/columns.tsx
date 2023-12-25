@@ -27,11 +27,13 @@ export const columns: ColumnDef<Period>[] = [
 
       const confirmDelete = async () => {
         try {
-          await deletePeriod({
+          const { error, message } = await deletePeriod({
             id,
             pathname,
           });
-          toast.success('Successfully deleted period');
+
+          if (error !== null) throw new Error(message);
+          toast.success(message);
         } catch (error: any) {
           toast.error(error.message);
         }
@@ -76,13 +78,15 @@ export const columns: ColumnDef<Period>[] = [
 
       const changeStatus = async (checked: boolean) => {
         try {
-          await changePeriodStatus({
+          const { error, message } = await changePeriodStatus({
             id,
             isActive: checked,
             pathname,
           });
 
-          toast.success('Successfully changed status');
+          if (error !== null) throw new Error(message);
+
+          toast.success(message);
         } catch (error: any) {
           toast.error(error.message);
         }

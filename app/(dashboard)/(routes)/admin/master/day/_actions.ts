@@ -1,6 +1,8 @@
 'use server';
 
 import { db } from '@/lib/db';
+import { ServerActionsResponse } from '@/types';
+import { MasterDay } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
 export const changeDayStatus = async ({
@@ -11,7 +13,7 @@ export const changeDayStatus = async ({
   id: string;
   isActive: boolean;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<MasterDay>> => {
   try {
     const day = await db.masterDay.update({
       where: {
@@ -25,9 +27,17 @@ export const changeDayStatus = async ({
 
     revalidatePath(pathname);
 
-    return day;
+    return {
+      data: day,
+      error: null,
+      message: 'Successfully changed day status',
+    };
   } catch (error: any) {
     console.log('changeDayStatus', error.message);
-    throw new Error('Internal Server Error');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };

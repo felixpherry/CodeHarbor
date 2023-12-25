@@ -44,21 +44,23 @@ const SkillForm = ({ type, initialData }: SkillFormProps) => {
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       if (type === 'ADD') {
-        await addNewSkill({
+        const { error, message } = await addNewSkill({
           payload: values,
           pathname,
         });
+
+        if (error !== null) throw new Error(message);
+        toast.success(message);
       } else {
-        await updateSkill({
+        const { error, message } = await updateSkill({
           id: initialData?.id!,
           payload: values,
           pathname,
         });
-      }
 
-      toast.success(
-        `Successfully ${type === 'ADD' ? 'added' : 'updated'} skill`
-      );
+        if (error !== null) throw new Error(message);
+        toast.success(message);
+      }
 
       modals.closeAll();
     } catch (error: any) {

@@ -70,21 +70,23 @@ const GradeForm = ({ type, initialData }: GradeFormProps) => {
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       if (type === 'ADD') {
-        await addNewGradeCategory({
+        const { error, message } = await addNewGradeCategory({
           payload: values,
           pathname,
         });
+
+        if (error !== null) throw new Error(message);
+        toast.success(message);
       } else {
-        await updateGradeCategory({
+        const { error, message } = await updateGradeCategory({
           id: initialData?.id!,
           payload: values,
           pathname,
         });
-      }
 
-      toast.success(
-        `Successfully ${type === 'ADD' ? 'added' : 'updated'} grade`
-      );
+        if (error !== null) throw new Error(message);
+        toast.success(message);
+      }
 
       modals.closeAll();
     } catch (error: any) {
