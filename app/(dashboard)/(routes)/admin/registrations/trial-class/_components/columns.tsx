@@ -27,14 +27,16 @@ export const columns: ColumnDef<TrialClassRegistration>[] = [
 
       const confirmStatus = async (status: RegistrationStatus) => {
         try {
-          await updateTrialClassRegistrationStatus({
+          const { error, message } = await updateTrialClassRegistrationStatus({
             id,
             status,
             pathname,
           });
-          toast.success('Successfully updated registration status');
+
+          if (error !== null) throw new Error(message);
+          toast.success(message);
         } catch (error: any) {
-          toast.error('Failed to update registration status');
+          toast.error(error.message);
         }
       };
 

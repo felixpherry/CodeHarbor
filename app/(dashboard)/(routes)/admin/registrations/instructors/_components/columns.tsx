@@ -36,26 +36,30 @@ export const columns: ColumnDef<InstructorRegistration>[] = [
 
       const confirmStatus = async (status: RegistrationStatus) => {
         try {
-          await updateInstructorRegistrationStatus({
+          const { error, message } = await updateInstructorRegistrationStatus({
             id,
             status,
             pathname,
           });
 
-          toast.success('Successfully updated registration status');
+          if (error !== null) throw new Error(message);
+
+          toast.success(message);
           if (status === 'APPROVED') {
             try {
-              await createAccountForInstructor(instructorData);
-
-              toast.success(
-                'Successfully created account for the instructor. Please contact the instructor for the account credentials'
+              const { error, message } = await createAccountForInstructor(
+                instructorData
               );
+
+              if (error !== null) throw new Error(message);
+
+              toast.success(message);
             } catch (error: any) {
-              toast.error('Failed to create account for the instructor');
+              toast.error(error.message);
             }
           }
         } catch (error: any) {
-          toast.error('Failed to update registration status');
+          toast.error(error.message);
         }
       };
 

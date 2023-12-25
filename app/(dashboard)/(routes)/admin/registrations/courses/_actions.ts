@@ -1,11 +1,17 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { CourseRegistration, RegistrationStatus } from '@prisma/client';
+import {
+  Account,
+  CourseRegistration,
+  Prisma,
+  RegistrationStatus,
+} from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcrypt';
 import moment from 'moment';
 import { getNextPeriod } from '@/lib/actions/period.actions';
+import { ServerActionsResponse } from '@/types';
 
 export const updateCourseRegistrationStatus = async ({
   id,
@@ -15,7 +21,7 @@ export const updateCourseRegistrationStatus = async ({
   id: string;
   status: RegistrationStatus;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<CourseRegistration>> => {
   try {
     const data = await db.courseRegistration.update({
       where: {
@@ -26,10 +32,18 @@ export const updateCourseRegistrationStatus = async ({
       },
     });
     revalidatePath(pathname);
-    return data;
+    return {
+      data,
+      error: null,
+      message: 'Successfully updated registration status',
+    };
   } catch (error: any) {
-    console.log(error);
-    throw new Error(`Failed to update registration status: ${error.message}`);
+    console.log('updateCourseRegistrationStatus', error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };
 
@@ -45,7 +59,9 @@ export const fetchCourseRegistrationDetail = async (id: string) => {
   }
 };
 
-export const createAccountForStudent = async (payload: CourseRegistration) => {
+export const createAccountForStudent = async (
+  payload: CourseRegistration
+): Promise<ServerActionsResponse<Account>> => {
   try {
     const {
       childEmail,
@@ -73,7 +89,7 @@ export const createAccountForStudent = async (payload: CourseRegistration) => {
 
     const period = await getNextPeriod();
 
-    if (!period) throw new Error("There's no period");
+    if (!period) throw new Error("There's no period.");
 
     const account = await db.account.create({
       data: {
@@ -116,11 +132,26 @@ export const createAccountForStudent = async (payload: CourseRegistration) => {
       },
     });
     return {
-      email: account.email,
-      password: moment(dateOfBirth).format('DDMMYYYY'),
+      data: account,
+      error: null,
+      message:
+        'Successfully created account for the user. Please contact the user for the account credentials.',
     };
   } catch (error: any) {
-    console.log(error.message);
-    throw new Error(`Failed to create account for student: ${error.message}`);
+    console.log('createAccountForStudent', error.message);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        return {
+          data: null,
+          error: error.message,
+          message: 'Failed to create account. Email is already registered.',
+        };
+      }
+    }
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to create account.',
+    };
   }
 };

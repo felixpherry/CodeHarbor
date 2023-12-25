@@ -1,10 +1,16 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { InstructorRegistration, RegistrationStatus } from '@prisma/client';
+import {
+  Account,
+  InstructorRegistration,
+  Prisma,
+  RegistrationStatus,
+} from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcrypt';
 import moment from 'moment';
+import { ServerActionsResponse } from '@/types';
 
 export const updateInstructorRegistrationStatus = async ({
   id,
@@ -14,7 +20,7 @@ export const updateInstructorRegistrationStatus = async ({
   id: string;
   status: RegistrationStatus;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<InstructorRegistration>> => {
   try {
     const data = await db.instructorRegistration.update({
       where: {
@@ -25,10 +31,18 @@ export const updateInstructorRegistrationStatus = async ({
       },
     });
     revalidatePath(pathname);
-    return data;
+    return {
+      data,
+      error: null,
+      message: 'Successfully updated registration status',
+    };
   } catch (error: any) {
-    console.log(error);
-    throw new Error(`Failed to update registration status: ${error.message}`);
+    console.log('updateInstructorRegistrationStatus', error.message);
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };
 
@@ -51,7 +65,7 @@ export const createAccountForInstructor = async (
       name: string;
     }[];
   } & InstructorRegistration
-) => {
+): Promise<ServerActionsResponse<Account>> => {
   try {
     const {
       address,
@@ -90,11 +104,26 @@ export const createAccountForInstructor = async (
       },
     });
     return {
-      email: account.email,
-      password: moment(dateOfBirth).format('DDMMYYYY'),
+      data: account,
+      error: null,
+      message:
+        'Successfully created account for the user. Please contact the user for the account credentials.',
     };
   } catch (error: any) {
-    console.log(error.message);
-    throw new Error(`Failed to create account for student: ${error.message}`);
+    console.log('createAccountForInstructor', error.message);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        return {
+          data: null,
+          error: error.message,
+          message: 'Failed to create account. Email is already registered.',
+        };
+      }
+    }
+    return {
+      data: null,
+      error: error.message,
+      message: 'Failed to create account.',
+    };
   }
 };

@@ -1,7 +1,8 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { RegistrationStatus } from '@prisma/client';
+import { ServerActionsResponse } from '@/types';
+import { RegistrationStatus, TrialClassRegistration } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
 export const updateTrialClassRegistrationStatus = async ({
@@ -12,7 +13,7 @@ export const updateTrialClassRegistrationStatus = async ({
   id: string;
   status: RegistrationStatus;
   pathname: string;
-}) => {
+}): Promise<ServerActionsResponse<TrialClassRegistration>> => {
   try {
     const data = await db.trialClassRegistration.update({
       where: {
@@ -23,10 +24,18 @@ export const updateTrialClassRegistrationStatus = async ({
       },
     });
     revalidatePath(pathname);
-    return data;
+    return {
+      data,
+      error: null,
+      message: 'Successfully updated registration status',
+    };
   } catch (error: any) {
-    console.log(error);
-    throw new Error(`Failed to update registration status: ${error.message}`);
+    console.log('updateTrialClassRegistrationStatus');
+    return {
+      data: null,
+      error: error.message,
+      message: 'Internal Server Error',
+    };
   }
 };
 
