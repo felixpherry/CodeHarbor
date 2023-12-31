@@ -130,7 +130,7 @@ const Page = async () => {
                 size='sm'
                 asChild
               >
-                <Link href='/student/courses'>Enroll a new course</Link>
+                <Link href='/student/enrollments'>Enroll a new course</Link>
               </Button>
 
               <Image

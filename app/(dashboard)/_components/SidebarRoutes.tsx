@@ -105,7 +105,7 @@ const adminRoutes: SidebarItemProps[] = [
 const studentRoutes: SidebarItemProps[] = [
   { label: 'Dashboard', icon: Layout, href: '/student/dashboard' },
   { label: 'My Classes', icon: GraduationCap, href: '/classes' },
-  { label: 'Courses', icon: Code2, href: '/student/courses' },
+  { label: 'Enrollments', icon: Code2, href: '/student/enrollments' },
   { label: 'Schedule', icon: CalendarDays, href: '/schedule' },
   { label: 'Profile', icon: User, href: '/profile' },
 ];

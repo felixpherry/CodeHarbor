@@ -31,21 +31,12 @@ const page = async ({ searchParams }: PageProps) => {
 
   if (!session) return redirect('/login');
 
-  const [currPeriod, pastPeriods, nextPeriod] = await Promise.all([
-    getCurrentPeriod(),
+  const [allPeriods, currPeriod] = await Promise.all([
     db.period.findMany({
-      where: {
-        endDate: {
-          lte: new Date(),
-        },
-      },
+      where: { isActive: true },
     }),
-    getNextPeriod(),
+    getCurrentPeriod(),
   ]);
-
-  const allPeriods = [...pastPeriods, currPeriod, nextPeriod].filter(
-    Boolean
-  ) as Period[];
 
   const periodId = searchParams?.period || currPeriod?.id;
 
