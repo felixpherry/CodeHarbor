@@ -12,9 +12,6 @@ const Sidebar = ({ session }: { session: SessionInterface }) => {
         <div className='flex justify-between items-center'>
           <Link href='/' className='flex gap-2 items-center'>
             <Logo />
-            <div className='font-fabada text-primary-blue text-xl font-semibold'>
-              Lecturna
-            </div>
           </Link>
         </div>
       </div>

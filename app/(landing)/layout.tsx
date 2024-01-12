@@ -18,7 +18,7 @@ const LandingLayout = async ({ children }: LandingLayoutProps) => {
     <>
       <Navbar session={session} logo={logo!} mobileMenu={<MobileMenu />} />
       <main>{children}</main>
-      <Footer />
+      <Footer logo={logo!} />
     </>
   );
 };

@@ -18,8 +18,8 @@ const About = () => {
           <h1 className='pt-6 pb-10 text-3xl font-bold'>Menyenangkan</h1>
           <div className='text-slate-500 text-md leading-8'>
             {' '}
-            Lecturna adalah tempat di mana anak Anda dapat belajar koding secara
-            menyenangkan dan mudah dipahami.
+            Code Harbor adalah tempat di mana anak Anda dapat belajar koding
+            secara menyenangkan dan mudah dipahami.
           </div>
         </div>
         <div className='flex flex-col items-center text-center'>
@@ -32,8 +32,8 @@ const About = () => {
           />
           <h1 className='pt-6 pb-10 text-3xl font-bold'>Terstruktur</h1>
           <div className='text-slate-500 text-md leading-8'>
-            Lecturna memiliki program pembelajaran yang terstruktur dan didesain
-            khusus untuk anak-anak usia 7-17 tahun.
+            Code Harbor memiliki program pembelajaran yang terstruktur dan
+            didesain khusus untuk anak-anak usia 7-17 tahun.
           </div>
         </div>
 

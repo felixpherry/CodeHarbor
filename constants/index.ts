@@ -131,20 +131,20 @@ export const programs = [
 
 export const accordionQuestions = [
   {
-    q: 'Apa yang membuat Lecturna berbeda dari kursus koding lainnya?',
-    a: 'Lecturna mengajarkan konsep dasar koding melalui aktivitas yang menyenangkan seperti game, tantangan, proyek kreatif dan mengajarkan nilai-nilai karakter yang dapat diimplementasikan dalam kehidupan sehari-hari melalui pembelajaran coding.',
+    q: 'Apa yang membuat Code Harbor berbeda dari kursus koding lainnya?',
+    a: 'Code Harbor mengajarkan konsep dasar koding melalui aktivitas yang menyenangkan seperti game, tantangan, proyek kreatif dan mengajarkan nilai-nilai karakter yang dapat diimplementasikan dalam kehidupan sehari-hari melalui pembelajaran coding.',
   },
   {
-    q: 'Apakah kursus koding Lecturna cocok untuk anak-anak usia berapa?',
-    a: 'Kursus koding Lecturna ditujukan untuk anak-anak usia 7 hingga 17 tahun, memberikan mereka keunggulan awal dalam proyek koding masa depan mereka.',
+    q: 'Apakah kursus koding Code Harbor cocok untuk anak-anak usia berapa?',
+    a: 'Kursus koding Code Harbor ditujukan untuk anak-anak usia 7 hingga 17 tahun, memberikan mereka keunggulan awal dalam proyek koding masa depan mereka.',
   },
   {
-    q: 'Apa yang dijadikan fokus dalam kursus koding Lecturna?',
-    a: 'Kursus koding Lecturna fokus pada pembuatan website, pengembangan aplikasi mobile, dan pengembangan game.',
+    q: 'Apa yang dijadikan fokus dalam kursus koding Code Harbor?',
+    a: 'Kursus koding Code Harbor fokus pada pembuatan website, pengembangan aplikasi mobile, dan pengembangan game.',
   },
   {
-    q: 'Apakah diperlukan pengetahuan koding sebelumnya untuk mengikuti kursus Lecturna?',
-    a: 'Tidak, kursus koding Lecturna dirancang untuk semua tingkatan pemula. Kami menyediakan pembelajaran yang disesuaikan dengan level pemahaman anak-anak, sehingga tidak diperlukan pengetahuan koding sebelumnya.',
+    q: 'Apakah diperlukan pengetahuan koding sebelumnya untuk mengikuti kursus Code Harbor?',
+    a: 'Tidak, kursus koding Code Harbor dirancang untuk semua tingkatan pemula. Kami menyediakan pembelajaran yang disesuaikan dengan level pemahaman anak-anak, sehingga tidak diperlukan pengetahuan koding sebelumnya.',
   },
 ];
 
@@ -152,61 +152,61 @@ export const testimonials = [
   {
     name: 'Budi Santoso',
     content:
-      'Anak saya sangat antusias belajar koding dengan Lecturna. Mereka merasa senang dan semakin tertarik dalam mengembangkan kemampuan koding mereka.',
+      'Anak saya sangat antusias belajar koding dengan Code Harbor. Mereka merasa senang dan semakin tertarik dalam mengembangkan kemampuan koding mereka.',
     rating: 5,
   },
   {
     name: 'Siti Rahayu',
     content:
-      'Lecturna telah membantu anak saya memahami konsep-konsep koding dengan cara yang menyenangkan. Mereka kini memiliki dasar yang kuat untuk melanjutkan lebih jauh dalam dunia pemrograman.',
+      'Code Harbor telah membantu anak saya memahami konsep-konsep koding dengan cara yang menyenangkan. Mereka kini memiliki dasar yang kuat untuk melanjutkan lebih jauh dalam dunia pemrograman.',
     rating: 4,
   },
   {
     name: 'Andi Pratama',
     content:
-      'Saya sangat puas dengan kualitas pembelajaran yang diberikan oleh Lecturna. Anak saya merasa termotivasi dan meraih hasil yang positif dalam proyek-proyek koding yang mereka kerjakan.',
+      'Saya sangat puas dengan kualitas pembelajaran yang diberikan oleh Code Harbor. Anak saya merasa termotivasi dan meraih hasil yang positif dalam proyek-proyek koding yang mereka kerjakan.',
     rating: 5,
   },
   {
     name: 'Dewi Susanti',
     content:
-      'Lecturna merupakan platform yang sangat ramah anak dan mudah digunakan. Anak saya merasa nyaman dan tidak merasa kesulitan saat mengikuti kursus koding di sini.',
+      'Code Harbor merupakan platform yang sangat ramah anak dan mudah digunakan. Anak saya merasa nyaman dan tidak merasa kesulitan saat mengikuti kursus koding di sini.',
     rating: 5,
   },
   {
     name: 'Rizki Pramudya',
     content:
-      'Lecturna memberikan pengalaman belajar yang menyenangkan dan mendalam. Anak-anak kami semakin kreatif dan terampil dalam memecahkan masalah melalui koding.',
+      'Code Harbor memberikan pengalaman belajar yang menyenangkan dan mendalam. Anak-anak kami semakin kreatif dan terampil dalam memecahkan masalah melalui koding.',
     rating: 4,
   },
   {
     name: 'Sinta Wijaya',
     content:
-      'Lecturna adalah LMS yang sangat lengkap dan terpercaya. Anak-anak kami merasa terbantu dengan fitur-fitur interaktif dan bahan pembelajaran yang disajikan dengan jelas.',
+      'Code Harbor adalah LMS yang sangat lengkap dan terpercaya. Anak-anak kami merasa terbantu dengan fitur-fitur interaktif dan bahan pembelajaran yang disajikan dengan jelas.',
     rating: 5,
   },
   {
     name: 'Anton Susanto',
     content:
-      'Lecturna telah membantu anak saya mengembangkan minat dalam dunia pemrograman. Mereka merasa senang dan terus termotivasi untuk belajar lebih banyak.',
+      'Code Harbor telah membantu anak saya mengembangkan minat dalam dunia pemrograman. Mereka merasa senang dan terus termotivasi untuk belajar lebih banyak.',
     rating: 5,
   },
   {
     name: 'Yulia Puspita',
     content:
-      'Saya sangat mengapresiasi Lecturna atas kemampuannya dalam menjelaskan konsep-konsep koding dengan cara yang sederhana dan mudah dipahami oleh anak-anak.',
+      'Saya sangat mengapresiasi Code Harbor atas kemampuannya dalam menjelaskan konsep-konsep koding dengan cara yang sederhana dan mudah dipahami oleh anak-anak.',
     rating: 4,
   },
   {
     name: 'Hendra Pratama',
     content:
-      'Lecturna memberikan pengalaman pembelajaran yang sangat interaktif dan menarik. Anak-anak kami merasa senang dan semakin percaya diri dalam menerapkan apa yang mereka pelajari.',
+      'Code Harbor memberikan pengalaman pembelajaran yang sangat interaktif dan menarik. Anak-anak kami merasa senang dan semakin percaya diri dalam menerapkan apa yang mereka pelajari.',
     rating: 5,
   },
   {
     name: 'Rina Wulandari',
     content:
-      'Lecturna telah menjadi pilihan yang tepat untuk mengenalkan anak kami pada dunia pemrograman. Mereka merasa tertantang dan terus mengembangkan keterampilan koding mereka.',
+      'Code Harbor telah menjadi pilihan yang tepat untuk mengenalkan anak kami pada dunia pemrograman. Mereka merasa tertantang dan terus mengembangkan keterampilan koding mereka.',
     rating: 5,
   },
 ];

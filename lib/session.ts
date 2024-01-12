@@ -82,7 +82,7 @@ export const authOptions: NextAuthOptions = {
       const encodedToken = jwt.sign(
         {
           ...token,
-          iss: 'lecturna',
+          iss: 'Code Harbor',
           exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
         },
         secret

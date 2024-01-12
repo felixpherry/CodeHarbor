@@ -39,7 +39,7 @@ const LoginPage = async ({ searchParams }: LoginPageProps) => {
             className='mx-auto'
           />
           <h1 className='text-2xl font-semibold tracking-tight'>
-            Selamat datang di Lecturna
+            Selamat datang di Code Harbor
           </h1>
           <p className='text-sm text-gray-100'>
             Masuk ke akun menggunakan email

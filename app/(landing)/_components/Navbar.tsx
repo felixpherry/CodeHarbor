@@ -52,15 +52,12 @@ const Navbar = ({ session, logo, mobileMenu }: NavbarProps) => {
             <Link href='/' className='flex items-center'>
               <Image
                 className='mr-3'
-                src={logo?.image || '/logo-no-bg.png'}
-                width={70}
-                height={70}
-                alt='Lecturna'
+                src={logo?.image || '/logo.png'}
+                width={50}
+                height={50}
+                alt='Code Harbor'
                 priority={true}
               />
-              <span className='hidden md:block self-center text-primary-blue text-2xl font-semibold font-fabada whitespace-nowrap hover:text-primary-blue-600'>
-                Lecturna
-              </span>
             </Link>
           </div>
           <ul className='md:flex hidden text-sm gap-7'>

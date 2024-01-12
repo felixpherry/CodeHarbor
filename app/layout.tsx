@@ -33,9 +33,9 @@ const josefin = Josefin_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Lecturna',
+  title: 'Code Harbor',
   description:
-    'Lecturna offers a coding course specifically designed to assist children in acquiring the skills necessary for creating websites, developing mobile apps, and engaging in game development.',
+    'Code Harbor offers a coding course specifically designed to assist children in acquiring the skills necessary for creating websites, developing mobile apps, and engaging in game development.',
 };
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {

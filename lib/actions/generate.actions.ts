@@ -107,26 +107,26 @@ export const generateFaq = async () => {
       data: [
         {
           question:
-            'Apa yang membuat Lecturna berbeda dari kursus koding lainnya?',
+            'Apa yang membuat Code Harbor berbeda dari kursus koding lainnya?',
           answer:
-            'Lecturna mengajarkan konsep dasar koding melalui aktivitas yang menyenangkan seperti game, tantangan, proyek kreatif dan mengajarkan nilai-nilai karakter yang dapat diimplementasikan dalam kehidupan sehari-hari melalui pembelajaran coding.',
+            'Code Harbor mengajarkan konsep dasar koding melalui aktivitas yang menyenangkan seperti game, tantangan, proyek kreatif dan mengajarkan nilai-nilai karakter yang dapat diimplementasikan dalam kehidupan sehari-hari melalui pembelajaran coding.',
         },
         {
           question:
-            'Apakah kursus koding Lecturna cocok untuk anak-anak usia berapa?',
+            'Apakah kursus koding Code Harbor cocok untuk anak-anak usia berapa?',
           answer:
-            'Kursus koding Lecturna ditujukan untuk anak-anak usia 7 hingga 17 tahun, memberikan mereka keunggulan awal dalam proyek koding masa depan mereka.',
+            'Kursus koding Code Harbor ditujukan untuk anak-anak usia 7 hingga 17 tahun, memberikan mereka keunggulan awal dalam proyek koding masa depan mereka.',
         },
         {
-          question: 'Apa yang dijadikan fokus dalam kursus koding Lecturna?',
+          question: 'Apa yang dijadikan fokus dalam kursus koding Code Harbor?',
           answer:
-            'Kursus koding Lecturna fokus pada pembuatan website, pengembangan aplikasi mobile, dan pengembangan game.',
+            'Kursus koding Code Harbor fokus pada pembuatan website, pengembangan aplikasi mobile, dan pengembangan game.',
         },
         {
           question:
-            'Apakah diperlukan pengetahuan koding sebelumnya untuk mengikuti kursus Lecturna?',
+            'Apakah diperlukan pengetahuan koding sebelumnya untuk mengikuti kursus Code Harbor?',
           answer:
-            'Tidak, kursus koding Lecturna dirancang untuk semua tingkatan pemula. Kami menyediakan pembelajaran yang disesuaikan dengan level pemahaman anak-anak, sehingga tidak diperlukan pengetahuan koding sebelumnya.',
+            'Tidak, kursus koding Code Harbor dirancang untuk semua tingkatan pemula. Kami menyediakan pembelajaran yang disesuaikan dengan level pemahaman anak-anak, sehingga tidak diperlukan pengetahuan koding sebelumnya.',
         },
       ],
     });

@@ -113,7 +113,9 @@ const Page = async () => {
           <div className='w-full p-8 rounded-md shadow-sm bg-[#e3e5fe]'>
             <div className='flex flex-col gap-5 relative'>
               <div className='flex flex-col gap-1'>
-                <h3 className='font-semibold text-xl'>Welcome to Lecturna</h3>
+                <h3 className='font-semibold text-xl'>
+                  Welcome to Code Harbor
+                </h3>
                 <p className='text-muted-foreground'>
                   Stay up to date with your child&apos;s learning progress
                 </p>

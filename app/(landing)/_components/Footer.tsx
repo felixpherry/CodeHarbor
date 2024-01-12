@@ -1,4 +1,5 @@
 import { footerLinks } from '@/constants';
+import { Logo } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -22,19 +23,19 @@ const FooterColumn = ({ title, links }: FooterColumnProps) => {
   );
 };
 
-const Footer = () => {
+const Footer = ({ logo }: { logo: Logo }) => {
   return (
     <footer className='flexStart footer'>
       <div className='flex flex-col gap-12 w-full container'>
         <div className='flex items-start flex-col'>
           <Image
-            src='/logo-no-bg.png'
-            width={100}
-            height={100}
-            alt='Lecturna'
+            src={logo?.image || '/logo.png'}
+            width={80}
+            height={80}
+            alt='code harbor'
           />
           <p className='text-start text-sm font-normal mt-5 max-w-xs'>
-            Lecturna, aplikasi LMS yang inovatif, menyediakan kursus koding
+            Code Harbor, aplikasi LMS yang inovatif, menyediakan kursus koding
             interaktif untuk anak-anak usia 7-17 tahun.
           </p>
         </div>
@@ -75,7 +76,7 @@ const Footer = () => {
       </div>
 
       <div className='flexBetween footer_copyright'>
-        <p>&copy;{new Date().getFullYear()} Lecturna. All rights reserved</p>
+        <p>&copy;{new Date().getFullYear()} Code Harbor. All rights reserved</p>
       </div>
     </footer>
   );

@@ -17,7 +17,7 @@ const MobileMenu = () => {
               <div className='flex gap-2 items-center'>
                 <Logo />
                 <div className='font-fabada text-primary-blue text-xl font-semibold'>
-                  Lecturna
+                  Code Harbor
                 </div>
               </div>
             </div>

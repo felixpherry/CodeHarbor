@@ -5,7 +5,7 @@ const WhatsAppWidget = () => {
     <div className='fixed bottom-5 right-5 z-20'>
       <div className='flex md:hidden items-center gap-5'>
         <a
-          href='https://api.whatsapp.com/send?phone=6285952889899&text=Halo,%20saya%20mau%20informasi%20lebih%20lanjut%20tentang%20Lecturna.%20||%20Hello,%20I%20want%20to%20know%20more%20about%20Lecturna.'
+          href='https://api.whatsapp.com/send?phone=6285952889899&text=Halo,%20saya%20mau%20informasi%20lebih%20lanjut%20tentang%20Code Harbor.%20||%20Hello,%20I%20want%20to%20know%20more%20about%20Code Harbor.'
           target='_blank'
           rel='noopener noreferrer'
           className='cursor-pointer w-10 h-10 md:w-[60px] md:h-[60px] my-[11px] flex items-center justify-center'
