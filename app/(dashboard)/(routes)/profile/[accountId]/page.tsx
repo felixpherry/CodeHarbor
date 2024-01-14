@@ -239,7 +239,11 @@ const Page = async ({ params: { accountId }, searchParams }: PageProps) => {
         <div className='flex flex-col md:flex-row md:justify-between items-start gap-5'>
           <div className='flex flex-col md:flex-row md:items-center gap-5'>
             <Image
-              src={accountDetail.image || '/avatar-fallback.svg'}
+              src={
+                accountDetail.image ||
+                (isOwner && session.user.image) ||
+                '/avatar-fallback.svg'
+              }
               alt='Profile Photo'
               width={128}
               height={128}

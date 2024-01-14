@@ -41,7 +41,7 @@ const Layout = async ({ children, params: { classId } }: LayoutProps) => {
         </h1>
         <div className='flex items-center gap-2'>
           <Link
-            href={session.user.role === 'ADMIN' ? '/admin/classes' : 'classes'}
+            href={session.user.role === 'ADMIN' ? '/admin/classes' : '/classes'}
             className='text-xs font-normal text-primary'
           >
             {isObserver ? 'Classes' : 'My Classes'}

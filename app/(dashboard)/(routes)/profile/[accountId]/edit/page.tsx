@@ -29,16 +29,16 @@ const Page = async ({ params: { accountId } }: PageProps) => {
     },
   });
 
-  if (accountId !== session?.user.id) return notFound();
+  if (!account || accountId !== session?.user.id) return notFound();
+
+  if (!account.image) account.image = session.user.image || null;
 
   return (
     <div className='flex flex-col gap-8 min-h-[calc(100vh-80px)]'>
       <div className='flex justify-between items-center'>
         <h1 className='text-2xl text-primary font-bold'>Profile Settings</h1>
         <div className='flex items-center gap-2'>
-          <Link
-            href='/profile'
-            className='text-xs font-normal text-primary'>
+          <Link href='/profile' className='text-xs font-normal text-primary'>
             Profile
           </Link>
           <ChevronRight className='h-3 w-3 text-muted-foreground' />

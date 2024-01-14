@@ -7,7 +7,6 @@ import { SocketProvider } from '@/providers/SocketProvider';
 import { fetchAccountDetail } from '@/lib/actions/account.actions';
 import { getNextPeriod, hasSchedule } from '@/lib/actions/period.actions';
 import moment from 'moment';
-import { db } from '@/lib/db';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

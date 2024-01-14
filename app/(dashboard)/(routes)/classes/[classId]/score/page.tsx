@@ -152,7 +152,7 @@ const Page = async ({ params: { classId } }: PageProps) => {
         <div className='flex flex-col items-center justify-center gap-2 bg-secondary p-5'>
           <h3 className='font-bold text-2xl text-primary'>Score Details</h3>
           <p className='font-medium text-lg'>
-            Average Score: <b>{Math.round(avgScore)}</b>
+            Average Score: <b>{Math.round(avgScore || 0)}</b>
           </p>
         </div>
         <div className='p-5 flex flex-col gap-5'>

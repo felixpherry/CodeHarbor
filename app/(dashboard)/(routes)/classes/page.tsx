@@ -102,7 +102,7 @@ const page = async ({ searchParams }: PageProps) => {
           </div>
         </div>
         <div className='p-5 shadow bg-white flex-1 flex'>
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mx-auto'>
             {classes.map(
               ({ course, id, schedules, name, instructorSchedule, _count }) => (
                 <Link
@@ -119,7 +119,7 @@ const page = async ({ searchParams }: PageProps) => {
                           height={140}
                           alt={course.name}
                           className='w-full object-cover h-[160px] rounded-t-lg relative'
-                          src={course.image || ''}
+                          src={course.image || '/card-placeholder.png'}
                         />
                       </div>
                       <div className='px-6 mt-4 flex flex-col gap-8'>
@@ -160,7 +160,7 @@ const page = async ({ searchParams }: PageProps) => {
                             <Image
                               src={
                                 instructorSchedule?.instructor.account.image ||
-                                ''
+                                '/avatar-fallback.svg'
                               }
                               alt={
                                 instructorSchedule?.instructor.account.name ||

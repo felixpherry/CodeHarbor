@@ -259,7 +259,7 @@ const Page = async () => {
                             height={140}
                             alt={course.name}
                             className='w-full object-cover h-[160px] rounded-t-lg relative'
-                            src={course.image || ''}
+                            src={course.image || '/card-placeholder.png'}
                           />
                         </div>
                         <div className='px-6 mt-4 flex flex-col gap-8'>
