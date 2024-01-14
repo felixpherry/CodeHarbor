@@ -44,11 +44,7 @@ export const columns: ColumnDef<MasterGrade>[] = [
           <PencilIcon
             onClick={() => {
               modals.open({
-                title: (
-                  <p className='text-primary font-semibold'>
-                    Edit Grade Category
-                  </p>
-                ),
+                title: <p className='text-primary font-semibold'>Edit Grade</p>,
                 children: <GradeForm type='EDIT' initialData={row.original} />,
                 centered: true,
                 size: 'xl',

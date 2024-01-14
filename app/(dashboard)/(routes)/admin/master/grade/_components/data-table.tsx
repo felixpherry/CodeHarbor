@@ -85,7 +85,7 @@ export function DataTable<TData, TValue>({
           variant='primary-blue'
           onClick={() => {
             modals.open({
-              title: <p className='text-primary font-semibold'>Add Period</p>,
+              title: <p className='text-primary font-semibold'>Add Grade</p>,
               children: <GradeForm type='ADD' />,
               centered: true,
               size: 'lg',
