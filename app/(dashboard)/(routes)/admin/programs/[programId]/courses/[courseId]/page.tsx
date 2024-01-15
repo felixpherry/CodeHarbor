@@ -69,7 +69,7 @@ const Page = async ({
   return (
     <>
       {!course.isPublished && <Banner label='This course is a draft' />}
-      <div className='p-6'>
+      <div className='container max-w-7xl'>
         <div className='flex items-center justify-between'>
           <div className='w-full'>
             <Link
