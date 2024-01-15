@@ -83,7 +83,7 @@ const InstructorRegistrationDetail = ({
       </DialogTrigger>
       <DialogContent className='p-8'>
         <DialogHeader>
-          <DialogTitle>Course Registration Details</DialogTitle>
+          <DialogTitle>Instructor Registration Details</DialogTitle>
         </DialogHeader>
         <div className='flex gap-x-5 items-center my-3'>
           <h3 className='font-semibold text-xl'>{name}</h3>
