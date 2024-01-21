@@ -39,7 +39,7 @@ const Page = async ({
   return (
     <>
       {!program.isPublished && <Banner label='This program is a draft' />}
-      <div className='container max-w-7xl'>
+      <div className='container max-w-7xl p-0'>
         <div className='flex items-center justify-between'>
           <div className='flex flex-col gap-y-2'>
             <h1 className='text-2xl font-medium'>Program Setup</h1>

@@ -1,5 +1,6 @@
 'use client';
 
+import ActionTooltip from '@/components/shared/ActionTooltip';
 import { Badge, BadgeProps } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -104,7 +105,9 @@ const CourseRegistrationDetail = ({ data }: CourseRegistrationDetailProps) => {
   return (
     <Dialog>
       <DialogTrigger>
-        <Eye className='text-muted-foreground hover:text-primary' />
+        <ActionTooltip label='Details'>
+          <Eye className='text-muted-foreground hover:text-primary' />
+        </ActionTooltip>
       </DialogTrigger>
       <DialogContent className='p-8'>
         <DialogHeader>

@@ -57,7 +57,7 @@ const adminRoutes: SidebarItemProps[] = [
     ],
   },
   {
-    label: 'Registrations',
+    label: 'First Registrations',
     icon: ScrollText,
     initiallyOpened: false,
     links: [
@@ -76,7 +76,7 @@ const adminRoutes: SidebarItemProps[] = [
     ],
   },
   {
-    label: 'Enrollments',
+    label: 'Additional Enrollments',
     icon: BookOpen,
     href: '/admin/enrollments',
   },
@@ -105,7 +105,7 @@ const adminRoutes: SidebarItemProps[] = [
 const studentRoutes: SidebarItemProps[] = [
   { label: 'Dashboard', icon: Layout, href: '/student/dashboard' },
   { label: 'My Classes', icon: GraduationCap, href: '/classes' },
-  { label: 'Enrollments', icon: Code2, href: '/student/enrollments' },
+  { label: 'Enroll a New Course', icon: Code2, href: '/student/enrollments' },
   { label: 'Schedule', icon: CalendarDays, href: '/schedule' },
   { label: 'Profile', icon: User, href: '/profile' },
 ];

@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
 import TrialClassDetail from './TrialClassDetail';
+import ActionTooltip from '@/components/shared/ActionTooltip';
 
 export const columns: ColumnDef<TrialClassRegistration>[] = [
   {
@@ -49,14 +50,18 @@ export const columns: ColumnDef<TrialClassRegistration>[] = [
                 description='Do you want to approve this registration?'
                 onConfirm={() => confirmStatus('APPROVED')}
               >
-                <ThumbsUp className='text-green-500 cursor-pointer' />
+                <ActionTooltip label='Approve'>
+                  <ThumbsUp className='text-green-500 cursor-pointer' />
+                </ActionTooltip>
               </ConfirmModal>
               <ConfirmModal
                 title='Reject Registration'
                 description='Do you want to reject this registration?'
                 onConfirm={() => confirmStatus('REJECTED')}
               >
-                <ThumbsDown className='text-red-500 cursor-pointer' />
+                <ActionTooltip label='Reject'>
+                  <ThumbsDown className='text-red-500 cursor-pointer' />
+                </ActionTooltip>
               </ConfirmModal>
             </>
           )}

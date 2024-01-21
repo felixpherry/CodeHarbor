@@ -36,6 +36,7 @@ import {
   MappedClassFormType,
   useMappedClassForm,
 } from '../../_stores/use-mapped-class-form';
+import Banner from '@/components/shared/Banner';
 
 const MappedClassesTable = () => {
   const [page, setPage] = useState(1);
@@ -138,6 +139,9 @@ const MappedClassesTable = () => {
 
   return (
     <div className='flex flex-col gap-3 p-5 border rounded-md'>
+      {!!currMappedClasses.length && (
+        <Banner label='These classes are stored locally. Please finalize the process to store them in the database.' />
+      )}
       <div className='flex justify-between'>
         <Input
           placeholder='Search class...'
@@ -177,7 +181,7 @@ const MappedClassesTable = () => {
               ) : (
                 <SaveAll className='h-4 w-4' />
               )}
-              Save
+              Finalize
             </Button>
           </ConfirmModal>
         </div>

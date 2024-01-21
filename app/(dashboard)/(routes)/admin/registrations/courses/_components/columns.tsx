@@ -14,6 +14,7 @@ import {
 } from '../_actions';
 import CourseRegistrationDetail from './CourseRegistrationDetail';
 import moment from 'moment';
+import ActionTooltip from '@/components/shared/ActionTooltip';
 
 export const columns: ColumnDef<CourseRegistration>[] = [
   {
@@ -41,6 +42,7 @@ export const columns: ColumnDef<CourseRegistration>[] = [
               const { error, message } = await createAccountForStudent(
                 row.original
               );
+
               if (error !== null) throw new Error(message);
               toast.success(message);
             } catch (error: any) {
@@ -61,14 +63,18 @@ export const columns: ColumnDef<CourseRegistration>[] = [
                 description='Do you want to approve this registration'
                 onConfirm={() => confirmStatus('APPROVED')}
               >
-                <ThumbsUp className='text-green-500 cursor-pointer' />
+                <ActionTooltip label='Approve'>
+                  <ThumbsUp className='text-green-500 cursor-pointer' />
+                </ActionTooltip>
               </ConfirmModal>
               <ConfirmModal
                 title='Reject Registration'
                 description='Do you want to reject this registration'
                 onConfirm={() => confirmStatus('REJECTED')}
               >
-                <ThumbsDown className='text-red-500 cursor-pointer' />
+                <ActionTooltip label='Reject'>
+                  <ThumbsDown className='text-red-500 cursor-pointer' />
+                </ActionTooltip>
               </ConfirmModal>
             </>
           )}

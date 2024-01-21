@@ -12,6 +12,10 @@ import ToasterProvider from '@/providers/ToasterProvider';
 import { Metadata } from 'next';
 import TanstackProvider from '@/providers/TanstackProvider';
 import Seed from '@/components/Seed';
+import {
+  generateInstructors,
+  generateStudents,
+} from '@/lib/actions/generate.actions';
 
 const fabada = localFont({
   src: '../fonts/Fabada-Regular.ttf',

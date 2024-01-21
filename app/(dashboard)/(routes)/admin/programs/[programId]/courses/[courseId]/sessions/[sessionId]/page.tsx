@@ -47,7 +47,7 @@ const Page = async ({
       {!session.isPublished && (
         <Banner variant='warning' label='This session is a draft' />
       )}
-      <div className='container max-w-7xl'>
+      <div className='container max-w-7xl p-0'>
         <div className='flex items-center justify-between'>
           <div className='w-full'>
             <Link

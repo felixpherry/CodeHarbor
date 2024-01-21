@@ -14,10 +14,10 @@ import { ArrowUpDown, Eye, ThumbsDown, ThumbsUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
-import Image from 'next/image';
 import Link from 'next/link';
 import { updateEnrollmentStatus } from '../_actions';
 import moment from 'moment';
+import ActionTooltip from '@/components/shared/ActionTooltip';
 
 export const columns: ColumnDef<
   {
@@ -62,19 +62,25 @@ export const columns: ColumnDef<
                 description='Do you want to approve this enrollment'
                 onConfirm={() => confirmStatus('APPROVED')}
               >
-                <ThumbsUp className='text-green-500 cursor-pointer' />
+                <ActionTooltip label='Approve'>
+                  <ThumbsUp className='text-green-500 cursor-pointer' />
+                </ActionTooltip>
               </ConfirmModal>
               <ConfirmModal
                 title='Reject Enrollment'
                 description='Do you want to reject this enrollment'
                 onConfirm={() => confirmStatus('REJECTED')}
               >
-                <ThumbsDown className='text-red-500 cursor-pointer' />
+                <ActionTooltip label='Reject'>
+                  <ThumbsDown className='text-red-500 cursor-pointer' />
+                </ActionTooltip>
               </ConfirmModal>
             </>
           )}
           <Link href={`/profile/${row.original.student.accountId}`}>
-            <Eye className='text-muted-foreground hover:text-primary' />
+            <ActionTooltip label='Profile'>
+              <Eye className='text-muted-foreground hover:text-primary' />
+            </ActionTooltip>
           </Link>
         </div>
       );

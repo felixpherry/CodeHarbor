@@ -14,6 +14,7 @@ import {
 } from '../_actions';
 import InstructorRegistrationDetail from './InstructorRegistrationDetail';
 import moment from 'moment';
+import ActionTooltip from '@/components/shared/ActionTooltip';
 
 export const columns: ColumnDef<InstructorRegistration>[] = [
   {
@@ -72,14 +73,18 @@ export const columns: ColumnDef<InstructorRegistration>[] = [
                 description='Do you want to approve this registration'
                 onConfirm={() => confirmStatus('APPROVED')}
               >
-                <ThumbsUp className='text-green-500 cursor-pointer' />
+                <ActionTooltip label='Approve'>
+                  <ThumbsUp className='text-green-500 cursor-pointer' />
+                </ActionTooltip>
               </ConfirmModal>
               <ConfirmModal
                 title='Reject Registration'
                 description='Do you want to reject this registration'
                 onConfirm={() => confirmStatus('REJECTED')}
               >
-                <ThumbsDown className='text-red-500 cursor-pointer' />
+                <ActionTooltip label='Reject'>
+                  <ThumbsDown className='text-red-500 cursor-pointer' />
+                </ActionTooltip>
               </ConfirmModal>
             </>
           )}
